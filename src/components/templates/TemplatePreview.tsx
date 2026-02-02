@@ -1,52 +1,53 @@
 /* eslint-disable react/require-default-props */
 import { Paper, Text, Stack } from '@mantine/core';
 import { useMemo, forwardRef } from 'react';
-import { ExportProduct, ClassicTemplate } from './ClassicTemplate';
-import { ModernTemplate } from './ModernTemplate';
 import { ElegantTemplate } from './ElegantTemplate';
-import { SocialTemplate } from './SocialTemplate';
-import { CatalogTemplate } from './CatalogTemplate';
 import { PriceListTemplate } from './PriceListTemplate';
+import type { ExportProduct, PriceListStyleOptions } from './types';
 
 export interface TemplatePreviewProps {
   template: string;
   products: ExportProduct[];
   merchantName: string;
+  merchantAddress?: string | null;
+  priceListStyle?: PriceListStyleOptions;
   onExport?: () => Promise<void>;
   watermark?: boolean;
 }
 
 export const TemplatePreview = forwardRef<HTMLDivElement, TemplatePreviewProps>(
-  ({
-    template, products, merchantName, watermark = false,
-  }, ref) => {
+  (
+    {
+      template,
+      products,
+      merchantName,
+      merchantAddress,
+      priceListStyle,
+      watermark = false,
+    },
+    ref,
+  ) => {
     const renderTemplate = useMemo(() => {
-      const templateProps = { products, merchantName, watermark };
+      const commonProps = {
+        products,
+        merchantName,
+        merchantAddress,
+        watermark,
+      };
 
       switch (template) {
-        case 'modern':
-          return <ModernTemplate {...templateProps} />;
         case 'elegant':
-          return <ElegantTemplate {...templateProps} />;
-        case 'social':
-          return <SocialTemplate {...templateProps} />;
-        case 'catalog':
-          return <CatalogTemplate {...templateProps} />;
+          return <ElegantTemplate {...commonProps} />;
         case 'price-list':
-          return <PriceListTemplate {...templateProps} />;
-        case 'classic':
+          return <PriceListTemplate {...commonProps} styleOptions={priceListStyle} />;
         default:
-          return <ClassicTemplate {...templateProps} />;
+          return <ElegantTemplate {...commonProps} />;
       }
-    }, [template, products, merchantName, watermark]);
+    }, [template, products, merchantName, merchantAddress, priceListStyle, watermark]);
 
     return (
       <Stack gap="md">
-        <Text fw={600} size="sm">
-          Preview
-        </Text>
         <Paper
-          ref={ref}
           p="md"
           withBorder
           style={{
@@ -55,7 +56,12 @@ export const TemplatePreview = forwardRef<HTMLDivElement, TemplatePreviewProps>(
             backgroundColor: '#f8f9fa',
           }}
         >
-          {renderTemplate}
+          <div
+            ref={ref}
+            style={{ display: 'inline-block' }}
+          >
+            {renderTemplate}
+          </div>
         </Paper>
         {watermark && (
           <Text size="xs" c="dimmed" ta="center">

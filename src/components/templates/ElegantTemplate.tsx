@@ -1,27 +1,20 @@
 import {
-  Paper, Text, Stack, Group, Image, Box,
+  Paper, Text, Stack, Group, Box,
 } from '@mantine/core';
 import { formatCurrency } from '@/utils/currency';
-
-export interface ExportProduct {
-  id: string;
-  name: string;
-  description?: string | null;
-  priceUSD: number;
-  priceSYP?: number | null;
-  imageUrls?: string[] | null;
-  category?: string | null;
-}
+import type { ExportProduct } from './types';
 
 interface ElegantTemplateProps {
   products: ExportProduct[];
   merchantName: string;
+  merchantAddress?: string | null;
   watermark?: boolean | null;
 }
 
 export function ElegantTemplate({
   products,
   merchantName,
+  merchantAddress = null,
   watermark = false,
 }: ElegantTemplateProps) {
   return (
@@ -48,6 +41,12 @@ export function ElegantTemplate({
           {merchantName}
         </Text>
 
+        {merchantAddress && (
+          <Text size="xs" c="dimmed" ta="center" style={{ letterSpacing: 1 }}>
+            {merchantAddress}
+          </Text>
+        )}
+
         <Text size="sm" c="dimmed" style={{ letterSpacing: 4, textTransform: 'uppercase' }}>
           Collection
         </Text>
@@ -68,14 +67,19 @@ export function ElegantTemplate({
             >
               <Group gap="md" wrap="nowrap" align="flex-start">
                 {product.imageUrls && product.imageUrls.length > 0 && (
-                  <Image
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
                     src={product.imageUrls[0]}
                     alt={product.name}
-                    w={90}
-                    h={90}
-                    radius="sm"
-                    fit="cover"
-                    style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}
+                    crossOrigin="anonymous"
+                    style={{
+                      width: '90px',
+                      height: '90px',
+                      objectFit: 'cover',
+                      borderRadius: '4px',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                      flexShrink: 0,
+                    }}
                   />
                 )}
                 <Box style={{ flex: 1 }}>

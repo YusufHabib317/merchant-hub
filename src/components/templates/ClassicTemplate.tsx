@@ -1,6 +1,6 @@
 /* eslint-disable react/require-default-props */
 import {
-  Paper, Text, Stack, Group, Image, Box, Badge,
+  Paper, Text, Stack, Group, Box, Badge,
 } from '@mantine/core';
 import { formatCurrency } from '@/utils/currency';
 
@@ -35,13 +35,18 @@ export function ClassicTemplate({ products, merchantName, watermark }: ClassicTe
             <Paper key={product.id} p="md" withBorder bg="#f8f9fa">
               <Group gap="md" wrap="nowrap">
                 {product.imageUrls && product.imageUrls.length > 0 && (
-                  <Image
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
                     src={product.imageUrls[0]}
                     alt={product.name}
-                    w={70}
-                    h={70}
-                    radius="md"
-                    fit="cover"
+                    crossOrigin="anonymous"
+                    style={{
+                      width: '70px',
+                      height: '70px',
+                      objectFit: 'cover',
+                      borderRadius: '8px',
+                      flexShrink: 0,
+                    }}
                   />
                 )}
                 <Box style={{ flex: 1 }}>

@@ -18,39 +18,15 @@ interface TemplateSelectorProps {
 
 const TEMPLATES: TemplateOption[] = [
   {
-    value: 'classic',
-    label: 'Classic',
-    description: 'Clean minimal design with white background',
-    preview: 'white',
-  },
-  {
-    value: 'modern',
-    label: 'Modern',
-    description: 'Bold typography with dark theme',
-    preview: 'dark',
-  },
-  {
     value: 'elegant',
     label: 'Elegant',
-    description: 'Sophisticated design with shadows',
+    description: 'Premium card layout (best for sharing)',
     preview: 'light',
   },
   {
-    value: 'social',
-    label: 'Social',
-    description: 'Instagram/Facebook optimized grid',
-    preview: 'gradient',
-  },
-  {
-    value: 'catalog',
-    label: 'Catalog',
-    description: 'Grid layout for multiple products',
-    preview: 'grid',
-  },
-  {
     value: 'price-list',
-    label: 'Price List',
-    description: 'Text-focused table for printing',
+    label: 'List',
+    description: 'Category tables (best for printing)',
     preview: 'table',
   },
 ];

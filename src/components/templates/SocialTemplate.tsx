@@ -1,5 +1,5 @@
 import {
-  Paper, Text, Stack, Group, Image, Box,
+  Paper, Text, Stack, Group, Box,
 } from '@mantine/core';
 
 export interface ExportProduct {
@@ -60,13 +60,17 @@ export function SocialTemplate({
             >
               <Stack gap={4}>
                 {product.imageUrls && product.imageUrls.length > 0 ? (
-                  <Image
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
                     src={product.imageUrls[0]}
                     alt={product.name}
-                    w="100%"
-                    h={100}
-                    radius="sm"
-                    fit="cover"
+                    crossOrigin="anonymous"
+                    style={{
+                      width: '100%',
+                      height: '100px',
+                      objectFit: 'cover',
+                      borderRadius: '4px',
+                    }}
                   />
                 ) : (
                   <Box

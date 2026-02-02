@@ -31,6 +31,7 @@ import { useState } from 'react';
 import { formatCurrency } from '@/utils/currency';
 import { ChatWidget } from '@/components/chat/ChatWidget';
 import { QRCodeGenerator } from '@/components/qr/QRCodeGenerator';
+import { useProductSort } from '@/lib/hooks';
 
 interface Product {
   id: string;
@@ -68,6 +69,14 @@ export default function MerchantPublicPage() {
     },
     enabled: !!slug && typeof slug === 'string',
   });
+
+  // Apply custom sort order to products
+  const { getSortedProducts } = useProductSort({
+    merchantId: data?.id || '',
+    products: data?.products || [],
+  });
+
+  const sortedProducts = data ? getSortedProducts(data.products) : [];
 
   const handleShare = async () => {
     const url = window.location.href;
@@ -176,7 +185,7 @@ export default function MerchantPublicPage() {
 
       {/* Products Section */}
       <Container size="lg" py={60}>
-        {data.products.length === 0 ? (
+        {sortedProducts.length === 0 ? (
           <Box ta="center" py={60}>
             <Text size="xl" c="dimmed">
               No products available yet
@@ -188,7 +197,7 @@ export default function MerchantPublicPage() {
               Products
             </Title>
             <Grid gutter="lg">
-              {data.products.map((product) => (
+              {sortedProducts.map((product) => (
                 <Grid.Col key={product.id} span={{ base: 12, sm: 6, md: 4 }}>
                   <Card shadow="sm" padding="lg" radius="md" withBorder h="100%">
                     <Card.Section>

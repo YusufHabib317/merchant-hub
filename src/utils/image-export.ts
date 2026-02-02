@@ -1,11 +1,7 @@
 /* eslint-disable no-plusplus */
 import { toPng } from 'html-to-image';
 
-// Fallback image used when a product image fails to load or is blocked by CORS.
-// This prevents html-to-image from throwing opaque "oops, something went wrong"
-// errors when encountering broken <img> elements inside the export area.
-const BROKEN_IMAGE_PLACEHOLDER =
-  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+xU9EAAAAASUVORK5CYII=';
+const BROKEN_IMAGE_PLACEHOLDER = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+xU9EAAAAASUVORK5CYII=';
 
 export interface ExportOptions {
   quality?: number;
@@ -13,6 +9,76 @@ export interface ExportOptions {
   backgroundColor?: string;
   cacheBust?: boolean;
   imagePlaceholder?: string;
+}
+
+/**
+ * Convert an image URL to a data URL (base64) using a server-side proxy
+ * to avoid CORS issues with external image hosts
+ */
+async function imageToDataUrl(url: string): Promise<string | null> {
+  try {
+    // Use server-side proxy to bypass CORS
+    const proxyUrl = `/api/proxy/image?url=${encodeURIComponent(url)}`;
+    const response = await fetch(proxyUrl);
+    if (!response.ok) {
+      return null;
+    }
+    const blob = await response.blob();
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Preload all images in an element and convert external URLs to data URLs
+ * to ensure they're properly embedded in the exported image
+ */
+async function preloadImages(element: HTMLElement): Promise<void> {
+  const images = element.querySelectorAll('img');
+
+  // Convert external images to data URLs to avoid CORS issues
+  const conversionPromises = Array.from(images).map(async (img) => {
+    const { src } = img;
+
+    // Skip if already a data URL or empty
+    if (!src || src.startsWith('data:')) {
+      return;
+    }
+
+    try {
+      const dataUrl = await imageToDataUrl(src);
+      if (dataUrl) {
+        // eslint-disable-next-line no-param-reassign
+        img.src = dataUrl;
+      }
+    } catch {
+      // Keep original src if conversion fails
+    }
+  });
+
+  await Promise.all(conversionPromises);
+
+  // Wait for all images to load
+  const imagePromises = Array.from(images).map((img) => new Promise<void>((resolve) => {
+    if (img.complete) {
+      resolve();
+    } else {
+      // eslint-disable-next-line no-param-reassign
+      img.onload = () => resolve();
+      // eslint-disable-next-line no-param-reassign
+      img.onerror = () => resolve(); // Resolve even on error to not block export
+    }
+  }));
+
+  await Promise.all(imagePromises);
+  // Add a delay to ensure rendering is complete
+  await new Promise((resolve) => { setTimeout(resolve, 500); });
 }
 
 export async function exportToImage(
@@ -23,11 +89,18 @@ export async function exportToImage(
     quality = 1,
     pixelRatio = 2,
     backgroundColor,
-    cacheBust = true,
+    // NOTE:
+    // `html-to-image` implements cache busting by appending a query param to image URLs.
+    // For signed / tokenized image URLs (common with upload providers), this can break the signature
+    // and the exported PNG will miss product images. Default to `false` for reliability.
+    cacheBust = false,
     imagePlaceholder,
   } = options || {};
 
   try {
+    // Preload all images before export
+    await preloadImages(element);
+
     return await toPng(element, {
       quality,
       pixelRatio,

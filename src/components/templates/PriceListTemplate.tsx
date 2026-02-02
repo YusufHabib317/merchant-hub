@@ -1,82 +1,189 @@
+/* eslint-disable complexity */
 /* eslint-disable react/require-default-props */
 import {
-  Paper, Text, Stack, Box, Table, Badge,
+  Paper, Text, Stack, Box, Table,
 } from '@mantine/core';
 import { formatCurrency } from '@/utils/currency';
+import type { ExportProduct, PriceListStyleOptions } from './types';
 
-export interface ExportProduct {
-  id: string;
-  name: string;
-  description?: string | null;
-  priceUSD: number;
-  priceSYP?: number | null;
-  imageUrls?: string[] | null;
-  category?: string | null;
+function hexToRgba(hex: string, alpha: number) {
+  const raw = hex.replace('#', '').trim();
+  const normalized = raw.length === 3
+    ? raw.split('').map((c) => `${c}${c}`).join('')
+    : raw;
+  if (normalized.length !== 6) return hex;
+  const r = parseInt(normalized.slice(0, 2), 16);
+  const g = parseInt(normalized.slice(2, 4), 16);
+  const b = parseInt(normalized.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
 interface PriceListTemplateProps {
   products: ExportProduct[];
   merchantName: string;
+  merchantAddress?: string | null;
   watermark?: boolean;
+  styleOptions?: PriceListStyleOptions;
 }
 
-export function PriceListTemplate({ products, merchantName, watermark }: PriceListTemplateProps) {
+// eslint-disable-next-line sonarjs/cognitive-complexity
+export function PriceListTemplate({
+  products,
+  merchantName,
+  merchantAddress,
+  watermark,
+  styleOptions,
+}: PriceListTemplateProps) {
+  const pageBgColor = styleOptions?.pageBgColor ?? '#ffffff';
+  const pageBgOpacity = styleOptions?.pageBgOpacity ?? 1;
+  const bgImageDataUrl = styleOptions?.bgImageDataUrl ?? null;
+  const bgImageOpacity = styleOptions?.bgImageOpacity ?? 0.2;
+
+  const cardBgColor = styleOptions?.cardBgColor ?? '#ffffff';
+  const cardBgOpacity = styleOptions?.cardBgOpacity ?? 0.95;
+
+  const categoryHeaderBg = styleOptions?.categoryHeaderBg ?? '#333333';
+  const categoryHeaderText = styleOptions?.categoryHeaderText ?? '#ffffff';
+  const tableHeaderBg = styleOptions?.tableHeaderBg ?? '#f1f3f5';
+  const tableHeaderText = styleOptions?.tableHeaderText ?? '#000000';
+
+  const rowOddBg = styleOptions?.rowOddBg ?? '#ffffff';
+  const rowEvenBg = styleOptions?.rowEvenBg ?? '#f8f9fa';
+  const rowText = styleOptions?.rowText ?? '#000000';
+
+  const currencyDisplay = styleOptions?.currencyDisplay ?? 'both';
+
+  const groups = products.reduce<Record<string, ExportProduct[]>>((acc, product) => {
+    const key = product.category?.trim() || 'Uncategorized';
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(product);
+    return acc;
+  }, {});
+
+  const categories = Object.keys(groups).sort((a, b) => a.localeCompare(b));
+
+  const showUSD = currencyDisplay === 'usd' || currencyDisplay === 'both';
+  const showSYP = currencyDisplay === 'syp' || currencyDisplay === 'both';
+
   return (
-    <Paper p="xl" bg="white" style={{ width: '100%', minHeight: 400 }}>
-      <Stack gap="lg">
+    <Paper
+      p="xl"
+      style={{
+        width: 900,
+        maxWidth: '100%',
+        minHeight: 400,
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      {/* Color layer (bottom) */}
+      <Box
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundColor: hexToRgba(pageBgColor, pageBgOpacity),
+          pointerEvents: 'none',
+        }}
+      />
+      {/* Image layer (on top of color) */}
+      {bgImageDataUrl && (
+        <Box
+          style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundImage: `url(${bgImageDataUrl})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            opacity: bgImageOpacity,
+            pointerEvents: 'none',
+          }}
+        />
+      )}
+
+      <Stack gap="lg" style={{ position: 'relative' }}>
         <Box ta="center">
           <Text fw={700} size="xl">
             {merchantName}
           </Text>
-          <Text size="sm" c="dimmed">
-            Price List
-          </Text>
+          {merchantAddress && (
+            <Text size="sm" c="dimmed">
+              {merchantAddress}
+            </Text>
+          )}
         </Box>
 
-        <Box style={{ border: '2px solid #333', borderRadius: 4 }}>
-          <Table striped highlightOnHover>
-            <Table.Thead>
-              <Table.Tr style={{ backgroundColor: '#333', color: 'white' }}>
-                <Table.Th style={{ color: 'white', padding: '12px 16px' }}>Product</Table.Th>
-                <Table.Th style={{ color: 'white', padding: '12px 16px' }}>Category</Table.Th>
-                <Table.Th style={{ color: 'white', textAlign: 'right', padding: '12px 16px' }}>USD</Table.Th>
-                <Table.Th style={{ color: 'white', textAlign: 'right', padding: '12px 16px' }}>SYP</Table.Th>
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>
-              {products.map((product, index) => (
-                <Table.Tr
-                  key={product.id}
-                  style={{ backgroundColor: index % 2 === 0 ? '#fff' : '#f8f9fa' }}
-                >
-                  <Table.Td style={{ padding: '10px 16px' }}>
-                    <Text fw={500}>{product.name}</Text>
-                  </Table.Td>
-                  <Table.Td style={{ padding: '10px 16px' }}>
-                    {product.category && (
-                      <Badge size="sm" variant="light">
-                        {product.category}
-                      </Badge>
+        <Box
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
+            gap: 16,
+            alignItems: 'start',
+          }}
+        >
+          {categories.map((category) => (
+            <Box
+              key={category}
+              style={{
+                border: '2px solid #333',
+                borderRadius: 6,
+                overflow: 'hidden',
+                backgroundColor: hexToRgba(cardBgColor, cardBgOpacity),
+              }}
+            >
+              <Box style={{ backgroundColor: categoryHeaderBg, padding: '10px 14px', textAlign: 'center' }}>
+                <Text fw={700} size="sm" style={{ color: categoryHeaderText }}>
+                  {category}
+                </Text>
+              </Box>
+
+              <Table highlightOnHover>
+                <Table.Thead>
+                  <Table.Tr style={{ backgroundColor: tableHeaderBg }}>
+                    <Table.Th style={{ padding: '10px 14px', color: tableHeaderText }}>Product</Table.Th>
+                    {showUSD && (
+                      <Table.Th style={{ textAlign: 'right', padding: '10px 14px', color: tableHeaderText }}>
+                        {currencyDisplay === 'usd' ? 'Price' : 'USD'}
+                      </Table.Th>
                     )}
-                  </Table.Td>
-                  <Table.Td style={{ padding: '10px 16px', textAlign: 'right', fontWeight: 600 }}>
-                    {formatCurrency(product.priceUSD, 'USD')}
-                  </Table.Td>
-                  <Table.Td style={{ padding: '10px 16px', textAlign: 'right', color: '#666' }}>
-                    {product.priceSYP ? formatCurrency(product.priceSYP, 'SYP') : '-'}
-                  </Table.Td>
-                </Table.Tr>
-              ))}
-            </Table.Tbody>
-          </Table>
+                    {showSYP && (
+                      <Table.Th style={{ textAlign: 'right', padding: '10px 14px', color: tableHeaderText }}>
+                        {currencyDisplay === 'syp' ? 'Price' : 'SYP'}
+                      </Table.Th>
+                    )}
+                  </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>
+                  {groups[category].map((product, index) => (
+                    <Table.Tr
+                      key={product.id}
+                      style={{ backgroundColor: index % 2 === 0 ? rowOddBg : rowEvenBg }}
+                    >
+                      <Table.Td style={{ padding: '10px 14px' }}>
+                        <Text fw={500} style={{ color: rowText }}>{product.name}</Text>
+                      </Table.Td>
+                      {showUSD && (
+                        <Table.Td style={{
+                          padding: '10px 14px', textAlign: 'right', fontWeight: 600, color: rowText,
+                        }}
+                        >
+                          {formatCurrency(product.priceUSD, 'USD')}
+                        </Table.Td>
+                      )}
+                      {showSYP && (
+                        <Table.Td style={{
+                          padding: '10px 14px', textAlign: 'right', fontWeight: 600, color: rowText,
+                        }}
+                        >
+                          {product.priceSYP ? formatCurrency(product.priceSYP, 'SYP') : '-'}
+                        </Table.Td>
+                      )}
+                    </Table.Tr>
+                  ))}
+                </Table.Tbody>
+              </Table>
+            </Box>
+          ))}
         </Box>
-
-        <Box style={{ borderTop: '1px solid #e0e0e0', paddingTop: 16 }}>
-          <Text size="xs" c="dimmed" ta="center">
-            Prices subject to change. Contact us for latest pricing.
-          </Text>
-        </Box>
-
         {watermark && (
           <Text size="xs" c="dimmed" ta="center">
             Price list generated by MerchantHub

@@ -5,7 +5,7 @@ import { ProductSchema, CreateProductSchema, UpdateProductSchema } from '../prod
 export const ListProductsRequestSchema = z.object({
   merchantId: z.string().cuid().optional(),
   page: z.coerce.number().int().positive().default(1),
-  limit: z.coerce.number().int().positive().max(100)
+  limit: z.coerce.number().int().positive().max(1000)
     .default(20),
 });
 

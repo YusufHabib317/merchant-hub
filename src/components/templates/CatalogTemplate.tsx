@@ -1,6 +1,6 @@
 /* eslint-disable react/require-default-props */
 import {
-  Paper, Text, Stack, Grid, Image, Box, Badge,
+  Paper, Text, Stack, Grid, Box, Badge,
 } from '@mantine/core';
 import { formatCurrency } from '@/utils/currency';
 
@@ -41,13 +41,16 @@ export function CatalogTemplate({ products, merchantName, watermark }: CatalogTe
               >
                 <Stack gap="xs">
                   {product.imageUrls && product.imageUrls.length > 0 ? (
-                    <Image
+                    <img
                       src={product.imageUrls[0]}
                       alt={product.name}
-                      w="100%"
-                      h={120}
-                      radius="sm"
-                      fit="cover"
+                      crossOrigin="anonymous"
+                      style={{
+                        width: '100%',
+                        height: '120px',
+                        objectFit: 'cover',
+                        borderRadius: '4px',
+                      }}
                     />
                   ) : (
                     <Box

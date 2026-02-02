@@ -37,7 +37,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void>
       return;
     }
 
-    const { productIds, template = 'classic' }: ExportRequestBody = req.body;
+    const { productIds, template = 'elegant' }: ExportRequestBody = req.body;
 
     let products;
     if (productIds && productIds.length > 0) {
@@ -67,6 +67,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void>
         category: p.category,
       })),
       merchantName: merchant.name,
+      merchantAddress: merchant.address,
       template,
       watermark: hasWatermark,
     };

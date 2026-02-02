@@ -1,5 +1,5 @@
 import {
-  Paper, Text, Stack, Group, Image, Box, Badge,
+  Paper, Text, Stack, Group, Box, Badge,
 } from '@mantine/core';
 import { formatCurrency } from '@/utils/currency';
 
@@ -59,13 +59,17 @@ export function ModernTemplate({ products, merchantName, watermark }: ModernTemp
             >
               <Group gap="md" wrap="nowrap" align="flex-start">
                 {product.imageUrls && product.imageUrls.length > 0 && (
-                  <Image
+                  <img
                     src={product.imageUrls[0]}
                     alt={product.name}
-                    w={80}
-                    h={80}
-                    radius="md"
-                    fit="cover"
+                    crossOrigin="anonymous"
+                    style={{
+                      width: '80px',
+                      height: '80px',
+                      objectFit: 'cover',
+                      borderRadius: '8px',
+                      flexShrink: 0,
+                    }}
                   />
                 )}
                 <Box style={{ flex: 1 }}>

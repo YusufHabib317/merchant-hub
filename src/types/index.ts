@@ -9,12 +9,10 @@ import {
   MessageFrom,
 } from '@prisma/client';
 
-// Re-export Prisma types
 export type {
   User, Merchant, Product, ChatSession, Message, Role, SubscriptionTier, MessageFrom,
 };
 
-// API Response types
 export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
@@ -29,7 +27,6 @@ export interface ApiError {
   details?: unknown;
 }
 
-// Session types
 export interface SessionUser {
   id: string;
   email: string;
@@ -44,23 +41,19 @@ export interface JWTPayload {
   exp?: number;
 }
 
-// Product types
 export interface ProductWithMerchant extends Product {
   merchant: Merchant;
 }
 
-// Merchant types
 export interface MerchantWithProducts extends Merchant {
   products: Product[];
 }
 
-// Chat types
 export interface ChatSessionWithMessages extends ChatSession {
   messages: Message[];
 }
 
-// Export template types
-export type ExportTemplate = 'classic' | 'modern' | 'elegant' | 'social' | 'catalog' | 'pricelist';
+export type ExportTemplate = 'elegant' | 'price-list';
 
 export interface ExportRequest {
   productIds: string[];
@@ -68,7 +61,6 @@ export interface ExportRequest {
   format?: 'png' | 'jpg';
 }
 
-// QR Code types
 export interface QRCodeRequest {
   merchantSlug: string;
   size?: number;

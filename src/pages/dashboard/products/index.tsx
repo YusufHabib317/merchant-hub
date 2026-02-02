@@ -6,28 +6,26 @@ import {
   Text,
   Loader,
   Center,
-  Pagination,
   Alert,
 } from '@mantine/core';
-import { IconPlus, IconAlertCircle, IconFileExport } from '@tabler/icons-react';
-import { useState } from 'react';
+import {
+  IconPlus,
+  IconAlertCircle,
+  IconFileExport,
+} from '@tabler/icons-react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { ProductList } from '@/components/products/ProductList';
-import { useProducts } from '@/lib/hooks/useProducts';
+import { useProducts } from '@/lib/hooks';
 import { useMyMerchant } from '@/lib/hooks/useMerchants';
 import { useAppRouter } from '@/lib/hooks/useAppRouter';
 
-const ITEMS_PER_PAGE = 20;
-
 export default function ProductsPage() {
   const { toNewProduct, toSettings, toExportProducts } = useAppRouter();
-  const [currentPage, setCurrentPage] = useState(1);
-  const { data, isLoading, error } = useProducts(undefined, currentPage, ITEMS_PER_PAGE);
+  const { data, isLoading, error } = useProducts(undefined, 1, 1000); // Fetch all products for sorting
   const { data: merchant, isLoading: merchantLoading, error: merchantError } = useMyMerchant();
 
   const products = data?.products || [];
-  const totalPages = data?.pagination?.totalPages || 1;
   const hasMerchant = !!merchant;
 
   return (
@@ -37,7 +35,7 @@ export default function ProductsPage() {
           <Group justify="space-between" align="center">
             <Title order={1}>Products</Title>
             {hasMerchant && (
-              <Group>
+              <Group gap="xs" wrap="nowrap">
                 <Button
                   variant="light"
                   leftSection={<IconFileExport size={16} />}
@@ -98,17 +96,8 @@ export default function ProductsPage() {
             </Text>
           )}
 
-          {products.length > 0 && (
-            <>
-              <ProductList products={products} />
-              <Center mt="lg">
-                <Pagination
-                  value={currentPage}
-                  onChange={setCurrentPage}
-                  total={totalPages}
-                />
-              </Center>
-            </>
+          {!isLoading && products.length > 0 && (
+            <ProductList products={products} />
           )}
         </Stack>
       </DashboardLayout>
