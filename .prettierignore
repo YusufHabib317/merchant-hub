@@ -1,0 +1,11 @@
+node_modules
+.next
+out
+build
+dist
+.yarn
+.pnp.*
+coverage
+*.lock
+yarn.lock
+package-lock.json

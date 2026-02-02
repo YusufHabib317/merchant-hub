@@ -1,0 +1,12 @@
+{
+  "eslint.workingDirectories": [
+    {
+      "directory": ".",
+      "changeProcessCWD": true
+    }
+  ],
+  "eslint.options": {
+    "overrideConfigFile": ".eslintrc.js"
+  }
+}
+
