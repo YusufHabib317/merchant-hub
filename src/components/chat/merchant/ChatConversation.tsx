@@ -58,6 +58,9 @@ export function ChatConversation({ session, socket }: ChatConversationProps) {
       try {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_CHAT_URL || 'http://localhost:9001'}/api/sessions/${session.id}/messages`,
+          {
+            credentials: 'include',
+          },
         );
         const data = await response.json();
         setMessages(data);

@@ -3,14 +3,12 @@ import {
   Merchant,
   Product,
   ChatSession,
-  Message,
   Role,
   SubscriptionTier,
-  MessageFrom,
 } from '@prisma/client';
 
 export type {
-  User, Merchant, Product, ChatSession, Message, Role, SubscriptionTier, MessageFrom,
+  User, Merchant, Product, ChatSession, Role, SubscriptionTier,
 };
 
 export interface ApiResponse<T = unknown> {
@@ -50,7 +48,14 @@ export interface MerchantWithProducts extends Merchant {
 }
 
 export interface ChatSessionWithMessages extends ChatSession {
-  messages: Message[];
+  messages: Array<{
+    id: string;
+    sessionId: string;
+    senderId?: string;
+    senderType: 'customer' | 'merchant' | 'ai';
+    content: string;
+    createdAt: Date;
+  }>;
 }
 
 export type ExportTemplate = 'elegant' | 'price-list';

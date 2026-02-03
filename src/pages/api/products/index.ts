@@ -1,4 +1,5 @@
 import { NextApiResponse } from 'next';
+import { Prisma } from '@prisma/client';
 import { withAuth, AuthenticatedRequest } from '@/lib/auth/middleware';
 import { ListProductsRequestSchema, CreateProductRequestSchema } from '@/schemas/api/products';
 import { prisma } from '@/lib/prisma';
@@ -10,10 +11,32 @@ async function handleGetProducts(req: AuthenticatedRequest, res: NextApiResponse
   try {
     // Validate query params
     const queryParams = ListProductsRequestSchema.parse(req.query);
-    const { merchantId, page, limit } = queryParams;
+    const {
+      merchantId,
+      page,
+      limit,
+      search,
+      sortBy,
+      sortOrder,
+    } = queryParams;
 
     // Build where clause
-    const where = merchantId ? { merchantId } : {};
+    const where: Prisma.ProductWhereInput = merchantId ? { merchantId } : {};
+
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: 'insensitive' } },
+        { description: { contains: search, mode: 'insensitive' } },
+      ];
+    }
+
+    // Build order by
+    const orderBy: Prisma.ProductOrderByWithRelationInput = {};
+    if (sortBy) {
+      orderBy[sortBy] = sortOrder || 'asc';
+    } else {
+      orderBy.createdAt = 'desc';
+    }
 
     // Fetch total count
     const total = await prisma.product.count({ where });
@@ -23,7 +46,7 @@ async function handleGetProducts(req: AuthenticatedRequest, res: NextApiResponse
       where,
       skip: (page - 1) * limit,
       take: limit,
-      orderBy: { createdAt: 'desc' },
+      orderBy,
     });
 
     const totalPages = Math.ceil(total / limit);

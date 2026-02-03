@@ -25,7 +25,6 @@ interface ChatWindowProps {
 
 const CHAT_SERVER_URL = process.env.NEXT_PUBLIC_CHAT_URL || 'http://localhost:9001';
 
-// Helper functions for localStorage
 const getCustomerData = (merchantId: string) => {
   if (typeof window === 'undefined') return null;
   const key = `chat_customer_${merchantId}`;
@@ -33,15 +32,15 @@ const getCustomerData = (merchantId: string) => {
   return data ? JSON.parse(data) : null;
 };
 
-const saveCustomerData = (merchantId: string, customerId: string, name: string, email: string) => {
+const saveCustomerData = (merchantId: string, customerId: string, name: string, email: string, customerToken?: string) => {
   if (typeof window === 'undefined') return;
   const key = `chat_customer_${merchantId}`;
-  localStorage.setItem(key, JSON.stringify({ customerId, name, email }));
+  localStorage.setItem(key, JSON.stringify({
+    customerId, name, email, customerToken,
+  }));
 };
 
-const generateCustomerId = () => {
-  return `customer_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-};
+const generateCustomerId = () => `customer_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
 export function ChatWindow({ merchantId, merchantName, onClose }: ChatWindowProps) {
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -56,11 +55,11 @@ export function ChatWindow({ merchantId, merchantName, onClose }: ChatWindowProp
     customerId: string;
     name: string;
     email: string;
+    customerToken?: string;
   } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const socketRef = useRef<Socket | null>(null);
 
-  // Auto-scroll to bottom
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -69,18 +68,15 @@ export function ChatWindow({ merchantId, merchantName, onClose }: ChatWindowProp
     scrollToBottom();
   }, [messages]);
 
-  // Load customer info from localStorage on mount
   useEffect(() => {
     const savedData = getCustomerData(merchantId);
     if (savedData) {
       setCustomerInfo(savedData);
     } else {
-      // No saved data, show modal to collect info
       setShowCustomerInfoModal(true);
     }
   }, [merchantId]);
 
-  // Handle customer info submission
   const handleCustomerInfoSubmit = (name: string, email: string) => {
     const customerId = generateCustomerId();
     const info = { customerId, name, email };
@@ -89,11 +85,14 @@ export function ChatWindow({ merchantId, merchantName, onClose }: ChatWindowProp
     setShowCustomerInfoModal(false);
   };
 
-  // Initialize socket connection when customer info is available
+  const customerInfoRef = useRef(customerInfo);
+  useEffect(() => {
+    customerInfoRef.current = customerInfo;
+  }, [customerInfo]);
+
   useEffect(() => {
     if (!customerInfo) return;
 
-    console.log('Connecting to chat server at:', CHAT_SERVER_URL);
     const newSocket = io(CHAT_SERVER_URL);
     setSocket(newSocket);
     socketRef.current = newSocket;
@@ -101,23 +100,34 @@ export function ChatWindow({ merchantId, merchantName, onClose }: ChatWindowProp
     newSocket.on('connect', () => {
       setIsConnected(true);
 
-      // Join as customer with saved info
-      console.log('Joining chat with customer info:', customerInfo);
-      newSocket.emit('customer:join', {
-        merchantId,
-        customerName: customerInfo.name,
-        customerEmail: customerInfo.email,
-        customerId: customerInfo.customerId,
-      });
+      const currentInfo = customerInfoRef.current;
+      if (currentInfo) {
+        newSocket.emit('customer:join', {
+          merchantId,
+          customerName: currentInfo.name,
+          customerEmail: currentInfo.email,
+          customerId: currentInfo.customerId,
+          customerToken: currentInfo.customerToken,
+        });
+      }
     });
 
     newSocket.on('disconnect', () => {
       setIsConnected(false);
     });
 
-    newSocket.on('session:created', (session) => {
-      console.log('Session created/resumed:', session.id);
+    newSocket.on('session:created', (session: { id: string; customerToken?: string }) => {
       setSessionId(session.id);
+      if (session.customerToken) {
+        saveCustomerData(
+          merchantId,
+          customerInfo.customerId,
+          customerInfo.name,
+          customerInfo.email,
+          session.customerToken,
+        );
+        setCustomerInfo((prev) => (prev ? { ...prev, customerToken: session.customerToken } : null));
+      }
     });
 
     newSocket.on('session:history', (history) => {
@@ -158,14 +168,11 @@ export function ChatWindow({ merchantId, merchantName, onClose }: ChatWindowProp
       }
     });
 
-    newSocket.on('error', (error) => {
-      console.error('Socket error:', error);
-    });
-
     return () => {
       newSocket.close();
     };
-  }, [merchantId, customerInfo]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [merchantId, customerInfo?.customerId, customerInfo?.email, customerInfo?.name]);
 
   const handleSendMessage = (content: string) => {
     if (!socket || !sessionId || !content.trim()) return;
@@ -203,29 +210,29 @@ export function ChatWindow({ merchantId, merchantName, onClose }: ChatWindowProp
           onClose={onClose}
         />
 
-      {/* Messages area */}
-      <Box
-        style={{
-          flex: 1,
-          overflowY: 'auto',
-          padding: '16px',
-          backgroundColor: '#f8f9fa',
-        }}
-      >
-        {!isConnected && (
+        {/* Messages area */}
+        <Box
+          style={{
+            flex: 1,
+            overflowY: 'auto',
+            padding: '16px',
+            backgroundColor: '#f8f9fa',
+          }}
+        >
+          {!isConnected && (
           <Box style={{ textAlign: 'center', padding: '20px' }}>
             <Loader size="sm" />
             <Text size="sm" c="dimmed" mt="xs">
               Connecting...
             </Text>
           </Box>
-        )}
+          )}
 
-        {messages.map((message) => (
-          <ChatMessage key={message.id} message={message} />
-        ))}
+          {messages.map((message) => (
+            <ChatMessage key={message.id} message={message} />
+          ))}
 
-        {isTyping && (
+          {isTyping && (
           <Box mt="xs">
             <Badge size="sm" variant="light">
               {merchantTookOver ? 'Merchant' : 'AI'}
@@ -233,18 +240,18 @@ export function ChatWindow({ merchantId, merchantName, onClose }: ChatWindowProp
               is typing...
             </Badge>
           </Box>
-        )}
+          )}
 
-        <div ref={messagesEndRef} />
-      </Box>
+          <div ref={messagesEndRef} />
+        </Box>
 
-      {/* Input area */}
-      <ChatInput
-        onSend={handleSendMessage}
-        onTyping={handleTyping}
-        disabled={!isConnected || !sessionId}
-      />
-    </Stack>
+        {/* Input area */}
+        <ChatInput
+          onSend={handleSendMessage}
+          onTyping={handleTyping}
+          disabled={!isConnected || !sessionId}
+        />
+      </Stack>
     </>
   );
 }

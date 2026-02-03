@@ -6,27 +6,59 @@ import {
   Text,
   Loader,
   Center,
-  Alert,
 } from '@mantine/core';
 import {
   IconPlus,
-  IconAlertCircle,
   IconFileExport,
 } from '@tabler/icons-react';
+import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import { ProductList } from '@/components/products/ProductList';
-import { useProducts } from '@/lib/hooks';
+import { ProductViewControls, ViewMode } from '@/components/products/ProductViewControls';
+import { useProducts, useDeleteProduct, ProductQueryParams } from '@/lib/hooks/useProducts';
 import { useMyMerchant } from '@/lib/hooks/useMerchants';
 import { useAppRouter } from '@/lib/hooks/useAppRouter';
+import { NoStoreAlert } from '@/components/products/NoStoreAlert';
+import { ProductsContent } from '@/components/products/ProductsContent';
+import { DeleteProductModal } from '@/components/products/DeleteProductModal';
 
 export default function ProductsPage() {
-  const { toNewProduct, toSettings, toExportProducts } = useAppRouter();
-  const { data, isLoading, error } = useProducts(undefined, 1, 1000); // Fetch all products for sorting
+  const {
+    toNewProduct, toSettings, toExportProducts, toEditProduct,
+  } = useAppRouter();
+  const [viewMode, setViewMode] = useState<ViewMode>('grid');
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState('');
+  const [sortBy, setSortBy] = useState<NonNullable<ProductQueryParams['sortBy']>>('createdAt');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+
+  // Delete state
+  const [productToDelete, setProductToDelete] = useState<string | null>(null);
+  const deleteProduct = useDeleteProduct();
+
+  const { data, isLoading, error } = useProducts(undefined, {
+    page,
+    limit: 12, // 12 works well for grid (2, 3, 4 cols)
+    search,
+    sortBy,
+    sortOrder,
+  });
+
   const { data: merchant, isLoading: merchantLoading, error: merchantError } = useMyMerchant();
 
   const products = data?.products || [];
+  const pagination = data?.pagination;
   const hasMerchant = !!merchant;
+
+  const handleDelete = () => {
+    if (productToDelete) {
+      deleteProduct.mutate(productToDelete, {
+        onSuccess: () => {
+          setProductToDelete(null);
+        },
+      });
+    }
+  };
 
   return (
     <ProtectedRoute>
@@ -54,28 +86,23 @@ export default function ProductsPage() {
           </Group>
 
           {!merchantLoading && (merchantError || !merchant) && (
-            <Alert
-              icon={<IconAlertCircle size={16} />}
-              title="No Store Found"
-              color="yellow"
-              variant="light"
-            >
-              <Stack gap="md">
-                <Text size="sm">
-                  You need to create a store before you can add products.
-                  Go to Settings to set up your merchant profile.
-                </Text>
-                <Button
-                  onClick={toSettings}
-                  variant="filled"
-                  color="blue"
-                  size="sm"
-                  style={{ alignSelf: 'flex-start' }}
-                >
-                  Go to Settings
-                </Button>
-              </Stack>
-            </Alert>
+            <NoStoreAlert onSettingsClick={toSettings} />
+          )}
+
+          {hasMerchant && (
+            <ProductViewControls
+              viewMode={viewMode}
+              onViewModeChange={setViewMode}
+              onSearchChange={(val) => {
+                setSearch(val);
+                setPage(1); // Reset page on search
+              }}
+              onSortChange={setSortBy as (sort: string) => void}
+              onSortOrderChange={setSortOrder}
+              initialSearch={search}
+              initialSort={sortBy}
+              initialSortOrder={sortOrder}
+            />
           )}
 
           {isLoading && (
@@ -90,16 +117,24 @@ export default function ProductsPage() {
             </Text>
           )}
 
-          {!isLoading && products.length === 0 && (
-            <Text c="dimmed" ta="center" py="xl">
-              No products yet
-            </Text>
-          )}
-
-          {!isLoading && products.length > 0 && (
-            <ProductList products={products} />
-          )}
+          <ProductsContent
+            isLoading={isLoading}
+            products={products}
+            viewMode={viewMode}
+            pagination={pagination}
+            page={page}
+            setPage={setPage}
+            toEditProduct={toEditProduct}
+            setProductToDelete={setProductToDelete}
+          />
         </Stack>
+
+        <DeleteProductModal
+          opened={!!productToDelete}
+          onClose={() => setProductToDelete(null)}
+          onConfirm={handleDelete}
+          loading={deleteProduct.isPending}
+        />
       </DashboardLayout>
     </ProtectedRoute>
   );

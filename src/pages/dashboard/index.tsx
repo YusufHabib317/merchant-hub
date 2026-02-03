@@ -7,11 +7,14 @@ import {
   Group,
   ThemeIcon,
   Stack,
+  Alert,
+  Button,
 } from '@mantine/core';
 import {
   IconShoppingCart,
   IconMessageCircle,
   IconTrendingUp,
+  IconAlertCircle,
 } from '@tabler/icons-react';
 import Link from 'next/link';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
@@ -26,6 +29,15 @@ interface DashboardStats {
   totalViews: number;
 }
 
+interface MerchantData {
+  id: string;
+  name: string | null;
+  description: string | null;
+  logoUrl: string | null;
+  address: string | null;
+  subscriptionTier: string | null;
+}
+
 export default function DashboardPage() {
   const { data: stats, isLoading } = useQuery<DashboardStats>({
     queryKey: ['dashboard-stats'],
@@ -34,6 +46,17 @@ export default function DashboardPage() {
       return response.data.data;
     },
   });
+
+  const { data: merchantData } = useQuery<MerchantData>({
+    queryKey: ['merchant-me'],
+    queryFn: async () => {
+      const response = await apiClient.get(API_ENDPOINTS.merchants.me);
+      return response.data.data;
+    },
+    retry: false,
+  });
+
+  const hasStore = !!merchantData?.name;
 
   const statCards = [
     {
@@ -61,6 +84,30 @@ export default function DashboardPage() {
       <DashboardLayout>
         <Stack gap="lg">
           <Title order={1}>Dashboard</Title>
+
+          {!hasStore && (
+            <Alert
+              icon={<IconAlertCircle size={16} />}
+              title="Set Up Your Store"
+              color="yellow"
+              variant="light"
+            >
+              <Group justify="space-between">
+                <Text size="sm">
+                  You need to create a store before you can add products and manage your business.
+                </Text>
+                <Link href="/dashboard/settings" style={{ textDecoration: 'none' }}>
+                  <Button
+                    variant="filled"
+                    color="blue"
+                    size="sm"
+                  >
+                    Go to Settings
+                  </Button>
+                </Link>
+              </Group>
+            </Alert>
+          )}
 
           <Grid>
             {statCards.map((stat) => (

@@ -59,6 +59,7 @@ export function ModernTemplate({ products, merchantName, watermark }: ModernTemp
             >
               <Group gap="md" wrap="nowrap" align="flex-start">
                 {product.imageUrls && product.imageUrls.length > 0 && (
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={product.imageUrls[0]}
                     alt={product.name}

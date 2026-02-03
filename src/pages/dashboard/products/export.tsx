@@ -105,7 +105,7 @@ function SortableExportItem({ product, isSelected, onToggle }: SortableExportIte
 
 export default function ExportProductsPage() {
   const { data: session } = authClient.useSession();
-  const { data, isLoading } = useProducts(undefined, 1, 1000);
+  const { data, isLoading } = useProducts(undefined, { page: 1, limit: 1000 });
   const rawProducts = (data?.products || []) as ExportProduct[];
 
   const { data: merchantData } = useQuery({

@@ -70,6 +70,15 @@ export function ProductForm({
         {error && <Alert color="red">{error}</Alert>}
 
         <TextInput
+          label="Category"
+          placeholder="e.g., Electronics, Clothing"
+          value={formData.category}
+          onChange={(e) => setFormData({ ...formData, category: e.currentTarget.value })}
+          required
+          disabled={isLoading}
+        />
+
+        <TextInput
           label="Product Name"
           placeholder="Enter product name"
           value={formData.name}
@@ -104,15 +113,6 @@ export function ProductForm({
           disabled={isLoading}
           maxImages={3}
           required
-        />
-
-        <TextInput
-          label="Category"
-          placeholder="e.g., Electronics, Clothing"
-          value={formData.category}
-          onChange={(e) => setFormData({ ...formData, category: e.currentTarget.value })}
-          required
-          disabled={isLoading}
         />
 
         <Group justify="flex-end">

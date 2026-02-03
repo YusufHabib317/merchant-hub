@@ -121,7 +121,7 @@ export default function LoginPage() {
             />
 
             <Checkbox
-              label="Remember me for 30 days"
+              label="Remember me"
               checked={rememberMe}
               onChange={(e) => setRememberMe(e.currentTarget.checked)}
               disabled={isLoading}

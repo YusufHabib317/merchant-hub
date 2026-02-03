@@ -60,7 +60,7 @@ function ChatDashboardPage() {
     setSocket(newSocket);
 
     newSocket.on('connect', () => {
-      newSocket.emit('merchant:join', { merchantId });
+      newSocket.emit('merchant:join');
     });
 
     return () => {
@@ -76,7 +76,13 @@ function ChatDashboardPage() {
       try {
         const response = await fetch(
           `${CHAT_SERVER_URL}/api/merchants/${merchantId}/sessions`,
+          {
+            credentials: 'include', // Important: Send cookies for auth
+          },
         );
+        if (!response.ok) {
+          throw new Error('Failed to fetch');
+        }
         const data = await response.json();
         setSessions(data);
       } catch {

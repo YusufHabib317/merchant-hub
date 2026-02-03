@@ -3,7 +3,7 @@ import {
   CopyButton, ActionIcon, Tooltip, Alert,
 } from '@mantine/core';
 import {
-  IconDownload, IconRefresh, IconCopy, IconCheck, IconAlertCircle,
+  IconDownload, IconCopy, IconCheck, IconAlertCircle,
 } from '@tabler/icons-react';
 import { useEffect, useState, useRef } from 'react';
 import QRCode from 'qrcode';
@@ -44,21 +44,6 @@ export default function QRCodePage() {
       link.download = `${merchant?.slug || 'store'}-qr-code.png`;
       link.href = qrDataUrl;
       link.click();
-    }
-  };
-
-  const regenerateQR = () => {
-    if (storeUrl && canvasRef.current) {
-      QRCode.toCanvas(canvasRef.current, storeUrl, {
-        width: 300,
-        margin: 2,
-        color: {
-          dark: '#000000',
-          light: '#ffffff',
-        },
-      }).then(() => {
-        setQrDataUrl(canvasRef.current?.toDataURL('image/png') || null);
-      });
     }
   };
 
@@ -165,13 +150,6 @@ export default function QRCodePage() {
                         disabled={!qrDataUrl}
                       >
                         Download QR Code
-                      </Button>
-                      <Button
-                        variant="light"
-                        leftSection={<IconRefresh size={16} />}
-                        onClick={regenerateQR}
-                      >
-                        Regenerate
                       </Button>
                     </Group>
                   </Stack>

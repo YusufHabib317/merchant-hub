@@ -7,6 +7,9 @@ export const ListProductsRequestSchema = z.object({
   page: z.coerce.number().int().positive().default(1),
   limit: z.coerce.number().int().positive().max(1000)
     .default(20),
+  search: z.string().optional(),
+  sortBy: z.enum(['createdAt', 'name', 'priceUSD']).optional(),
+  sortOrder: z.enum(['asc', 'desc']).optional(),
 });
 
 export const ListProductsResponseSchema = z.object({

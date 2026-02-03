@@ -58,7 +58,7 @@ export function ChatInput({ onSend, onTyping, disabled }: ChatInputProps) {
     >
       <Box style={{ display: 'flex', gap: '8px' }}>
         <TextInput
-          placeholder="Type a message..."
+          placeholder={disabled ? 'Connecting...' : 'Type a message...'}
           value={message}
           onChange={(e) => handleChange(e.currentTarget.value)}
           onKeyPress={handleKeyPress}

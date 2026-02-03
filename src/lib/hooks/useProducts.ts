@@ -18,18 +18,69 @@ interface ProductsResponse {
   };
 }
 
+export interface ProductQueryParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  sortBy?: 'createdAt' | 'name' | 'priceUSD';
+  sortOrder?: 'asc' | 'desc';
+}
+
 /**
- * Fetch all products with pagination
+ * Fetch all products with pagination (Dashboard)
  */
-export function useProducts(merchantId?: string, page = 1, limit = 20) {
+export function useProducts(merchantId?: string, params: ProductQueryParams = {}) {
+  const {
+    page = 1,
+    limit = 20,
+    search,
+    sortBy,
+    sortOrder,
+  } = params;
   return useQuery<ProductsResponse>({
-    queryKey: [...PRODUCTS_QUERY_KEY, merchantId, page, limit],
+    queryKey: [...PRODUCTS_QUERY_KEY, merchantId, page, limit, search, sortBy, sortOrder],
     queryFn: async () => {
       const { data } = await apiClient.get(API_ENDPOINTS.products.list, {
-        params: { merchantId, page, limit },
+        params: {
+          merchantId,
+          page,
+          limit,
+          search,
+          sortBy,
+          sortOrder,
+        },
       });
       return data.data;
     },
+  });
+}
+
+/**
+ * Fetch merchant products (Public)
+ */
+export function useMerchantPublicProducts(merchantId: string, params: ProductQueryParams = {}) {
+  const {
+    page = 1,
+    limit = 20,
+    search,
+    sortBy,
+    sortOrder,
+  } = params;
+  return useQuery<ProductsResponse>({
+    queryKey: ['public-products', merchantId, page, limit, search, sortBy, sortOrder],
+    queryFn: async () => {
+      const { data } = await apiClient.get(API_ENDPOINTS.merchants.products(merchantId), {
+        params: {
+          page,
+          limit,
+          search,
+          sortBy,
+          sortOrder,
+        },
+      });
+      return data.data;
+    },
+    enabled: !!merchantId,
   });
 }
 

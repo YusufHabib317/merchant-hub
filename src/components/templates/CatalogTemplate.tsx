@@ -41,6 +41,7 @@ export function CatalogTemplate({ products, merchantName, watermark }: CatalogTe
               >
                 <Stack gap="xs">
                   {product.imageUrls && product.imageUrls.length > 0 ? (
+                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={product.imageUrls[0]}
                       alt={product.name}

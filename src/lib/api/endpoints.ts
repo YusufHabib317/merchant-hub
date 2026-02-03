@@ -34,7 +34,7 @@ export const API_ENDPOINTS = {
     create: '/merchants',
     me: '/merchants/me',
     getBySlug: (slug: string) => `/merchants/by-slug/${slug}`,
-    update: (id: string) => `/merchants/by-id/${id}`,
+    update: (id: string) => `/merchants/${id}`,
     qrCode: (id: string) => `/merchants/${id}/qr-code`,
     products: (id: string) => `/merchants/${id}/products`,
   },
