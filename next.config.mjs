@@ -42,7 +42,7 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https: http:",
               "font-src 'self' data:",
-              "connect-src 'self' https://uploadthing.com https://*.uploadthing.com wss://*.uploadthing.com https://api.uploadthing.com",
+              "connect-src 'self' https://uploadthing.com https://*.uploadthing.com wss://*.uploadthing.com https://api.uploadthing.com http://localhost:9001 ws://localhost:9001 http://localhost:4000 ws://localhost:4000",
               "frame-ancestors 'self'",
               "form-action 'self'",
               "base-uri 'self'",

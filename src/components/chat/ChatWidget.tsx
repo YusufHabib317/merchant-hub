@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ActionIcon, Box } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import { IconMessage } from '@tabler/icons-react';
 import { ChatWindow } from './ChatWindow';
 
@@ -10,6 +11,7 @@ interface ChatWidgetProps {
 
 export function ChatWidget({ merchantId, merchantName }: ChatWidgetProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   return (
     <>
@@ -38,13 +40,13 @@ export function ChatWidget({ merchantId, merchantName }: ChatWidgetProps) {
         <Box
           style={{
             position: 'fixed',
-            bottom: 20,
-            right: 20,
-            width: 380,
-            height: 600,
+            bottom: isMobile ? 0 : 20,
+            right: isMobile ? 0 : 20,
+            width: isMobile ? '100%' : 380,
+            height: isMobile ? '100%' : 600,
             zIndex: 1000,
             boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2)',
-            borderRadius: 12,
+            borderRadius: isMobile ? 5 : 12,
             overflow: 'hidden',
           }}
         >

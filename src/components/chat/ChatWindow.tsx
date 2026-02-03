@@ -1,4 +1,3 @@
-/* eslint-disable no-alert */
 import { useEffect, useState, useRef } from 'react';
 import {
   Box, Stack, Text, Loader, Badge,
@@ -7,6 +6,7 @@ import { io, Socket } from 'socket.io-client';
 import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
 import { ChatHeader } from './ChatHeader';
+import { CustomerInfoModal } from './CustomerInfoModal';
 
 interface Message {
   id: string;
@@ -23,7 +23,25 @@ interface ChatWindowProps {
   onClose: () => void;
 }
 
-const CHAT_SERVER_URL = process.env.NEXT_PUBLIC_CHAT_URL || 'http://localhost:4000';
+const CHAT_SERVER_URL = process.env.NEXT_PUBLIC_CHAT_URL || 'http://localhost:9001';
+
+// Helper functions for localStorage
+const getCustomerData = (merchantId: string) => {
+  if (typeof window === 'undefined') return null;
+  const key = `chat_customer_${merchantId}`;
+  const data = localStorage.getItem(key);
+  return data ? JSON.parse(data) : null;
+};
+
+const saveCustomerData = (merchantId: string, customerId: string, name: string, email: string) => {
+  if (typeof window === 'undefined') return;
+  const key = `chat_customer_${merchantId}`;
+  localStorage.setItem(key, JSON.stringify({ customerId, name, email }));
+};
+
+const generateCustomerId = () => {
+  return `customer_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+};
 
 export function ChatWindow({ merchantId, merchantName, onClose }: ChatWindowProps) {
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -33,7 +51,14 @@ export function ChatWindow({ merchantId, merchantName, onClose }: ChatWindowProp
   const [isTyping, setIsTyping] = useState(false);
   const [merchantOnline, setMerchantOnline] = useState(false);
   const [merchantTookOver, setMerchantTookOver] = useState(false);
+  const [showCustomerInfoModal, setShowCustomerInfoModal] = useState(false);
+  const [customerInfo, setCustomerInfo] = useState<{
+    customerId: string;
+    name: string;
+    email: string;
+  } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const socketRef = useRef<Socket | null>(null);
 
   // Auto-scroll to bottom
   const scrollToBottom = () => {
@@ -44,22 +69,45 @@ export function ChatWindow({ merchantId, merchantName, onClose }: ChatWindowProp
     scrollToBottom();
   }, [messages]);
 
-  // Initialize socket connection
+  // Load customer info from localStorage on mount
   useEffect(() => {
+    const savedData = getCustomerData(merchantId);
+    if (savedData) {
+      setCustomerInfo(savedData);
+    } else {
+      // No saved data, show modal to collect info
+      setShowCustomerInfoModal(true);
+    }
+  }, [merchantId]);
+
+  // Handle customer info submission
+  const handleCustomerInfoSubmit = (name: string, email: string) => {
+    const customerId = generateCustomerId();
+    const info = { customerId, name, email };
+    setCustomerInfo(info);
+    saveCustomerData(merchantId, customerId, name, email);
+    setShowCustomerInfoModal(false);
+  };
+
+  // Initialize socket connection when customer info is available
+  useEffect(() => {
+    if (!customerInfo) return;
+
+    console.log('Connecting to chat server at:', CHAT_SERVER_URL);
     const newSocket = io(CHAT_SERVER_URL);
     setSocket(newSocket);
+    socketRef.current = newSocket;
 
     newSocket.on('connect', () => {
       setIsConnected(true);
 
-      // Join as customer
-      const customerName = prompt('Enter your name:') || 'Anonymous';
-      const customerEmail = prompt('Enter your email (optional):') || undefined;
-
+      // Join as customer with saved info
+      console.log('Joining chat with customer info:', customerInfo);
       newSocket.emit('customer:join', {
         merchantId,
-        customerName,
-        customerEmail,
+        customerName: customerInfo.name,
+        customerEmail: customerInfo.email,
+        customerId: customerInfo.customerId,
       });
     });
 
@@ -68,6 +116,7 @@ export function ChatWindow({ merchantId, merchantName, onClose }: ChatWindowProp
     });
 
     newSocket.on('session:created', (session) => {
+      console.log('Session created/resumed:', session.id);
       setSessionId(session.id);
     });
 
@@ -109,14 +158,14 @@ export function ChatWindow({ merchantId, merchantName, onClose }: ChatWindowProp
       }
     });
 
-    newSocket.on('error', () => {
-      //
+    newSocket.on('error', (error) => {
+      console.error('Socket error:', error);
     });
 
     return () => {
       newSocket.close();
     };
-  }, [merchantId]);
+  }, [merchantId, customerInfo]);
 
   const handleSendMessage = (content: string) => {
     if (!socket || !sessionId || !content.trim()) return;
@@ -140,13 +189,19 @@ export function ChatWindow({ merchantId, merchantName, onClose }: ChatWindowProp
   };
 
   return (
-    <Stack gap={0} h="100%" style={{ backgroundColor: 'white' }}>
-      <ChatHeader
-        merchantName={merchantName}
-        isOnline={merchantOnline}
-        merchantTookOver={merchantTookOver}
-        onClose={onClose}
+    <>
+      <CustomerInfoModal
+        opened={showCustomerInfoModal}
+        onSubmit={handleCustomerInfoSubmit}
       />
+
+      <Stack gap={0} h="100%" style={{ backgroundColor: 'white' }}>
+        <ChatHeader
+          merchantName={merchantName}
+          isOnline={merchantOnline}
+          merchantTookOver={merchantTookOver}
+          onClose={onClose}
+        />
 
       {/* Messages area */}
       <Box
@@ -190,5 +245,6 @@ export function ChatWindow({ merchantId, merchantName, onClose }: ChatWindowProp
         disabled={!isConnected || !sessionId}
       />
     </Stack>
+    </>
   );
 }

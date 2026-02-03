@@ -2,7 +2,7 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import { useEffect, useState, useRef } from 'react';
 import {
-  Box, Stack, Text, Loader, Badge,
+  Box, Stack, Text, Loader, Badge, Button,
 } from '@mantine/core';
 import { Socket } from 'socket.io-client';
 import { ChatMessage } from '../ChatMessage';
@@ -57,7 +57,7 @@ export function ChatConversation({ session, socket }: ChatConversationProps) {
       setIsLoading(true);
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_CHAT_URL || 'http://localhost:4000'}/api/sessions/${session.id}/messages`,
+          `${process.env.NEXT_PUBLIC_CHAT_URL || 'http://localhost:9001'}/api/sessions/${session.id}/messages`,
         );
         const data = await response.json();
         setMessages(data);
@@ -100,11 +100,18 @@ export function ChatConversation({ session, socket }: ChatConversationProps) {
       }
     };
 
+    const handleReleaseTakeover = ({ sessionId }: { sessionId: string }) => {
+      if (sessionId === session.id) {
+        setHasTakenOver(false);
+      }
+    };
+
     socket.on('message:receive', handleMessage);
     socket.on('ai:response', handleMessage);
     socket.on('typing:start', handleTyping);
     socket.on('typing:stop', handleStopTyping);
     socket.on('merchant:takeover', handleTakeover);
+    socket.on('merchant:release_takeover', handleReleaseTakeover);
 
     return () => {
       socket.off('message:receive', handleMessage);
@@ -112,6 +119,7 @@ export function ChatConversation({ session, socket }: ChatConversationProps) {
       socket.off('typing:start', handleTyping);
       socket.off('typing:stop', handleStopTyping);
       socket.off('merchant:takeover', handleTakeover);
+      socket.off('merchant:release_takeover', handleReleaseTakeover);
     };
   }, [socket, session.id]);
 
@@ -143,6 +151,13 @@ export function ChatConversation({ session, socket }: ChatConversationProps) {
     setHasTakenOver(true);
   };
 
+  const handleEnableAI = () => {
+    if (!socket) return;
+
+    socket.emit('merchant:release_takeover', { sessionId: session.id });
+    setHasTakenOver(false);
+  };
+
   if (isLoading) {
     return (
       <Box style={{
@@ -167,7 +182,11 @@ export function ChatConversation({ session, socket }: ChatConversationProps) {
           </Text>
         )}
         <Box mt="xs">
-          {!hasTakenOver && (
+          {hasTakenOver ? (
+            <Button size="xs" variant="light" color="blue" onClick={handleEnableAI}>
+              Enable AI
+            </Button>
+          ) : (
             <TakeoverButton onClick={handleTakeover} />
           )}
         </Box>

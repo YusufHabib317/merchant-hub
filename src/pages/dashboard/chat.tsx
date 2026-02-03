@@ -25,7 +25,7 @@ interface ChatSession {
   updatedAt: Date;
 }
 
-const CHAT_SERVER_URL = process.env.NEXT_PUBLIC_CHAT_URL || 'http://localhost:4000';
+const CHAT_SERVER_URL = process.env.NEXT_PUBLIC_CHAT_URL || 'http://localhost:9001';
 
 function ChatDashboardPage() {
   const { data: session } = authClient.useSession();

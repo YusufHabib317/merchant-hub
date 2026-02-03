@@ -98,7 +98,7 @@ export default function MerchantPublicPage() {
     }
   };
 
-  if (isLoading) {
+  if (isLoading || !slug) {
     return (
       <Container size="lg" py="xl">
         <Center h={400}>
