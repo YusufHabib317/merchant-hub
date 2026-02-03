@@ -54,7 +54,9 @@ function ChatDashboardPage() {
   useEffect(() => {
     if (!merchantId) return;
 
-    const newSocket = io(CHAT_SERVER_URL);
+    const newSocket = io(CHAT_SERVER_URL, {
+      withCredentials: true,
+    });
     setSocket(newSocket);
 
     newSocket.on('connect', () => {

@@ -42,7 +42,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse): Promise
     });
 
     // Get total messages (as a proxy for views/interactions)
-    const totalMessages = await prisma.message.count({
+    const totalMessages = await prisma.chatMessage.count({
       where: {
         session: {
           merchantId: merchant.id,

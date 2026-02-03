@@ -134,10 +134,15 @@ model ChatSession {
   merchantId String
   merchant   Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
 
-  customerId String
-  aiActive   Boolean @default(true)
+  customerId    String?
+  customerName  String
+  customerEmail String?
 
-  messages Message[]
+  status           String  @default("active") // active, closed
+  aiEnabled        Boolean @default(true)
+  merchantTookOver Boolean @default(false)
+
+  messages ChatMessage[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -147,15 +152,14 @@ model ChatSession {
 }
 
 // Chat Message
-model Message {
+model ChatMessage {
   id        String      @id @default(cuid())
   sessionId String
   session   ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
-  from        MessageFrom
-  content     String
-  isAI        Boolean     @default(false)
-  isBroadcast Boolean     @default(false)
+  senderId   String?
+  senderType String // customer, merchant, ai
+  content    String
 
   createdAt DateTime @default(now())
 
