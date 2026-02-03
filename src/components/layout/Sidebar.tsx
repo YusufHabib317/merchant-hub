@@ -5,6 +5,7 @@ import {
   IconQrcode,
   IconSettings,
   IconMessageCircle,
+  IconBrain,
 } from '@tabler/icons-react';
 import { useAppRouter, useIsActiveRoute } from '@/lib/hooks/useAppRouter';
 import { getRoutePath } from '@/config/routes';
@@ -21,6 +22,9 @@ const navItems = [
   },
   {
     label: 'Chat', icon: IconMessageCircle, path: getRoutePath.chat(),
+  },
+  {
+    label: 'AI Context', icon: IconBrain, path: getRoutePath.aiContext(),
   },
   {
     label: 'Settings', icon: IconSettings, path: getRoutePath.settings(),

@@ -136,12 +136,14 @@ export function sanitizeMerchantInput<T extends {
   name?: string;
   description?: string;
   address?: string;
+  aiContext?: string;
 }>(input: T): T {
   return {
     ...input,
     name: input.name ? sanitizeStrict(input.name) : input.name,
     description: input.description ? sanitizeBasic(input.description) : input.description,
     address: input.address ? sanitizeStrict(input.address) : input.address,
+    aiContext: input.aiContext ? sanitizeBasic(input.aiContext) : input.aiContext,
   };
 }
 

@@ -1,8 +1,10 @@
 import {
-  AppShell,
   Container,
   Burger,
   Group,
+  Box,
+  Drawer,
+  ScrollArea,
 } from '@mantine/core';
 import { useState } from 'react';
 import { Header } from './Header';
@@ -17,12 +19,17 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [mobileOpened, setMobileOpened] = useState(false);
 
   return (
-    <AppShell
-      header={{ height: 60 }}
-      navbar={{ width: 250, breakpoint: 'sm', collapsed: { mobile: !mobileOpened } }}
-      padding="md"
-    >
-      <AppShell.Header>
+    <Box>
+      <Box
+        h={60}
+        style={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 100,
+          background: 'var(--mantine-color-body)',
+          borderBottom: '1px solid var(--mantine-color-default-border)',
+        }}
+      >
         <Group h="100%" px="md" justify="space-between">
           <Burger
             opened={mobileOpened}
@@ -32,18 +39,49 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           />
           <Header />
         </Group>
-      </AppShell.Header>
+      </Box>
 
-      <AppShell.Navbar>
-        <Sidebar />
-      </AppShell.Navbar>
+      <div style={{ display: 'flex' }}>
+        <Box
+          w={250}
+          visibleFrom="sm"
+          style={{
+            position: 'sticky',
+            top: 60,
+            height: 'calc(100vh - 60px)',
+            borderRight: '1px solid var(--mantine-color-default-border)',
+          }}
+        >
+          <ScrollArea h="100%">
+            <Sidebar />
+          </ScrollArea>
+        </Box>
 
-      <AppShell.Main style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-        <Container size="lg" py="md" style={{ flex: 1, width: '100%' }}>
-          {children}
-        </Container>
-        <Footer />
-      </AppShell.Main>
-    </AppShell>
+        <Drawer
+          opened={mobileOpened}
+          onClose={() => setMobileOpened(false)}
+          size={250}
+          withCloseButton={false}
+          padding="md"
+        >
+          <Sidebar />
+        </Drawer>
+
+        <Box
+          style={{
+            flex: 1,
+            minWidth: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: 'calc(100vh - 60px)',
+          }}
+        >
+          <Container size="lg" py="md" style={{ flex: 1, width: '100%' }}>
+            {children}
+          </Container>
+          <Footer />
+        </Box>
+      </div>
+    </Box>
   );
 }

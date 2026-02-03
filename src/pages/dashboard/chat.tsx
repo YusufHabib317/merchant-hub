@@ -59,9 +59,18 @@ function ChatDashboardPage() {
     });
     setSocket(newSocket);
 
-    newSocket.on('connect', () => {
-      newSocket.emit('merchant:join');
-    });
+    // newSocket.on('connect', () => {
+    //   console.log('Socket connected, joining as merchant:', merchantId);
+    //   newSocket.emit('merchant:join', { merchantId });
+    // });
+
+    // newSocket.on('error', (error) => {
+    //   console.error('Socket error:', error);
+    // });
+
+    // newSocket.on('disconnect', () => {
+    //   console.log('Socket disconnected');
+    // });
 
     return () => {
       newSocket.close();

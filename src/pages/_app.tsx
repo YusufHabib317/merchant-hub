@@ -39,7 +39,18 @@ export default function App({ Component, pageProps }: AppProps) {
           />
           <link rel="shortcut icon" href="/favicon.svg" />
         </Head>
-        <Component {...pageProps} />
+        <div
+          style={{
+            maxWidth: '1920px',
+            margin: '0 auto',
+            position: 'relative',
+            transform: 'translate(0)',
+            minHeight: '100vh',
+            backgroundColor: 'var(--mantine-color-body)',
+          }}
+        >
+          <Component {...pageProps} />
+        </div>
       </MantineProvider>
     </QueryClientProvider>
   );

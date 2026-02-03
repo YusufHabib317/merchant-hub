@@ -121,6 +121,15 @@ export const ROUTES = {
         requiresAuth: true,
       },
     },
+
+    // AI Context
+    aiContext: {
+      path: '/dashboard/ai-context',
+      metadata: {
+        title: 'AI Context',
+        requiresAuth: true,
+      },
+    },
   },
 
   // Public merchant page
@@ -169,6 +178,7 @@ export const getRoutePath = {
   qrCode: () => ROUTES.dashboard.qrCode.path,
   chat: () => ROUTES.dashboard.chat.path,
   settings: () => ROUTES.dashboard.settings.path,
+  aiContext: () => ROUTES.dashboard.aiContext.path,
 
   // Merchant
   merchantStore: (slug: string) => buildRoute(ROUTES.merchant.view, { slug }),
