@@ -12,14 +12,18 @@ import {
   Anchor,
   Alert,
   Loader,
+  Box,
 } from '@mantine/core';
 import { authClient } from '@/lib/auth-client';
 import { RegisterSchema } from '@/schemas/auth';
 import { z } from 'zod';
 import { useAppRouter } from '@/lib/hooks/useAppRouter';
+import useTranslation from 'next-translate/useTranslation';
+import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 
 export default function RegisterPage() {
-  const { toDashboard } = useAppRouter();
+  const { t, lang } = useTranslation('common');
+  const { toDashboard, toLogin } = useAppRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -75,13 +79,23 @@ export default function RegisterPage() {
   return (
     <Container size={420} my={40}>
       <Title ta="center" order={2} mb="lg">
-        Create Your MerchantHub Account
+        {t('auth.create_account')}
       </Title>
       <Text c="dimmed" size="sm" ta="center" mb={30}>
-        Start selling and managing your products today
+        {t('auth.register_subtitle')}
       </Text>
 
-      <Paper withBorder shadow="md" p={30} mt={30} radius="md">
+      <Paper withBorder shadow="md" p={30} mt={30} radius="md" pos="relative">
+        <Box
+          style={{
+            position: 'absolute',
+            top: '1rem',
+            ...(lang === 'ar' ? { left: '1rem' } : { right: '1rem' }),
+          }}
+        >
+          <LanguageSwitcher />
+        </Box>
+
         {error && (
           <Alert color="red" mb="md">
             {error}
@@ -91,8 +105,8 @@ export default function RegisterPage() {
         <form onSubmit={handleSubmit}>
           <Stack gap="md">
             <TextInput
-              label="Business Name"
-              placeholder="Your store name"
+              label={t('auth.business_name')}
+              placeholder={t('auth.business_name_placeholder')}
               required
               value={businessName}
               onChange={(e) => setBusinessName(e.currentTarget.value)}
@@ -100,8 +114,8 @@ export default function RegisterPage() {
             />
 
             <TextInput
-              label="Email"
-              placeholder="your@email.com"
+              label={t('email')}
+              placeholder={t('auth.email_placeholder')}
               required
               value={email}
               onChange={(e) => setEmail(e.currentTarget.value)}
@@ -110,8 +124,8 @@ export default function RegisterPage() {
             />
 
             <PasswordInput
-              label="Password"
-              placeholder="Create a strong password"
+              label={t('password')}
+              placeholder={t('auth.password_placeholder')}
               required
               value={password}
               onChange={(e) => setPassword(e.currentTarget.value)}
@@ -120,8 +134,8 @@ export default function RegisterPage() {
             />
 
             <PasswordInput
-              label="Confirm Password"
-              placeholder="Confirm your password"
+              label={t('confirm_password')}
+              placeholder={t('auth.confirm_password_placeholder')}
               required
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.currentTarget.value)}
@@ -135,17 +149,17 @@ export default function RegisterPage() {
               disabled={isLoading}
               leftSection={isLoading ? <Loader size={16} /> : null}
             >
-              {isLoading ? 'Creating account...' : 'Create Account'}
+              {isLoading ? t('auth.creating_account') : t('auth.sign_up_button')}
             </Button>
           </Stack>
         </form>
 
         <Group justify="center" mt="lg">
           <Text size="sm">
-            Already have an account?
+            {t('auth.already_have_account')}
             {' '}
-            <Anchor component="a" href="/auth/login" size="sm">
-              Sign in
+            <Anchor component="button" type="button" onClick={toLogin} size="sm">
+              {t('auth.sign_in')}
             </Anchor>
           </Text>
         </Group>

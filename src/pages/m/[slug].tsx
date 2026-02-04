@@ -13,9 +13,10 @@ import {
 } from '@tabler/icons-react';
 import { useRouter } from 'next/router';
 import { useQuery } from '@tanstack/react-query';
+import useTranslation from 'next-translate/useTranslation';
 import { apiClient } from '@/lib/api/client';
 import { API_ENDPOINTS } from '@/lib/api/endpoints';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ChatWidget } from '@/components/chat/ChatWidget';
 import { QRCodeGenerator } from '@/components/qr/QRCodeGenerator';
 import { useMerchantPublicProducts, ProductQueryParams } from '@/lib/hooks/useProducts';
@@ -23,14 +24,31 @@ import { ViewMode } from '@/components/products/ProductViewControls';
 import { MerchantHeader } from '@/components/merchant/MerchantHeader';
 import { MerchantProducts } from '@/components/merchant/MerchantProducts';
 import { PublicMerchant } from '@/components/merchant/types';
+import { MerchantPublicHeader } from '@/components/merchant/MerchantPublicHeader';
 
 export default function MerchantPublicPage() {
   const router = useRouter();
   const { slug } = router.query;
+  const { t } = useTranslation('common');
   const [showQR, setShowQR] = useState(false);
 
   // View state
-  const [viewMode, setViewMode] = useState<ViewMode>('grid');
+  const [viewMode, setInnerViewMode] = useState<ViewMode>('grid');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('merchant-view-mode');
+      if (saved === 'grid' || saved === 'table') {
+        setInnerViewMode(saved as ViewMode);
+      }
+    }
+  }, []);
+
+  const setViewMode = (mode: ViewMode) => {
+    setInnerViewMode(mode);
+    localStorage.setItem('merchant-view-mode', mode);
+  };
+
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState<NonNullable<ProductQueryParams['sortBy']>>('createdAt');
@@ -92,8 +110,8 @@ export default function MerchantPublicPage() {
   if (merchantError || !merchant) {
     return (
       <Container size="lg" py="xl">
-        <Alert icon={<IconAlertCircle size={16} />} title="Store Not Found" color="red">
-          The store you&apos;re looking for doesn&apos;t exist or has been removed.
+        <Alert icon={<IconAlertCircle size={16} />} title={t('merchant_page.store_not_found')} color="red">
+          {t('merchant_page.store_not_found_desc')}
         </Alert>
       </Container>
     );
@@ -101,6 +119,9 @@ export default function MerchantPublicPage() {
 
   return (
     <Box>
+      {/* Public Header with Branding */}
+      <MerchantPublicHeader />
+
       {/* Merchant Header */}
       <MerchantHeader
         merchant={merchant}
@@ -132,13 +153,13 @@ export default function MerchantPublicPage() {
       <Modal
         opened={showQR}
         onClose={() => setShowQR(false)}
-        title="Store QR Code"
+        title={t('merchant_page.qr_modal_title')}
         centered
         size="auto"
       >
         <Stack align="center" gap="lg" p="md">
           <Text size="sm" c="dimmed" ta="center">
-            Scan this QR code to visit the store
+            {t('merchant_page.qr_modal_subtitle')}
           </Text>
           <Box
             p="lg"

@@ -1,8 +1,16 @@
 import { useEffect, useState, useRef } from 'react';
 import {
-  Box, Stack, Text, Loader, Badge,
+  Box,
+  Stack,
+  Text,
+  Loader,
+  Badge,
+  Anchor,
+  Group,
 } from '@mantine/core';
+import { IconBuildingStore } from '@tabler/icons-react';
 import { io, Socket } from 'socket.io-client';
+import useTranslation from 'next-translate/useTranslation';
 import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
 import { ChatHeader } from './ChatHeader';
@@ -43,6 +51,7 @@ const saveCustomerData = (merchantId: string, customerId: string, name: string, 
 const generateCustomerId = () => `customer_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
 export function ChatWindow({ merchantId, merchantName, onClose }: ChatWindowProps) {
+  const { t } = useTranslation('common');
   const [socket, setSocket] = useState<Socket | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -251,6 +260,38 @@ export function ChatWindow({ merchantId, merchantName, onClose }: ChatWindowProp
           onTyping={handleTyping}
           disabled={!isConnected || !sessionId}
         />
+
+        {/* MerchantHub Branding */}
+        <Box
+          py={8}
+          px={12}
+          style={{
+            borderTop: '1px solid #e9ecef',
+            backgroundColor: 'white',
+          }}
+        >
+          <Group gap={6} justify="center">
+            <IconBuildingStore size={14} style={{ color: '#667eea' }} />
+            <Text size="xs" c="dimmed">
+              {t('powered_by')}
+              {' '}
+              <Anchor
+                href="/"
+                size="xs"
+                fw={600}
+                underline="never"
+                style={{
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                }}
+              >
+                {t('app_name')}
+              </Anchor>
+            </Text>
+          </Group>
+        </Box>
       </Stack>
     </>
   );

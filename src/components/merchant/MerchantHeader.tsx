@@ -9,6 +9,7 @@ import {
   ActionIcon,
 } from '@mantine/core';
 import { IconShare, IconQrcode } from '@tabler/icons-react';
+import useTranslation from 'next-translate/useTranslation';
 import { PublicMerchant } from './types';
 
 interface MerchantHeaderProps {
@@ -18,6 +19,8 @@ interface MerchantHeaderProps {
 }
 
 export function MerchantHeader({ merchant, onShare, onShowQR }: MerchantHeaderProps) {
+  const { t } = useTranslation('common');
+
   return (
     <Box
       py={60}
@@ -49,11 +52,20 @@ export function MerchantHeader({ merchant, onShare, onShowQR }: MerchantHeaderPr
               </Text>
             )}
             <Group mt="md" gap="xs">
-              <Badge size="lg" variant="light" color="white" c="violet">
+              <Badge
+                size="lg"
+                variant="filled"
+                color="rgba(255, 255, 255, 0.2)"
+                style={{
+                  color: 'white',
+                  fontWeight: 600,
+                  backdropFilter: 'blur(10px)',
+                }}
+              >
                 {/* eslint-disable-next-line no-underscore-dangle */}
                 {merchant._count.products}
                 {' '}
-                Products
+                {t('merchant_page.products_count')}
               </Badge>
             </Group>
           </Box>
@@ -63,7 +75,7 @@ export function MerchantHeader({ merchant, onShare, onShowQR }: MerchantHeaderPr
               radius="md"
               variant="white"
               onClick={onShare}
-              title="Share store"
+              title={t('merchant_page.share_store')}
             >
               <IconShare size={20} />
             </ActionIcon>
@@ -72,7 +84,7 @@ export function MerchantHeader({ merchant, onShare, onShowQR }: MerchantHeaderPr
               radius="md"
               variant="white"
               onClick={onShowQR}
-              title="Show QR code"
+              title={t('merchant_page.show_qr_code')}
             >
               <IconQrcode size={20} />
             </ActionIcon>

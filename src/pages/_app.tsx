@@ -6,22 +6,24 @@ import Head from 'next/head';
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AppProps } from 'next/app';
-import { Roboto, Tajawal } from 'next/font/google';
-import { theme } from '../theme';
+import { Roboto, Cairo } from 'next/font/google';
+import { useRouter } from 'next/router';
+import { getLocaleClientCookie, setLocaleClientCookie } from '@/lib/locale';
 
 const roboto = Roboto({
   subsets: ['latin'],
   weight: ['100', '300', '400', '500', '700', '900'],
 });
 
-const tajawal = Tajawal({
-  subsets: ['arabic'],
+const cairo = Cairo({
+  subsets: ['latin', 'arabic'],
   weight: ['200', '300', '400', '500', '700', '800', '900'],
 });
 
 export default function App({ Component, pageProps }: AppProps) {
+  const router = useRouter();
   const [queryClient] = useState(
     () => new QueryClient({
       defaultOptions: {
@@ -38,14 +40,32 @@ export default function App({ Component, pageProps }: AppProps) {
     }),
   );
 
+  useEffect(() => {
+    const cookieLocale = getLocaleClientCookie();
+    const currentLocale = router.locale;
+
+    if (cookieLocale && cookieLocale !== currentLocale) {
+      router.push(router.pathname, router.asPath, { locale: cookieLocale });
+    } else if (currentLocale) {
+      setLocaleClientCookie(currentLocale);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const dir = router.locale === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.dir = dir;
+    document.documentElement.lang = router.locale || 'en';
+  }, [router.locale]);
+
   return (
     <QueryClientProvider client={queryClient}>
       <MantineProvider
+        defaultColorScheme="light"
         theme={{
-          ...theme,
-          fontFamily: `${roboto.style.fontFamily}, ${tajawal.style.fontFamily}, sans-serif`,
+          fontFamily: `${cairo.style.fontFamily}, ${roboto.style.fontFamily}, sans-serif`,
           headings: {
-            fontFamily: `${roboto.style.fontFamily}, ${tajawal.style.fontFamily}, sans-serif`,
+            fontFamily: `${cairo.style.fontFamily}, ${roboto.style.fontFamily}, sans-serif`,
           },
         }}
       >

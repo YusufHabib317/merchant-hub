@@ -37,7 +37,12 @@ export function ProductsContent({
     return (
       <>
         {viewMode === 'grid' ? (
-          <ProductList products={products} />
+          <ProductList
+            products={products}
+            showActions
+            onEdit={toEditProduct}
+            onDelete={setProductToDelete}
+          />
         ) : (
           <ProductTable
             products={products}

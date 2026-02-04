@@ -17,8 +17,6 @@ import {
   IconEdit, IconTrash, IconDots,
 } from '@tabler/icons-react';
 import { useState } from 'react';
-import { useDeleteProduct } from '@/lib/hooks/useProducts';
-import { useAppRouter } from '@/lib/hooks/useAppRouter';
 import { formatCurrency } from '@/utils/currency';
 
 interface ProductCardProps {
@@ -29,6 +27,9 @@ interface ProductCardProps {
   priceSYP: number;
   imageUrls?: string[];
   category?: string;
+  showActions?: boolean;
+  onEdit?: (id: string) => void;
+  onDelete?: (id: string) => void;
 }
 
 export function ProductCard({
@@ -39,17 +40,23 @@ export function ProductCard({
   priceSYP,
   imageUrls = undefined,
   category = undefined,
+  showActions = false,
+  onEdit = undefined,
+  onDelete = undefined,
 }: ProductCardProps) {
-  const { toEditProduct } = useAppRouter();
-  const deleteProduct = useDeleteProduct();
   const [deleteModalOpened, setDeleteModalOpened] = useState(false);
 
+  const handleEdit = () => {
+    if (onEdit) {
+      onEdit(id);
+    }
+  };
+
   const handleDelete = () => {
-    deleteProduct.mutate(id, {
-      onSuccess: () => {
-        setDeleteModalOpened(false);
-      },
-    });
+    if (onDelete) {
+      onDelete(id);
+      setDeleteModalOpened(false);
+    }
   };
 
   return (
@@ -127,28 +134,30 @@ export function ProductCard({
                 </Text>
                 {category && <Badge size="xs" mt={4}>{category}</Badge>}
               </Box>
-              <Menu shadow="md" width={150}>
-                <Menu.Target>
-                  <ActionIcon variant="subtle" color="gray" size="sm">
-                    <IconDots size={16} />
-                  </ActionIcon>
-                </Menu.Target>
-                <Menu.Dropdown>
-                  <Menu.Item
-                    leftSection={<IconEdit size={14} />}
-                    onClick={() => toEditProduct(id)}
-                  >
-                    Edit
-                  </Menu.Item>
-                  <Menu.Item
-                    leftSection={<IconTrash size={14} />}
-                    color="red"
-                    onClick={() => setDeleteModalOpened(true)}
-                  >
-                    Delete
-                  </Menu.Item>
-                </Menu.Dropdown>
-              </Menu>
+              {showActions && (
+                <Menu shadow="md" width={150}>
+                  <Menu.Target>
+                    <ActionIcon variant="subtle" color="gray" size="sm">
+                      <IconDots size={16} />
+                    </ActionIcon>
+                  </Menu.Target>
+                  <Menu.Dropdown>
+                    <Menu.Item
+                      leftSection={<IconEdit size={14} />}
+                      onClick={handleEdit}
+                    >
+                      Edit
+                    </Menu.Item>
+                    <Menu.Item
+                      leftSection={<IconTrash size={14} />}
+                      color="red"
+                      onClick={() => setDeleteModalOpened(true)}
+                    >
+                      Delete
+                    </Menu.Item>
+                  </Menu.Dropdown>
+                </Menu>
+              )}
             </Group>
 
             {description && (
@@ -190,7 +199,7 @@ export function ProductCard({
           <Button variant="default" onClick={() => setDeleteModalOpened(false)}>
             Cancel
           </Button>
-          <Button color="red" onClick={handleDelete} loading={deleteProduct.isPending}>
+          <Button color="red" onClick={handleDelete}>
             Delete
           </Button>
         </Group>

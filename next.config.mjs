@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+import nextTranslate from 'next-translate-plugin';
 
 const chatServerUrl = process.env.NEXT_PUBLIC_CHAT_URL || 'http://localhost:9001';
 const chatServerWsUrl = chatServerUrl.replace('https://', 'wss://').replace('http://', 'ws://');
@@ -74,4 +75,4 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+export default nextTranslate(nextConfig);

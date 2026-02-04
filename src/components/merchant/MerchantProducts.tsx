@@ -6,6 +6,7 @@ import {
   Loader,
   Pagination,
 } from '@mantine/core';
+import useTranslation from 'next-translate/useTranslation';
 import { ProductList } from '@/components/products/ProductList';
 import { ProductTable } from '@/components/products/ProductTable';
 import { ProductViewControls, ViewMode } from '@/components/products/ProductViewControls';
@@ -42,6 +43,8 @@ export function MerchantProducts({
   pagination = undefined,
   page,
 }: MerchantProductsProps) {
+  const { t } = useTranslation('common');
+
   const renderContent = () => {
     if (isLoading) {
       return (
@@ -55,7 +58,7 @@ export function MerchantProducts({
       return (
         <Box ta="center" py={60}>
           <Text size="xl" c="dimmed">
-            No products found
+            {t('merchant_page.no_products_found')}
           </Text>
         </Box>
       );

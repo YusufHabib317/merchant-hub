@@ -9,29 +9,31 @@ import {
 } from '@tabler/icons-react';
 import { useAppRouter, useIsActiveRoute } from '@/lib/hooks/useAppRouter';
 import { getRoutePath } from '@/config/routes';
+import useTranslation from 'next-translate/useTranslation';
 
 const navItems = [
   {
-    label: 'Dashboard', icon: IconHome, path: getRoutePath.dashboard(), exact: true,
+    labelKey: 'nav.dashboard', icon: IconHome, path: getRoutePath.dashboard(), exact: true,
   },
   {
-    label: 'Products', icon: IconShoppingCart, path: getRoutePath.products(),
+    labelKey: 'nav.products', icon: IconShoppingCart, path: getRoutePath.products(),
   },
   {
-    label: 'QR Code', icon: IconQrcode, path: getRoutePath.qrCode(),
+    labelKey: 'nav.qr_code', icon: IconQrcode, path: getRoutePath.qrCode(),
   },
   {
-    label: 'Chat', icon: IconMessageCircle, path: getRoutePath.chat(),
+    labelKey: 'nav.chat', icon: IconMessageCircle, path: getRoutePath.chat(),
   },
   {
-    label: 'AI Context', icon: IconBrain, path: getRoutePath.aiContext(),
+    labelKey: 'nav.ai_context', icon: IconBrain, path: getRoutePath.aiContext(),
   },
   {
-    label: 'Settings', icon: IconSettings, path: getRoutePath.settings(),
+    labelKey: 'nav.settings', icon: IconSettings, path: getRoutePath.settings(),
   },
 ];
 
 export function Sidebar() {
+  const { t } = useTranslation('common');
   const { to } = useAppRouter();
   const isActive = useIsActiveRoute();
 
@@ -40,7 +42,7 @@ export function Sidebar() {
       {navItems.map((item) => (
         <NavLink
           key={item.path}
-          label={item.label}
+          label={t(item.labelKey)}
           leftSection={<item.icon size={16} />}
           active={isActive(item.path, item.exact)}
           onClick={() => to(item.path)}

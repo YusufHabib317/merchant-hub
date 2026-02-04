@@ -13,13 +13,17 @@ import {
   Alert,
   Loader,
   Checkbox,
+  Box,
 } from '@mantine/core';
 import { authClient } from '@/lib/auth-client';
 import { LoginSchema } from '@/schemas/auth';
 import { z } from 'zod';
 import { useAppRouter } from '@/lib/hooks/useAppRouter';
+import useTranslation from 'next-translate/useTranslation';
+import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 
 export default function LoginPage() {
+  const { t, lang } = useTranslation('common');
   const { toDashboard, query } = useAppRouter();
   const { reset } = query;
   const [email, setEmail] = useState('');
@@ -32,9 +36,9 @@ export default function LoginPage() {
   // Show success message if redirected from password reset
   useEffect(() => {
     if (reset === 'success') {
-      setSuccess('Password reset successful! Please sign in with your new password.');
+      setSuccess(t('auth.password_reset_success'));
     }
-  }, [reset]);
+  }, [reset, t]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,13 +83,23 @@ export default function LoginPage() {
   return (
     <Container size={420} my={40}>
       <Title ta="center" order={2} mb="lg">
-        Welcome to MerchantHub
+        {t('auth.welcome_back')}
       </Title>
       <Text c="dimmed" size="sm" ta="center" mb={30}>
-        Sign in to your merchant account
+        {t('auth.sign_in')}
       </Text>
 
-      <Paper withBorder shadow="md" p={30} mt={30} radius="md">
+      <Paper withBorder shadow="md" p={30} mt={30} radius="md" pos="relative">
+        <Box
+          style={{
+            position: 'absolute',
+            top: '1rem',
+            ...(lang === 'ar' ? { left: '1rem' } : { right: '1rem' }),
+          }}
+        >
+          <LanguageSwitcher />
+        </Box>
+
         {success && (
           <Alert color="green" mb="md">
             {success}
@@ -101,8 +115,8 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit}>
           <Stack gap="md">
             <TextInput
-              label="Email"
-              placeholder="your@email.com"
+              label={t('email')}
+              placeholder={t('auth.email_placeholder')}
               required
               value={email}
               onChange={(e) => setEmail(e.currentTarget.value)}
@@ -111,8 +125,8 @@ export default function LoginPage() {
             />
 
             <PasswordInput
-              label="Password"
-              placeholder="Your password"
+              label={t('password')}
+              placeholder={t('auth.password_placeholder')}
               required
               value={password}
               onChange={(e) => setPassword(e.currentTarget.value)}
@@ -121,7 +135,7 @@ export default function LoginPage() {
             />
 
             <Checkbox
-              label="Remember me"
+              label={t('auth.remember_me')}
               checked={rememberMe}
               onChange={(e) => setRememberMe(e.currentTarget.checked)}
               disabled={isLoading}
@@ -133,17 +147,17 @@ export default function LoginPage() {
               disabled={isLoading}
               leftSection={isLoading ? <Loader size={16} /> : null}
             >
-              {isLoading ? 'Signing in...' : 'Sign In'}
+              {isLoading ? t('loading') : t('auth.sign_in_button')}
             </Button>
           </Stack>
         </form>
 
         <Group justify="space-between" mt="lg" gap="xs">
           <Anchor component="a" href="/auth/register" size="sm">
-            Don&apos;t have an account? Register
+            {t('auth.no_account')}
           </Anchor>
           <Anchor component="a" href="/auth/forgot-password" size="sm">
-            Forgot password?
+            {t('auth.forgot_password')}
           </Anchor>
         </Group>
       </Paper>

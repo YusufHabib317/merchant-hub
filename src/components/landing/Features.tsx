@@ -10,70 +10,73 @@ import {
   IconSparkles,
 } from '@tabler/icons-react';
 import { motion } from 'framer-motion';
+import useTranslation from 'next-translate/useTranslation';
 
 interface Feature {
   icon: React.ReactNode;
-  title: string;
-  description: string;
+  titleKey: string;
+  descriptionKey: string;
   color: string;
 }
 
 const features: Feature[] = [
   {
     icon: <IconTemplate size={28} />,
-    title: 'Beautiful Templates',
-    description: 'Choose from 6 professionally designed templates to showcase your products perfectly.',
+    titleKey: 'features.feature1_title',
+    descriptionKey: 'features.feature1_desc',
     color: 'blue',
   },
   {
     icon: <IconQrcode size={28} />,
-    title: 'QR Code Generator',
-    description: 'Generate QR codes instantly for your store. Perfect for print materials and physical locations.',
+    titleKey: 'features.feature2_title',
+    descriptionKey: 'features.feature2_desc',
     color: 'violet',
   },
   {
     icon: <IconMessageCircle size={28} />,
-    title: 'Live Chat',
-    description: 'Chat with customers in real-time. AI assistant helps when you are away.',
+    titleKey: 'features.feature3_title',
+    descriptionKey: 'features.feature3_desc',
     color: 'teal',
   },
   {
     icon: <IconCurrencyDollar size={28} />,
-    title: 'Dual Currency',
-    description: 'Display prices in both USD and SYP. Automatic conversion with custom rates.',
+    titleKey: 'features.feature4_title',
+    descriptionKey: 'features.feature4_desc',
     color: 'green',
   },
   {
     icon: <IconShare size={28} />,
-    title: 'Easy Sharing',
-    description: 'Export products as images and share directly to social media platforms.',
+    titleKey: 'features.feature5_title',
+    descriptionKey: 'features.feature5_desc',
     color: 'orange',
   },
   {
     icon: <IconSparkles size={28} />,
-    title: 'No Code Required',
-    description: 'Simple, intuitive interface. Get your store online in minutes, not days.',
+    titleKey: 'features.feature6_title',
+    descriptionKey: 'features.feature6_desc',
     color: 'pink',
   },
 ];
 
 export function Features() {
+  const { t } = useTranslation('common');
+
   return (
-    <Box py={80} bg="#f8f9fa">
+    <Box id="features" py={80} bg="#f8f9fa">
       <Container size="lg">
         <Box ta="center" mb={60}>
           <Title order={2} size={42} fw={800} mb="md">
-            Everything You Need to Succeed
+            {t('features.title')}
           </Title>
           <Text size="lg" c="dimmed" maw={600} mx="auto">
-            Powerful features designed to help merchants showcase products and connect with customers
+            {t('features.subtitle')}
           </Text>
         </Box>
 
         <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing="lg">
           {features.map((feature, index) => (
             <motion.div
-              key={feature.title}
+              key={feature.titleKey}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -87,10 +90,10 @@ export function Features() {
                   </ThemeIcon>
                   <Box>
                     <Title order={3} size="h4" mb="xs">
-                      {feature.title}
+                      {t(feature.titleKey)}
                     </Title>
                     <Text size="sm" c="dimmed" style={{ lineHeight: 1.6 }}>
-                      {feature.description}
+                      {t(feature.descriptionKey)}
                     </Text>
                   </Box>
                 </Stack>

@@ -2,6 +2,7 @@
 import { useState, KeyboardEvent } from 'react';
 import { Box, TextInput, ActionIcon } from '@mantine/core';
 import { IconSend } from '@tabler/icons-react';
+import useTranslation from 'next-translate/useTranslation';
 
 interface ChatInputProps {
   onSend: (message: string) => void;
@@ -13,6 +14,7 @@ interface ChatInputProps {
 export function ChatInput({ onSend, onTyping, disabled }: ChatInputProps) {
   const [message, setMessage] = useState('');
   const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
+  const { t } = useTranslation('common');
 
   const handleSend = () => {
     if (message.trim() && !disabled) {
@@ -58,7 +60,7 @@ export function ChatInput({ onSend, onTyping, disabled }: ChatInputProps) {
     >
       <Box style={{ display: 'flex', gap: '8px' }}>
         <TextInput
-          placeholder={disabled ? 'Connecting...' : 'Type a message...'}
+          placeholder={disabled ? t('chat_widget.connecting') : t('chat_widget.type_message')}
           value={message}
           onChange={(e) => handleChange(e.currentTarget.value)}
           onKeyPress={handleKeyPress}

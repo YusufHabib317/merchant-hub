@@ -33,6 +33,9 @@ interface SortableProductListProps {
   sortOrder: string[];
   onSortOrderChange: (newOrder: string[]) => void;
   onResetSort: () => void;
+  showActions?: boolean;
+  onEdit?: (id: string) => void;
+  onDelete?: (id: string) => void;
 }
 
 interface SortableItemProps {
@@ -41,6 +44,9 @@ interface SortableItemProps {
   isDragging: boolean;
   onDragStart: () => void;
   onDragEnd: () => void;
+  showActions?: boolean;
+  onEdit?: (id: string) => void;
+  onDelete?: (id: string) => void;
 }
 
 function SortableItem({
@@ -49,6 +55,9 @@ function SortableItem({
   isDragging,
   onDragStart,
   onDragEnd,
+  showActions = false,
+  onEdit = undefined,
+  onDelete = undefined,
 }: SortableItemProps) {
   return (
     <Reorder.Item
@@ -104,6 +113,9 @@ function SortableItem({
               priceSYP={product.priceSYP || 0}
               imageUrls={product.imageUrls}
               category={product.category}
+              showActions={showActions}
+              onEdit={onEdit}
+              onDelete={onDelete}
             />
           </Box>
         </Group>
@@ -117,6 +129,9 @@ export function SortableProductList({
   sortOrder,
   onSortOrderChange,
   onResetSort,
+  showActions = false,
+  onEdit = undefined,
+  onDelete = undefined,
 }: SortableProductListProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -212,6 +227,9 @@ export function SortableProductList({
               isDragging={isDragging}
               onDragStart={() => setIsDragging(true)}
               onDragEnd={() => setIsDragging(false)}
+              showActions={showActions}
+              onEdit={onEdit}
+              onDelete={onDelete}
             />
           ))}
         </AnimatePresence>

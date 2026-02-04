@@ -5,13 +5,16 @@ import { IconArrowRight, IconSparkles } from '@tabler/icons-react';
 import { motion } from 'framer-motion';
 import { authClient } from '@/lib/auth-client';
 import { useAppRouter } from '@/lib/hooks/useAppRouter';
+import useTranslation from 'next-translate/useTranslation';
 
 export function Hero() {
+  const { t } = useTranslation('common');
   const { toRegister, toLogin, toDashboard } = useAppRouter();
   const { data: session } = authClient.useSession();
 
   return (
     <Box
+      id="home"
       style={{
         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
         minHeight: '100vh',
@@ -19,6 +22,7 @@ export function Hero() {
         alignItems: 'center',
         position: 'relative',
         overflow: 'hidden',
+        paddingTop: '70px',
       }}
     >
       {/* Animated background elements */}
@@ -45,7 +49,7 @@ export function Hero() {
       />
 
       <Container size="lg" style={{ position: 'relative', zIndex: 1 }}>
-        <Box ta="center" py={80}>
+        <Box ta="center" py={{ base: 40, sm: 60, md: 80 }}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -72,7 +76,7 @@ export function Hero() {
                 textShadow: '0 2px 20px rgba(0,0,0,0.2)',
               }}
             >
-              Showcase Your Products
+              {t('hero.title_part1')}
               <br />
               <Text
                 component="span"
@@ -80,7 +84,7 @@ export function Hero() {
                 variant="gradient"
                 gradient={{ from: 'yellow', to: 'orange', deg: 45 }}
               >
-                Beautifully
+                {t('hero.title_part2')}
               </Text>
             </Title>
           </motion.div>
@@ -101,8 +105,7 @@ export function Hero() {
                 lineHeight: 1.6,
               }}
             >
-              Create stunning product catalogs, generate QR codes, and chat with customers in
-              real-time. Everything you need to grow your business online.
+              {t('hero.subtitle')}
             </Text>
           </motion.div>
 
@@ -123,7 +126,7 @@ export function Hero() {
                   boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
                 }}
               >
-                Get Started Free
+                {t('hero.cta_started')}
               </Button>
               <Button
                 size="xl"
@@ -136,7 +139,7 @@ export function Hero() {
                 }}
                 onClick={session ? toDashboard : toLogin}
               >
-                {session ? 'Go to Dashboard' : 'Sign In'}
+                {session ? t('hero.cta_dashboard') : t('login')}
               </Button>
             </Group>
           </motion.div>

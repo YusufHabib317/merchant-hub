@@ -2,6 +2,7 @@ import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { customSession } from 'better-auth/plugins';
 import { prisma } from './prisma';
+import { sendVerificationEmail, sendPasswordResetEmail, sendWelcomeEmail } from './email';
 
 interface AuthUser {
   id: string;
@@ -34,15 +35,38 @@ const authOptions = {
     },
   },
   emailVerification: {
-    sendVerificationEmail: async ({ user, url }: { user: { email: string }; url: string }) => {
-      // TODO: Implement email sending (e.g., using SendGrid, Resend, etc.)
-      // eslint-disable-next-line no-console
-      console.log(`Verification email would be sent to ${user.email}: ${url}`);
+    sendVerificationEmail: async ({ user, url }: { user: { email: string; name?: string }; url: string }) => {
+      try {
+        await sendVerificationEmail(user.email, url);
+        // eslint-disable-next-line no-console
+        console.log(`Verification email sent to ${user.email}`);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Failed to send verification email:', error);
+        // Don't throw error to prevent blocking signup flow
+      }
     },
     autoSignUpCallback: async (user: AuthUser) => {
-      // User is automatically verified on signup
-      // eslint-disable-next-line no-console
-      console.log(`User ${user.email} email verified`);
+      // Send welcome email after email verification
+      try {
+        await sendWelcomeEmail(user.email, user.name);
+        // eslint-disable-next-line no-console
+        console.log(`Welcome email sent to ${user.email}`);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Failed to send welcome email:', error);
+      }
+    },
+    sendResetPasswordEmail: async ({ user, url }: { user: { email: string; name?: string }; url: string }) => {
+      try {
+        await sendPasswordResetEmail(user.email, url);
+        // eslint-disable-next-line no-console
+        console.log(`Password reset email sent to ${user.email}`);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Failed to send password reset email:', error);
+        // Don't throw error to prevent blocking password reset flow
+      }
     },
   },
   session: {

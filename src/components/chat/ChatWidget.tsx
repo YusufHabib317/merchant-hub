@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { ActionIcon, Box } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { IconMessage } from '@tabler/icons-react';
+import { useRouter } from 'next/router';
 import { ChatWindow } from './ChatWindow';
 
 interface ChatWidgetProps {
@@ -12,8 +14,13 @@ interface ChatWidgetProps {
 export function ChatWidget({ merchantId, merchantName }: ChatWidgetProps) {
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width: 768px)');
+  const router = useRouter();
+  const isArabic = router.locale === 'ar';
 
-  return (
+  // Position based on locale: left for Arabic (RTL), right for English (LTR)
+  const horizontalPosition = isArabic ? { left: 20 } : { right: 20 };
+
+  const widgetContent = (
     <>
       {/* Floating chat button */}
       {!isOpen && (
@@ -26,7 +33,7 @@ export function ChatWidget({ merchantId, merchantName }: ChatWidgetProps) {
           style={{
             position: 'fixed',
             bottom: 20,
-            right: 20,
+            ...horizontalPosition,
             zIndex: 1000,
             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
           }}
@@ -41,7 +48,7 @@ export function ChatWidget({ merchantId, merchantName }: ChatWidgetProps) {
           style={{
             position: 'fixed',
             bottom: isMobile ? 0 : 20,
-            right: isMobile ? 0 : 20,
+            ...(isMobile ? { left: 0, right: 0 } : horizontalPosition),
             width: isMobile ? '100%' : 380,
             height: isMobile ? '100%' : 600,
             zIndex: 1000,
@@ -59,4 +66,7 @@ export function ChatWidget({ merchantId, merchantName }: ChatWidgetProps) {
       )}
     </>
   );
+
+  // Render to document.body using portal to bypass any parent positioning
+  return typeof document !== 'undefined' ? createPortal(widgetContent, document.body) : null;
 }

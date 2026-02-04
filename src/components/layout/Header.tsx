@@ -8,8 +8,10 @@ import {
 import { IconLogout, IconSettings } from '@tabler/icons-react';
 import { authClient } from '@/lib/auth-client';
 import { useAppRouter } from '@/lib/hooks/useAppRouter';
+import useTranslation from 'next-translate/useTranslation';
 
 export function Header() {
+  const { t } = useTranslation('common');
   const { toLogin, toHome, toSettings } = useAppRouter();
   const { data: session, isPending } = authClient.useSession();
 
@@ -22,7 +24,7 @@ export function Header() {
     return (
       <>
         <Text fw={600} style={{ cursor: 'pointer' }} onClick={toHome}>
-          MerchantHub
+          {t('header.merchant_hub')}
         </Text>
         <Loader size="sm" />
       </>
@@ -32,7 +34,7 @@ export function Header() {
   return (
     <>
       <Text fw={600} size="lg" style={{ cursor: 'pointer' }} onClick={toHome}>
-        MerchantHub
+        {t('header.merchant_hub')}
       </Text>
 
       {session && (
@@ -58,7 +60,7 @@ export function Header() {
               leftSection={<IconSettings size={14} />}
               onClick={toSettings}
             >
-              Settings
+              {t('settings')}
             </Menu.Item>
             <Menu.Divider />
             <Menu.Item
@@ -66,7 +68,7 @@ export function Header() {
               color="red"
               onClick={handleLogout}
             >
-              Logout
+              {t('logout')}
             </Menu.Item>
           </Menu.Dropdown>
         </Menu>

@@ -13,9 +13,17 @@ interface Product {
 
 interface ProductListProps {
   products: Product[];
+  showActions?: boolean;
+  onEdit?: (id: string) => void;
+  onDelete?: (id: string) => void;
 }
 
-export function ProductList({ products }: ProductListProps) {
+export function ProductList({
+  products,
+  showActions = false,
+  onEdit = undefined,
+  onDelete = undefined,
+}: ProductListProps) {
   return (
     <Grid>
       {products.map((product) => (
@@ -28,6 +36,9 @@ export function ProductList({ products }: ProductListProps) {
             priceSYP={product.priceSYP || 0}
             imageUrls={product.imageUrls}
             category={product.category}
+            showActions={showActions}
+            onEdit={onEdit}
+            onDelete={onDelete}
           />
         </Grid.Col>
       ))}

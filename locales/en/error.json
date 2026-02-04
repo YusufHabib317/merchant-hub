@@ -1,0 +1,22 @@
+{
+  "general_error": "An error occurred. Please try again.",
+  "network_error": "Network error. Please check your connection.",
+  "validation_error": "Validation error. Please check your input.",
+  "unauthorized": "Unauthorized. Please login.",
+  "forbidden": "You don't have permission to access this resource.",
+  "not_found": "Resource not found.",
+  "server_error": "Server error. Please try again later.",
+  "timeout_error": "Request timeout. Please try again.",
+  "required_field": "This field is required.",
+  "invalid_email": "Invalid email address.",
+  "invalid_password": "Password must be at least 8 characters.",
+  "password_mismatch": "Passwords do not match.",
+  "login_failed": "Login failed. Please check your credentials.",
+  "signup_failed": "Sign up failed. Please try again.",
+  "update_failed": "Update failed. Please try again.",
+  "delete_failed": "Delete failed. Please try again.",
+  "upload_failed": "Upload failed. Please try again.",
+  "file_too_large": "File is too large.",
+  "invalid_file_type": "Invalid file type.",
+  "session_expired": "Your session has expired. Please login again."
+}
