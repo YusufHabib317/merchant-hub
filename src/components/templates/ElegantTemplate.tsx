@@ -9,13 +9,17 @@ interface ElegantTemplateProps {
   merchantName: string;
   merchantAddress?: string | null;
   watermark?: boolean | null;
+  currencyDisplay?: 'usd' | 'syp' | 'both';
 }
+
+const PRICE_STYLE = { color: '#2c3e50', fontFamily: 'Georgia, serif' };
 
 export function ElegantTemplate({
   products,
   merchantName,
   merchantAddress = null,
   watermark = false,
+  currencyDisplay = 'both',
 }: ElegantTemplateProps) {
   return (
     <Paper
@@ -46,10 +50,6 @@ export function ElegantTemplate({
             {merchantAddress}
           </Text>
         )}
-
-        <Text size="sm" c="dimmed" style={{ letterSpacing: 4, textTransform: 'uppercase' }}>
-          Collection
-        </Text>
 
         <Box style={{ width: '60px', height: '2px', backgroundColor: '#2c3e50' }} />
 
@@ -104,15 +104,22 @@ export function ElegantTemplate({
                       )}
                     </Box>
                     <Box ta="right">
-                      <Text
-                        fw={600}
-                        size="xl"
-                        style={{ color: '#2c3e50', fontFamily: 'Georgia, serif' }}
-                      >
-                        {formatCurrency(product.priceUSD, 'USD')}
-                      </Text>
-                      {product.priceSYP && (
-                        <Text size="xs" c="dimmed">
+                      {(currencyDisplay === 'usd' || currencyDisplay === 'both') && (
+                        <Text
+                          fw={600}
+                          size="xl"
+                          style={PRICE_STYLE}
+                        >
+                          {formatCurrency(product.priceUSD, 'USD')}
+                        </Text>
+                      )}
+                      {(currencyDisplay === 'syp' || currencyDisplay === 'both') && product.priceSYP && (
+                        <Text
+                          size={currencyDisplay === 'syp' ? 'xl' : 'xs'}
+                          fw={currencyDisplay === 'syp' ? 600 : undefined}
+                          style={currencyDisplay === 'syp' ? PRICE_STYLE : undefined}
+                          c={currencyDisplay === 'syp' ? undefined : 'dimmed'}
+                        >
                           {formatCurrency(product.priceSYP, 'SYP')}
                         </Text>
                       )}

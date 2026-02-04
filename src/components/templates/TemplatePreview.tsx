@@ -13,6 +13,7 @@ export interface TemplatePreviewProps {
   priceListStyle?: PriceListStyleOptions;
   onExport?: () => Promise<void>;
   watermark?: boolean;
+  currencyDisplay?: 'usd' | 'syp' | 'both';
 }
 
 export const TemplatePreview = forwardRef<HTMLDivElement, TemplatePreviewProps>(
@@ -24,6 +25,7 @@ export const TemplatePreview = forwardRef<HTMLDivElement, TemplatePreviewProps>(
       merchantAddress,
       priceListStyle,
       watermark = false,
+      currencyDisplay = 'both',
     },
     ref,
   ) => {
@@ -33,6 +35,7 @@ export const TemplatePreview = forwardRef<HTMLDivElement, TemplatePreviewProps>(
         merchantName,
         merchantAddress,
         watermark,
+        currencyDisplay,
       };
 
       switch (template) {
@@ -43,7 +46,7 @@ export const TemplatePreview = forwardRef<HTMLDivElement, TemplatePreviewProps>(
         default:
           return <ElegantTemplate {...commonProps} />;
       }
-    }, [template, products, merchantName, merchantAddress, priceListStyle, watermark]);
+    }, [template, products, merchantName, merchantAddress, priceListStyle, watermark, currencyDisplay]);
 
     return (
       <Stack gap="md">

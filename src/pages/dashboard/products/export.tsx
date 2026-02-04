@@ -127,6 +127,7 @@ export default function ExportProductsPage() {
 
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [template, setTemplate] = useState<string>('elegant');
+  const [currencyDisplay, setCurrencyDisplay] = useState<'usd' | 'syp' | 'both'>('both');
   const [bgImageFile, setBgImageFile] = useState<File | null>(null);
   const [priceListStyle, setPriceListStyle] = useState<PriceListStyleOptions>({
     pageBgColor: '#ffffff',
@@ -353,6 +354,37 @@ export default function ExportProductsPage() {
             </SimpleGrid>
 
             {/* Customization - Full Width */}
+            {template === 'elegant' && (
+              <Paper withBorder radius="md" p="md">
+                <Group gap="xs" mb="md">
+                  <ThemeIcon size="sm" variant="light" color="orange">
+                    <IconPalette size={14} />
+                  </ThemeIcon>
+                  <Text fw={600}>Customize Template</Text>
+                </Group>
+
+                {/* Currency Display Selector */}
+                <Box>
+                  <Group gap="xs" mb="xs">
+                    <ThemeIcon size="xs" variant="light" color="blue">
+                      <IconCurrencyDollar size={12} />
+                    </ThemeIcon>
+                    <Text size="sm" fw={500}>Currency Display</Text>
+                  </Group>
+                  <SegmentedControl
+                    value={currencyDisplay}
+                    onChange={(value) => setCurrencyDisplay(value as 'usd' | 'syp' | 'both')}
+                    data={[
+                      { label: 'USD Only', value: 'usd' },
+                      { label: 'SYP Only', value: 'syp' },
+                      { label: 'Both Currencies', value: 'both' },
+                    ]}
+                    fullWidth
+                  />
+                </Box>
+              </Paper>
+            )}
+
             {template === 'price-list' && (
               <Paper withBorder radius="md" p="md">
                 <Group
@@ -381,11 +413,8 @@ export default function ExportProductsPage() {
                       <Text size="sm" fw={500}>Currency Display</Text>
                     </Group>
                     <SegmentedControl
-                      value={priceListStyle.currencyDisplay}
-                      onChange={(value) => setPriceListStyle((prev) => ({
-                        ...prev,
-                        currencyDisplay: value as 'usd' | 'syp' | 'both',
-                      }))}
+                      value={currencyDisplay}
+                      onChange={(value) => setCurrencyDisplay(value as 'usd' | 'syp' | 'both')}
                       data={[
                         { label: 'USD Only', value: 'usd' },
                         { label: 'SYP Only', value: 'syp' },
@@ -595,6 +624,7 @@ export default function ExportProductsPage() {
                     merchantAddress={merchantData?.address}
                     priceListStyle={priceListStyle}
                     watermark={hasWatermark}
+                    currencyDisplay={currencyDisplay}
                     ref={previewRef}
                   />
                 </Box>

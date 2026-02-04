@@ -24,6 +24,7 @@ interface PriceListTemplateProps {
   merchantAddress?: string | null;
   watermark?: boolean;
   styleOptions?: PriceListStyleOptions;
+  currencyDisplay?: 'usd' | 'syp' | 'both';
 }
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -33,6 +34,7 @@ export function PriceListTemplate({
   merchantAddress,
   watermark,
   styleOptions,
+  currencyDisplay: propCurrencyDisplay,
 }: PriceListTemplateProps) {
   const pageBgColor = styleOptions?.pageBgColor ?? '#ffffff';
   const pageBgOpacity = styleOptions?.pageBgOpacity ?? 1;
@@ -51,7 +53,7 @@ export function PriceListTemplate({
   const rowEvenBg = styleOptions?.rowEvenBg ?? '#f8f9fa';
   const rowText = styleOptions?.rowText ?? '#000000';
 
-  const currencyDisplay = styleOptions?.currencyDisplay ?? 'both';
+  const currencyDisplay = propCurrencyDisplay ?? styleOptions?.currencyDisplay ?? 'both';
 
   const groups = products.reduce<Record<string, ExportProduct[]>>((acc, product) => {
     const key = product.category?.trim() || 'Uncategorized';
