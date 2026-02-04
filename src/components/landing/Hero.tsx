@@ -14,7 +14,7 @@ export function Hero() {
     <Box
       style={{
         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        minHeight: '90vh',
+        minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
         position: 'relative',

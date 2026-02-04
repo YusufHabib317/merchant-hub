@@ -9,6 +9,7 @@ import {
   Stack,
   Alert,
   Button,
+  Skeleton,
 } from '@mantine/core';
 import {
   IconShoppingCart,
@@ -39,7 +40,7 @@ interface MerchantData {
 }
 
 export default function DashboardPage() {
-  const { data: stats, isLoading } = useQuery<DashboardStats>({
+  const { data: stats, isLoading: isStatsLoading } = useQuery<DashboardStats>({
     queryKey: ['dashboard-stats'],
     queryFn: async () => {
       const response = await apiClient.get(API_ENDPOINTS.dashboard.stats);
@@ -47,7 +48,7 @@ export default function DashboardPage() {
     },
   });
 
-  const { data: merchantData } = useQuery<MerchantData>({
+  const { data: merchantData, isLoading: isMerchantLoading } = useQuery<MerchantData>({
     queryKey: ['merchant-me'],
     queryFn: async () => {
       const response = await apiClient.get(API_ENDPOINTS.merchants.me);
@@ -56,6 +57,7 @@ export default function DashboardPage() {
     retry: false,
   });
 
+  const isLoading = isStatsLoading || isMerchantLoading;
   const hasStore = !!merchantData?.name;
 
   const statCards = [
@@ -85,28 +87,28 @@ export default function DashboardPage() {
         <Stack gap="lg">
           <Title order={1}>Dashboard</Title>
 
-          {!hasStore && (
-            <Alert
-              icon={<IconAlertCircle size={16} />}
-              title="Set Up Your Store"
-              color="yellow"
-              variant="light"
-            >
-              <Group justify="space-between">
-                <Text size="sm">
-                  You need to create a store before you can add products and manage your business.
-                </Text>
-                <Link href="/dashboard/settings" style={{ textDecoration: 'none' }}>
-                  <Button
-                    variant="filled"
-                    color="blue"
-                    size="sm"
-                  >
-                    Go to Settings
-                  </Button>
-                </Link>
-              </Group>
-            </Alert>
+          {isLoading ? (
+            <Skeleton height={100} radius="md" />
+          ) : (
+            !hasStore && (
+              <Alert
+                icon={<IconAlertCircle size={16} />}
+                title="Set Up Your Store"
+                color="yellow"
+                variant="light"
+              >
+                <Group justify="space-between">
+                  <Text size="sm">
+                    You need to create a store before you can add products and manage your business.
+                  </Text>
+                  <Link href="/dashboard/settings" style={{ textDecoration: 'none' }}>
+                    <Button variant="filled" color="blue" size="sm">
+                      Go to Settings
+                    </Button>
+                  </Link>
+                </Group>
+              </Alert>
+            )
           )}
 
           <Grid>
@@ -126,9 +128,13 @@ export default function DashboardPage() {
                       <stat.icon size={18} />
                     </ThemeIcon>
                   </Group>
-                  <Text fw={700} size="xl">
-                    {isLoading ? '...' : stat.value}
-                  </Text>
+                  {isLoading ? (
+                    <Skeleton height={30} width={100} radius="sm" />
+                  ) : (
+                    <Text fw={700} size="xl">
+                      {stat.value}
+                    </Text>
+                  )}
                 </Card>
               </Grid.Col>
             ))}

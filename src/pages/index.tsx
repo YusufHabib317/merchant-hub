@@ -1,22 +1,18 @@
 import { Box } from '@mantine/core';
 import {
   Hero,
-  // Features,
-  // FeaturedMerchants,
-  // HowItWorks,
-  // Pricing,
-  // CallToAction,
+  Features,
+  HowItWorks,
+  CallToAction,
 } from '@/components/landing';
 
 export default function IndexPage() {
   return (
     <Box>
       <Hero />
-      {/* <Features />
-      <FeaturedMerchants />
+      <Features />
       <HowItWorks />
-      <Pricing />
-      <CallToAction /> */}
+      <CallToAction />
     </Box>
   );
 }

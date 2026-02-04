@@ -8,7 +8,18 @@ import { Notifications } from '@mantine/notifications';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
 import { AppProps } from 'next/app';
+import { Roboto, Tajawal } from 'next/font/google';
 import { theme } from '../theme';
+
+const roboto = Roboto({
+  subsets: ['latin'],
+  weight: ['100', '300', '400', '500', '700', '900'],
+});
+
+const tajawal = Tajawal({
+  subsets: ['arabic'],
+  weight: ['200', '300', '400', '500', '700', '800', '900'],
+});
 
 export default function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(
@@ -16,12 +27,12 @@ export default function App({ Component, pageProps }: AppProps) {
       defaultOptions: {
         queries: {
           staleTime: 1000 * 60 * 5, // 5 minutes
-          gcTime: 1000 * 60 * 10, // 10 minutes (formerly cacheTime)
+          gcTime: 1000 * 60 * 10, // 10 minutes
           retry: 1,
           refetchOnWindowFocus: false,
         },
         mutations: {
-          retry: 0, // Don't retry mutations - let the user decide
+          retry: 0,
         },
       },
     }),
@@ -29,7 +40,15 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <MantineProvider theme={theme}>
+      <MantineProvider
+        theme={{
+          ...theme,
+          fontFamily: `${roboto.style.fontFamily}, ${tajawal.style.fontFamily}, sans-serif`,
+          headings: {
+            fontFamily: `${roboto.style.fontFamily}, ${tajawal.style.fontFamily}, sans-serif`,
+          },
+        }}
+      >
         <Notifications position="top-right" />
         <Head>
           <title>MerchantHub</title>

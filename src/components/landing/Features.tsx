@@ -34,7 +34,7 @@ const features: Feature[] = [
   {
     icon: <IconMessageCircle size={28} />,
     title: 'Live Chat',
-    description: 'Chat with customers in real-time. AI assistant helps when you&apos;re away.',
+    description: 'Chat with customers in real-time. AI assistant helps when you are away.',
     color: 'teal',
   },
   {
