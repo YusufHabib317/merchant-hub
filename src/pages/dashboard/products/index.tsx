@@ -12,6 +12,7 @@ import {
   IconFileExport,
 } from '@tabler/icons-react';
 import { useState } from 'react';
+import { useLocalStorage } from '@mantine/hooks';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { ProductViewControls, ViewMode } from '@/components/products/ProductViewControls';
@@ -26,11 +27,20 @@ export default function ProductsPage() {
   const {
     toNewProduct, toSettings, toExportProducts, toEditProduct,
   } = useAppRouter();
-  const [viewMode, setViewMode] = useState<ViewMode>('grid');
+  const [viewMode, setViewMode] = useLocalStorage<ViewMode>({
+    key: 'products-view-mode',
+    defaultValue: 'grid',
+  });
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
-  const [sortBy, setSortBy] = useState<NonNullable<ProductQueryParams['sortBy']>>('createdAt');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [sortBy, setSortBy] = useLocalStorage<NonNullable<ProductQueryParams['sortBy']>>({
+    key: 'products-sort-by',
+    defaultValue: 'createdAt',
+  });
+  const [sortOrder, setSortOrder] = useLocalStorage<'asc' | 'desc'>({
+    key: 'products-sort-order',
+    defaultValue: 'desc',
+  });
 
   // Delete state
   const [productToDelete, setProductToDelete] = useState<string | null>(null);

@@ -34,7 +34,8 @@ import {
   IconChevronDown,
   IconChevronUp,
 } from '@tabler/icons-react';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { useLocalStorage } from '@mantine/hooks';
 import { Reorder, useDragControls } from 'framer-motion';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
@@ -125,9 +126,18 @@ export default function ExportProductsPage() {
 
   const products = getSortedProducts(rawProducts);
 
-  const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
-  const [template, setTemplate] = useState<string>('elegant');
-  const [currencyDisplay, setCurrencyDisplay] = useState<'usd' | 'syp' | 'both'>('both');
+  const [selectedProducts, setSelectedProducts] = useLocalStorage<string[]>({
+    key: 'export-selected-products',
+    defaultValue: [],
+  });
+  const [template, setTemplate] = useLocalStorage<string>({
+    key: 'export-template',
+    defaultValue: 'elegant',
+  });
+  const [currencyDisplay, setCurrencyDisplay] = useLocalStorage<'usd' | 'syp' | 'both'>({
+    key: 'export-currency-display',
+    defaultValue: 'both',
+  });
   const [bgImageFile, setBgImageFile] = useState<File | null>(null);
   const [priceListStyle, setPriceListStyle] = useState<PriceListStyleOptions>({
     pageBgColor: '#ffffff',
@@ -149,6 +159,28 @@ export default function ExportProductsPage() {
 
     currencyDisplay: 'both',
   });
+
+  useEffect(() => {
+    const saved = localStorage.getItem('export-price-list-style');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        setPriceListStyle((prev) => ({
+          ...prev,
+          ...parsed,
+          bgImageDataUrl: null, // Always start without image to avoid storage limits
+        }));
+      } catch {
+        //
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { bgImageDataUrl, ...styleToSave } = priceListStyle;
+    localStorage.setItem('export-price-list-style', JSON.stringify(styleToSave));
+  }, [priceListStyle]);
   const [isCustomizeOpen, setIsCustomizeOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [exportSuccess, setExportSuccess] = useState(false);
