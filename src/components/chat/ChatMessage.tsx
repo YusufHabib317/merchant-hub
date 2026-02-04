@@ -43,7 +43,16 @@ export function ChatMessage({ message }: ChatMessageProps) {
             {isAI ? 'AI Assistant' : 'Merchant'}
           </Text>
         )}
-        <Text size="sm" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+        <Text
+          size="sm"
+          dir="auto"
+          style={{
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word',
+            unicodeBidi: 'plaintext',
+            textAlign: 'start',
+          }}
+        >
           {message.content}
         </Text>
         <Text
