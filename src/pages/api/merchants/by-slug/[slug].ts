@@ -33,8 +33,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       include: {
         user: {
           select: {
-            id: true,
-            email: true,
             name: true,
             image: true,
           },

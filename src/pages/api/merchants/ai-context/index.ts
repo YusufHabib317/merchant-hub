@@ -28,8 +28,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
       });
 
       return res.status(200).json({ success: true, data: contexts });
-    } catch (error) {
-      console.error('Get contexts error:', error);
+    } catch {
       return res.status(500).json({ success: false, error: 'Internal server error' });
     }
   }
@@ -61,7 +60,6 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ success: false, error: 'Validation error', details: error.issues });
       }
-      console.error('Create context error:', error);
       return res.status(500).json({ success: false, error: 'Internal server error' });
     }
   }

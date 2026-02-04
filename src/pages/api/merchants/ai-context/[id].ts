@@ -43,7 +43,6 @@ async function handlePut(
     if (error instanceof z.ZodError) {
       return res.status(400).json({ success: false, error: 'Validation error', details: error.issues });
     }
-    console.error('Update context error:', error);
     return res.status(500).json({ success: false, error: 'Internal server error' });
   }
 }
@@ -60,8 +59,7 @@ async function handleDelete(
     });
 
     return res.status(200).json({ success: true, message: 'Context deleted successfully' });
-  } catch (error) {
-    console.error('Delete context error:', error);
+  } catch {
     return res.status(500).json({ success: false, error: 'Internal server error' });
   }
 }
@@ -82,7 +80,6 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
     return res.status(404).json({ success: false, error: 'Merchant not found' });
   }
 
-  // Check if context exists and belongs to merchant
   // @ts-ignore
   const existingContext = await prisma.merchantContext.findUnique({
     where: { id },
