@@ -12,6 +12,7 @@ module.exports = {
     "/dashboard/store": ["common", "error"],
     "/dashboard/qr": ["common", "error"],
     "/dashboard/templates": ["common", "error"],
+    "/dashboard/settings": ["common", "error"],
     "/m/[slug]": ["common", "error"],
   },
   loadLocaleFrom: async (lang, ns) => {

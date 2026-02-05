@@ -24,6 +24,7 @@ import {
   IconCheck,
 } from '@tabler/icons-react';
 import { useState } from 'react';
+import useTranslation from 'next-translate/useTranslation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
@@ -41,6 +42,7 @@ interface MerchantContext {
 const QUERY_KEY = ['ai-contexts'];
 
 export default function AIContextPage() {
+  const { t } = useTranslation('common');
   const queryClient = useQueryClient();
   const [opened, { open, close }] = useDisclosure(false);
   const [editingContext, setEditingContext] = useState<MerchantContext | null>(null);
@@ -77,7 +79,7 @@ export default function AIContextPage() {
       closeModal();
     },
     onError: (err: AxiosError<{ error: string }>) => {
-      setError(err.response?.data?.error || 'Failed to create context');
+      setError(err.response?.data?.error || t('ai_context.error_create'));
     },
   });
 
@@ -91,7 +93,7 @@ export default function AIContextPage() {
       closeModal();
     },
     onError: (err: AxiosError<{ error: string }>) => {
-      setError(err.response?.data?.error || 'Failed to update context');
+      setError(err.response?.data?.error || t('ai_context.error_update'));
     },
   });
 
@@ -103,7 +105,7 @@ export default function AIContextPage() {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY });
     },
     onError: (err: AxiosError<{ error: string }>) => {
-      setError(err.response?.data?.error || 'Failed to delete context');
+      setError(err.response?.data?.error || t('ai_context.error_delete'));
     },
   });
 
@@ -129,7 +131,7 @@ export default function AIContextPage() {
 
   const handleDelete = (id: string) => {
     // eslint-disable-next-line no-alert
-    if (window.confirm('Are you sure you want to delete this context?')) {
+    if (window.confirm(t('ai_context.delete_confirm'))) {
       deleteMutation.mutate(id);
     }
   };
@@ -152,18 +154,18 @@ export default function AIContextPage() {
         <Stack gap="lg">
           <Group justify="space-between">
             <div>
-              <Title order={1}>AI Context Manager</Title>
+              <Title order={1}>{t('ai_context.title')}</Title>
               <Text c="dimmed">
-                Manage additional information and knowledge for your AI assistant.
+                {t('ai_context.description')}
               </Text>
             </div>
             <Button leftSection={<IconPlus size={16} />} onClick={open}>
-              Add Context
+              {t('ai_context.add_context')}
             </Button>
           </Group>
 
           {error && (
-            <Alert icon={<IconAlertCircle size={16} />} color="red" title="Error" onClose={() => setError(null)} withCloseButton>
+            <Alert icon={<IconAlertCircle size={16} />} color="red" title={t('ai_context.error_title')} onClose={() => setError(null)} withCloseButton>
               {error}
             </Alert>
           )}
@@ -173,9 +175,9 @@ export default function AIContextPage() {
               <Table>
                 <Table.Thead>
                   <Table.Tr>
-                    <Table.Th>Content</Table.Th>
-                    <Table.Th>Tags</Table.Th>
-                    <Table.Th style={{ width: 100 }}>Actions</Table.Th>
+                    <Table.Th>{t('ai_context.content')}</Table.Th>
+                    <Table.Th>{t('ai_context.tags')}</Table.Th>
+                    <Table.Th style={{ width: 100 }}>{t('ai_context.actions')}</Table.Th>
                   </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
@@ -220,7 +222,7 @@ export default function AIContextPage() {
               </Table>
             ) : (
               <Center py="xl">
-                <Text c="dimmed">No context items found. Add some information to help your AI.</Text>
+                <Text c="dimmed">{t('ai_context.no_items')}</Text>
               </Center>
             )}
           </Card>
@@ -229,30 +231,30 @@ export default function AIContextPage() {
         <Modal
           opened={opened}
           onClose={closeModal}
-          title={editingContext ? 'Edit Context' : 'Add New Context'}
+          title={editingContext ? t('ai_context.edit_context') : t('ai_context.add_new_context')}
           size="lg"
         >
           <form onSubmit={handleSubmit}>
             <Stack>
               {error && (
-                <Alert icon={<IconAlertCircle size={16} />} color="red" title="Error">
+                <Alert icon={<IconAlertCircle size={16} />} color="red" title={t('ai_context.error_title')}>
                   {error}
                 </Alert>
               )}
 
               <Textarea
-                label="Content"
-                placeholder="Enter information for the AI..."
+                label={t('ai_context.content')}
+                placeholder={t('ai_context.content_placeholder')}
                 minRows={4}
                 value={formData.content}
                 onChange={(e) => setFormData({ ...formData, content: e.currentTarget.value })}
                 required
-                description="The AI will use this information to answer customer queries. Inappropriate content will be rejected."
+                description={t('ai_context.content_description')}
               />
 
               <TagsInput
-                label="Tags"
-                placeholder="Press Enter to add tags"
+                label={t('ai_context.tags')}
+                placeholder={t('ai_context.tags_placeholder')}
                 value={formData.tags}
                 onChange={(tags) => setFormData({ ...formData, tags })}
                 clearable
@@ -260,14 +262,14 @@ export default function AIContextPage() {
 
               <Group justify="flex-end" mt="md">
                 <Button variant="default" onClick={closeModal}>
-                  Cancel
+                  {t('ai_context.cancel')}
                 </Button>
                 <Button
                   type="submit"
                   loading={createMutation.isPending || updateMutation.isPending}
                   leftSection={<IconCheck size={16} />}
                 >
-                  {editingContext ? 'Save Changes' : 'Add Context'}
+                  {editingContext ? t('ai_context.save_changes') : t('ai_context.add_context')}
                 </Button>
               </Group>
             </Stack>

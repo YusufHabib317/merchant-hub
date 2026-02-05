@@ -25,6 +25,7 @@ import { apiClient } from '@/lib/api/client';
 import { API_ENDPOINTS } from '@/lib/api/endpoints';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ImageUpload } from '@/components/products/ImageUpload';
+import useTranslation from 'next-translate/useTranslation';
 
 interface MerchantData {
   id: string;
@@ -36,6 +37,7 @@ interface MerchantData {
 }
 
 export default function SettingsPage() {
+  const { t } = useTranslation('common');
   const { data: session } = authClient.useSession();
   const queryClient = useQueryClient();
 
@@ -76,13 +78,13 @@ export default function SettingsPage() {
       return response.data;
     },
     onSuccess: () => {
-      setSuccessMessage('Settings saved successfully!');
+      setSuccessMessage(t('settings_page.save_success'));
       setErrorMessage(null);
       queryClient.invalidateQueries({ queryKey: ['merchant'] });
       setTimeout(() => setSuccessMessage(null), 4000);
     },
     onError: (error: Error) => {
-      setErrorMessage(error.message || 'Failed to save settings');
+      setErrorMessage(error.message || t('settings_page.save_error'));
       setSuccessMessage(null);
     },
   });
@@ -93,14 +95,14 @@ export default function SettingsPage() {
       return response.data;
     },
     onSuccess: (data) => {
-      setSuccessMessage('Store created successfully!');
+      setSuccessMessage(t('settings_page.setup_success'));
       setErrorMessage(null);
       queryClient.invalidateQueries({ queryKey: ['merchant'] });
       queryClient.setQueryData(['merchant', session?.user?.id], data.data);
       setTimeout(() => setSuccessMessage(null), 4000);
     },
     onError: (error: Error) => {
-      setErrorMessage(error.message || 'Failed to create store');
+      setErrorMessage(error.message || t('settings_page.setup_error'));
       setSuccessMessage(null);
     },
   });
@@ -132,12 +134,12 @@ export default function SettingsPage() {
     <ProtectedRoute>
       <DashboardLayout>
         <Stack gap="lg">
-          <Title order={1}>{isNewMerchant ? 'Create Your Store' : 'Settings'}</Title>
+          <Title order={1}>{isNewMerchant ? t('settings_page.create_store_title') : t('settings_page.title')}</Title>
 
           <Text c="dimmed">
             {isNewMerchant
-              ? 'Set up your store to start adding products.'
-              : 'Manage your store settings and preferences.'}
+              ? t('settings_page.create_store_desc')
+              : t('settings_page.manage_settings_desc')}
           </Text>
 
           {successMessage && (
@@ -156,34 +158,34 @@ export default function SettingsPage() {
             <Stack gap="lg">
               <Card withBorder padding="lg" radius="md">
                 <Title order={3} mb="md">
-                  Store Information
+                  {t('settings_page.store_info_title')}
                 </Title>
                 <Stack gap="md">
                   <TextInput
-                    label="Store Name"
-                    placeholder="Enter your store name"
+                    label={t('settings_page.store_name_label')}
+                    placeholder={t('settings_page.store_name_placeholder')}
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.currentTarget.value })}
                     required
                   />
 
                   <Textarea
-                    label="Description"
-                    placeholder="Describe your store..."
+                    label={t('settings_page.description_label')}
+                    placeholder={t('settings_page.description_placeholder')}
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.currentTarget.value })}
                     rows={4}
                   />
 
                   <TextInput
-                    label="Address"
-                    placeholder="Enter your store address"
+                    label={t('settings_page.address_label')}
+                    placeholder={t('settings_page.address_placeholder')}
                     value={formData.address}
                     onChange={(e) => setFormData({ ...formData, address: e.currentTarget.value })}
                   />
 
                   <ImageUpload
-                    label="Store Logo"
+                    label={t('settings_page.store_logo_label')}
                     value={formData.logoUrl}
                     onChange={(url) => setFormData({ ...formData, logoUrl: url })}
                     onError={(msg) => setErrorMessage(msg)}
@@ -195,17 +197,17 @@ export default function SettingsPage() {
               {!isNewMerchant && (
                 <Card withBorder padding="lg" radius="md">
                   <Title order={3} mb="md">
-                    Account Information
+                    {t('settings_page.account_info_title')}
                   </Title>
                   <Stack gap="md">
                     <CopyButton value={session?.user?.email || ''}>
                       {({ copied, copy }) => (
                         <TextInput
-                          label="Email"
+                          label={t('settings_page.email_label')}
                           value={session?.user?.email || ''}
                           readOnly
                           rightSection={(
-                            <Tooltip label={copied ? 'Copied' : 'Copy'} withArrow position="right">
+                            <Tooltip label={copied ? t('settings_page.copied') : t('settings_page.copy')} withArrow position="right">
                               <ActionIcon
                                 color={copied ? 'teal' : 'gray'}
                                 variant="subtle"
@@ -221,12 +223,12 @@ export default function SettingsPage() {
                     <CopyButton value={merchant?.slug || ''}>
                       {({ copied, copy }) => (
                         <TextInput
-                          label="Store URL Slug"
+                          label={t('settings_page.store_url_slug_label')}
                           value={merchant?.slug || ''}
                           readOnly
-                          description="Your store is accessible at: /store/{slug}"
+                          description={t('settings_page.store_url_slug_desc')}
                           rightSection={(
-                            <Tooltip label={copied ? 'Copied' : 'Copy'} withArrow position="right">
+                            <Tooltip label={copied ? t('settings_page.copied') : t('settings_page.copy')} withArrow position="right">
                               <ActionIcon
                                 color={copied ? 'teal' : 'gray'}
                                 variant="subtle"
@@ -249,7 +251,7 @@ export default function SettingsPage() {
                   loading={updateMerchant.isPending || createMerchant.isPending}
                   leftSection={<IconCheck size={16} />}
                 >
-                  {isNewMerchant ? 'Create Store' : 'Save Settings'}
+                  {isNewMerchant ? t('settings_page.create_store_btn') : t('settings_page.save_settings_btn')}
                 </Button>
               </Group>
             </Stack>
