@@ -8,6 +8,7 @@ import {
   Loader,
 } from '@mantine/core';
 import { useState, useMemo } from 'react';
+import useTranslation from 'next-translate/useTranslation';
 import { z } from 'zod';
 import { CreateProductSchema, CreateProductInput } from '@/schemas/product';
 import { ProductPriceInput } from './ProductPriceInput';
@@ -25,6 +26,7 @@ export function ProductForm({
   onSubmit,
   isLoading = false,
 }: ProductFormProps) {
+  const { t } = useTranslation('common');
   const [formData, setFormData] = useState({
     name: initialData?.name ?? '',
     description: initialData?.description ?? '',
@@ -55,11 +57,11 @@ export function ProductForm({
       await onSubmit(validated);
     } catch (err) {
       if (err instanceof z.ZodError) {
-        setError(err.issues[0]?.message || 'Validation error');
+        setError(err.issues[0]?.message || t('validation_error'));
       } else if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError('An unexpected error occurred');
+        setError(t('unexpected_error'));
       }
     }
   };
@@ -70,8 +72,8 @@ export function ProductForm({
         {error && <Alert color="red">{error}</Alert>}
 
         <TextInput
-          label="Category"
-          placeholder="e.g., Electronics, Clothing"
+          label={t('category')}
+          placeholder={t('category_placeholder')}
           value={formData.category}
           onChange={(e) => setFormData({ ...formData, category: e.currentTarget.value })}
           required
@@ -79,8 +81,8 @@ export function ProductForm({
         />
 
         <TextInput
-          label="Product Name"
-          placeholder="Enter product name"
+          label={t('product_name')}
+          placeholder={t('enter_product_name')}
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.currentTarget.value })}
           required
@@ -88,8 +90,8 @@ export function ProductForm({
         />
 
         <Textarea
-          label="Description"
-          placeholder="Enter product description"
+          label={t('description')}
+          placeholder={t('enter_description')}
           value={formData.description}
           onChange={(e) => setFormData({ ...formData, description: e.currentTarget.value })}
           rows={4}
@@ -121,7 +123,7 @@ export function ProductForm({
             disabled={isLoading || !isFormValid}
             leftSection={isLoading ? <Loader size={16} /> : null}
           >
-            {isLoading ? 'Saving...' : 'Save Product'}
+            {isLoading ? t('saving') : t('save_product')}
           </Button>
         </Group>
       </Stack>

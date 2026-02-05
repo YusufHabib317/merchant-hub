@@ -8,6 +8,7 @@ import {
 import { IconSearch, IconLayoutGrid, IconList } from '@tabler/icons-react';
 import { useDebouncedValue } from '@mantine/hooks';
 import { useEffect, useState } from 'react';
+import useTranslation from 'next-translate/useTranslation';
 
 export type ViewMode = 'grid' | 'table';
 
@@ -32,6 +33,7 @@ export function ProductViewControls({
   initialSort = 'createdAt',
   initialSortOrder = 'desc',
 }: ProductViewControlsProps) {
+  const { t } = useTranslation('common');
   const [search, setSearch] = useState(initialSearch);
   const [debouncedSearch] = useDebouncedValue(search, 500);
 
@@ -42,7 +44,7 @@ export function ProductViewControls({
   return (
     <Group justify="space-between" mb="lg">
       <TextInput
-        placeholder="Search products..."
+        placeholder={t('search_products_placeholder')}
         leftSection={<IconSearch size={16} />}
         value={search}
         onChange={(event) => setSearch(event.currentTarget.value)}
@@ -51,13 +53,13 @@ export function ProductViewControls({
 
       <Group>
         <Select
-          placeholder="Sort by"
+          placeholder={t('sort_by')}
           value={initialSort}
           onChange={(value) => onSortChange(value || 'createdAt')}
           data={[
-            { value: 'createdAt', label: 'Date Added' },
-            { value: 'name', label: 'Name' },
-            { value: 'priceUSD', label: 'Price' },
+            { value: 'createdAt', label: t('date_added') },
+            { value: 'name', label: t('name') },
+            { value: 'priceUSD', label: t('price') },
           ]}
           w={150}
         />
@@ -66,8 +68,8 @@ export function ProductViewControls({
           value={initialSortOrder}
           onChange={(value) => onSortOrderChange(value as 'asc' | 'desc')}
           data={[
-            { label: 'Asc', value: 'asc' },
-            { label: 'Desc', value: 'desc' },
+            { label: t('asc'), value: 'asc' },
+            { label: t('desc'), value: 'desc' },
           ]}
         />
 

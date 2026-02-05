@@ -2,7 +2,7 @@ const localLocales = ["common", "error"];
 
 module.exports = {
   locales: ["en", "ar"],
-  defaultLocale: "en",
+  defaultLocale: "ar",
   pages: {
     "*": ["common", "error"],
     "/dashboard": ["common", "error"],

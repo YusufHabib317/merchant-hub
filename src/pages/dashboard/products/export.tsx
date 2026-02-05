@@ -49,6 +49,7 @@ import { apiClient } from '@/lib/api/client';
 import { API_ENDPOINTS } from '@/lib/api/endpoints';
 import { useQuery } from '@tanstack/react-query';
 import { useProductSort } from '@/lib/hooks';
+import useTranslation from 'next-translate/useTranslation';
 
 interface SortableExportItemProps {
   product: ExportProduct;
@@ -108,6 +109,7 @@ export default function ExportProductsPage() {
   const { data: session } = authClient.useSession();
   const { data, isLoading } = useProducts(undefined, { page: 1, limit: 1000 });
   const rawProducts = (data?.products || []) as ExportProduct[];
+  const { t } = useTranslation('common');
 
   const { data: merchantData } = useQuery({
     queryKey: ['merchant'],
@@ -216,7 +218,11 @@ export default function ExportProductsPage() {
   };
 
   const handleExport = async () => {
-    if (!previewRef.current || selectedProducts.length === 0) return;
+    if (selectedProducts.length === 0) {
+      setError(t('export_products.no_products'));
+      return;
+    }
+    if (!previewRef.current) return;
 
     setIsExporting(true);
     setError(null);
@@ -233,7 +239,11 @@ export default function ExportProductsPage() {
   };
 
   const handleShare = async () => {
-    if (!previewRef.current || selectedProducts.length === 0) return;
+    if (selectedProducts.length === 0) {
+      setError(t('export_products.no_products'));
+      return;
+    }
+    if (!previewRef.current) return;
 
     setIsExporting(true);
     setError(null);

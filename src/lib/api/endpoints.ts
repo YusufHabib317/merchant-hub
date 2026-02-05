@@ -14,6 +14,14 @@ export interface EndpointParams {
  * API endpoints organized by resource
  */
 export const API_ENDPOINTS = {
+  // Auth
+  auth: {
+    requestPasswordChangeOTP: '/auth/password-change/request-otp',
+    verifyPasswordChangeOTP: '/auth/password-change/verify-otp',
+    requestPasswordResetOTP: '/auth/password-reset/request-otp',
+    verifyPasswordResetOTP: '/auth/password-reset/verify-otp',
+  },
+
   // Dashboard
   dashboard: {
     stats: '/dashboard/stats',

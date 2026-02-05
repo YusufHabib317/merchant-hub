@@ -5,6 +5,7 @@ import {
   Stack,
 } from '@mantine/core';
 import { DEFAULT_EXCHANGE_RATE } from '@/lib/constants';
+import useTranslation from 'next-translate/useTranslation';
 
 interface ProductPriceInputProps {
   priceUSD: number;
@@ -23,6 +24,8 @@ export function ProductPriceInput({
   onPriceSYPChange,
   onExchangeRateChange,
 }: ProductPriceInputProps) {
+  const { t } = useTranslation('common');
+
   const handleUSDChange = (value: number | string) => {
     const numValue = value === '' || value === null || value === undefined ? 0 : Number(value);
     if (Number.isNaN(numValue)) return;
@@ -51,18 +54,18 @@ export function ProductPriceInput({
   return (
     <Stack gap="md">
       <NumberInput
-        label="Exchange Rate (1 USD = X SYP)"
+        label={t('exchange_rate_label')}
         placeholder="15000"
         value={exchangeRate}
         onChange={handleExchangeRateChange}
         min={1}
         step={100}
         required
-        description="Set your custom exchange rate for this product"
+        description={t('exchange_rate_description')}
       />
       <Group grow>
         <NumberInput
-          label="Price (USD)"
+          label={t('price_usd')}
           placeholder="0"
           value={priceUSD}
           onChange={handleUSDChange}
@@ -72,7 +75,7 @@ export function ProductPriceInput({
           required
         />
         <NumberInput
-          label="Price (SYP)"
+          label={t('price_syp')}
           placeholder="0"
           value={priceSYP}
           onChange={handleSYPChange}
@@ -82,11 +85,11 @@ export function ProductPriceInput({
         />
       </Group>
       <Text size="sm" c="dimmed">
-        Current rate: 1 USD =
+        {t('current_rate_text')}
         {' '}
         {exchangeRate.toLocaleString()}
         {' '}
-        SYP
+        {t('syp')}
       </Text>
     </Stack>
   );

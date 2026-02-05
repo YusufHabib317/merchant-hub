@@ -51,6 +51,10 @@ export const ROUTES = {
       path: '/auth/reset-password',
       metadata: { title: 'Reset Password' },
     },
+    verifyOtp: {
+      path: '/auth/verify-otp',
+      metadata: { title: 'Verify Email' },
+    },
   },
 
   // Dashboard routes
@@ -130,6 +134,15 @@ export const ROUTES = {
         requiresAuth: true,
       },
     },
+
+    // Profile
+    profile: {
+      path: '/dashboard/profile',
+      metadata: {
+        title: 'Profile',
+        requiresAuth: true,
+      },
+    },
   },
 
   // Public merchant page
@@ -168,6 +181,7 @@ export const getRoutePath = {
   register: () => ROUTES.auth.register.path,
   forgotPassword: () => ROUTES.auth.forgotPassword.path,
   resetPassword: () => ROUTES.auth.resetPassword.path,
+  verifyOtp: () => ROUTES.auth.verifyOtp.path,
 
   // Dashboard
   dashboard: () => ROUTES.dashboard.index.path,
@@ -179,6 +193,7 @@ export const getRoutePath = {
   chat: () => ROUTES.dashboard.chat.path,
   settings: () => ROUTES.dashboard.settings.path,
   aiContext: () => ROUTES.dashboard.aiContext.path,
+  profile: () => ROUTES.dashboard.profile.path,
 
   // Merchant
   merchantStore: (slug: string) => buildRoute(ROUTES.merchant.view, { slug }),

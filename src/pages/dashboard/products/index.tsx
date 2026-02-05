@@ -7,11 +7,13 @@ import {
   Loader,
   Center,
 } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
 import {
   IconPlus,
   IconFileExport,
 } from '@tabler/icons-react';
 import { useState } from 'react';
+import useTranslation from 'next-translate/useTranslation';
 import { useLocalStorage } from '@mantine/hooks';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
@@ -24,6 +26,7 @@ import { ProductsContent } from '@/components/products/ProductsContent';
 import { DeleteProductModal } from '@/components/products/DeleteProductModal';
 
 export default function ProductsPage() {
+  const { t } = useTranslation('common');
   const {
     toNewProduct, toSettings, toExportProducts, toEditProduct,
   } = useAppRouter();
@@ -60,6 +63,18 @@ export default function ProductsPage() {
   const pagination = data?.pagination;
   const hasMerchant = !!merchant;
 
+  const handleExportClick = () => {
+    if (!pagination?.total) {
+      notifications.show({
+        title: t('warning'),
+        message: t('no_products_to_export'),
+        color: 'yellow',
+      });
+      return;
+    }
+    toExportProducts();
+  };
+
   const handleDelete = () => {
     if (productToDelete) {
       deleteProduct.mutate(productToDelete, {
@@ -75,21 +90,21 @@ export default function ProductsPage() {
       <DashboardLayout>
         <Stack gap="lg">
           <Group justify="space-between" align="center">
-            <Title order={1}>Products</Title>
+            <Title order={1}>{t('products')}</Title>
             {hasMerchant && (
               <Group gap="xs" wrap="nowrap">
                 <Button
                   variant="light"
                   leftSection={<IconFileExport size={16} />}
-                  onClick={toExportProducts}
+                  onClick={handleExportClick}
                 >
-                  Export Products
+                  {t('export_products_action')}
                 </Button>
                 <Button
                   leftSection={<IconPlus size={16} />}
                   onClick={toNewProduct}
                 >
-                  Add Product
+                  {t('add_product')}
                 </Button>
               </Group>
             )}
@@ -123,7 +138,7 @@ export default function ProductsPage() {
 
           {error && (
             <Text c="red">
-              Failed to load products. Please try again.
+              {t('error_loading_products')}
             </Text>
           )}
 

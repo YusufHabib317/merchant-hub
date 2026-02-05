@@ -16,6 +16,7 @@ import { Carousel } from '@mantine/carousel';
 import {
   IconEdit, IconTrash, IconDots,
 } from '@tabler/icons-react';
+import useTranslation from 'next-translate/useTranslation';
 import { useState } from 'react';
 import { formatCurrency } from '@/utils/currency';
 
@@ -44,6 +45,7 @@ export function ProductCard({
   onEdit = undefined,
   onDelete = undefined,
 }: ProductCardProps) {
+  const { t } = useTranslation('common');
   const [deleteModalOpened, setDeleteModalOpened] = useState(false);
 
   const handleEdit = () => {
@@ -78,7 +80,7 @@ export function ProductCard({
                   justifyContent: 'center',
                 }}
               >
-                <Text c="dimmed" size="xs">No image</Text>
+                <Text c="dimmed" size="xs">{t('no_image')}</Text>
               </Box>
             ) : null}
 
@@ -146,14 +148,14 @@ export function ProductCard({
                       leftSection={<IconEdit size={14} />}
                       onClick={handleEdit}
                     >
-                      Edit
+                      {t('edit')}
                     </Menu.Item>
                     <Menu.Item
                       leftSection={<IconTrash size={14} />}
                       color="red"
                       onClick={() => setDeleteModalOpened(true)}
                     >
-                      Delete
+                      {t('delete')}
                     </Menu.Item>
                   </Menu.Dropdown>
                 </Menu>
@@ -189,18 +191,18 @@ export function ProductCard({
       <Modal
         opened={deleteModalOpened}
         onClose={() => setDeleteModalOpened(false)}
-        title="Delete Product"
+        title={t('delete_product_title')}
         centered
       >
         <Text mb="lg">
-          Are you sure you want to delete this product? This action cannot be undone.
+          {t('delete_product_confirm')}
         </Text>
         <Group justify="flex-end">
           <Button variant="default" onClick={() => setDeleteModalOpened(false)}>
-            Cancel
+            {t('cancel')}
           </Button>
           <Button color="red" onClick={handleDelete}>
-            Delete
+            {t('delete')}
           </Button>
         </Group>
       </Modal>

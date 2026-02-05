@@ -1,6 +1,7 @@
 import {
   Modal, Text, Group, Button,
 } from '@mantine/core';
+import useTranslation from 'next-translate/useTranslation';
 
 interface DeleteProductModalProps {
   opened: boolean;
@@ -15,26 +16,27 @@ export function DeleteProductModal({
   onConfirm,
   loading,
 }: DeleteProductModalProps) {
+  const { t } = useTranslation('common');
   return (
     <Modal
       opened={opened}
       onClose={onClose}
-      title="Delete Product"
+      title={t('delete_product_title')}
       centered
     >
       <Text mb="lg">
-        Are you sure you want to delete this product? This action cannot be undone.
+        {t('delete_product_confirm')}
       </Text>
       <Group justify="flex-end">
         <Button variant="default" onClick={onClose}>
-          Cancel
+          {t('cancel')}
         </Button>
         <Button
           color="red"
           onClick={onConfirm}
           loading={loading}
         >
-          Delete
+          {t('delete')}
         </Button>
       </Group>
     </Modal>

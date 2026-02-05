@@ -16,6 +16,7 @@ import {
 import { useState } from 'react';
 import { UploadButton } from '@uploadthing/react';
 import type { UploadRouter } from '@/lib/uploadthing';
+import useTranslation from 'next-translate/useTranslation';
 
 interface MultiImageUploadProps {
   value: string[];
@@ -34,6 +35,7 @@ export function MultiImageUpload({
   maxImages = 3,
   required = false,
 }: MultiImageUploadProps) {
+  const { t } = useTranslation('common');
   const [isUploading, setIsUploading] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -48,7 +50,7 @@ export function MultiImageUpload({
     <Stack gap="xs">
       <Group justify="space-between">
         <Text size="sm" fw={500}>
-          Product Images
+          {t('product_images')}
           {required && <Text component="span" c="red"> *</Text>}
         </Text>
         <Text size="xs" c="dimmed">
@@ -57,7 +59,7 @@ export function MultiImageUpload({
           /
           {maxImages}
           {' '}
-          images
+          {t('images')}
         </Text>
       </Group>
 
@@ -75,7 +77,7 @@ export function MultiImageUpload({
               <Box pos="relative">
                 <Image
                   src={url}
-                  alt={`Product image ${index + 1}`}
+                  alt={`${t('product_image_alt')} ${index + 1}`}
                   h={150}
                   fit="contain"
                   radius="sm"
@@ -99,7 +101,7 @@ export function MultiImageUpload({
                     left={4}
                   >
                     <Text size="xs" fw={600} c="blue" bg="white" px={6} py={2} style={{ borderRadius: 4 }}>
-                      Primary
+                      {t('primary')}
                     </Text>
                   </Box>
                 )}
@@ -121,7 +123,7 @@ export function MultiImageUpload({
               <ThemeIcon size={48} radius="xl" variant="light" color="blue">
                 <IconUpload size={24} />
               </ThemeIcon>
-              <Text size="sm" c="dimmed">Uploading...</Text>
+              <Text size="sm" c="dimmed">{t('uploading')}</Text>
               <Progress value={progress} w="100%" size="sm" animated />
             </Stack>
           ) : (
@@ -130,12 +132,15 @@ export function MultiImageUpload({
                 <IconPhoto size={24} />
               </ThemeIcon>
               <Text size="sm" c="dimmed" ta="center">
-                Click below to upload
+                {t('click_to_upload')}
                 {' '}
-                {value.length === 0 ? 'images' : 'more images'}
+                {value.length === 0 ? t('images') : t('more_images')}
               </Text>
               <UploadButton<UploadRouter, 'productImage'>
                 endpoint="productImage"
+                content={{
+                  button: t('choose_files'),
+                }}
                 onUploadBegin={() => {
                   setIsUploading(true);
                   setProgress(0);
@@ -171,10 +176,11 @@ export function MultiImageUpload({
                 }}
               />
               <Text size="xs" c="dimmed">
-                PNG, JPG up to 4MB each • Max
+                {t('upload_instructions')}
+                {' '}
                 {maxImages}
                 {' '}
-                images
+                {t('images')}
               </Text>
             </Stack>
           )}

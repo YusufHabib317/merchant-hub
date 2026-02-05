@@ -24,7 +24,12 @@ import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 
 export default function LoginPage() {
   const { t, lang } = useTranslation('common');
-  const { toDashboard, query } = useAppRouter();
+  const {
+    toDashboard,
+    toRegister,
+    toForgotPassword,
+    query,
+  } = useAppRouter();
   const { reset } = query;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -153,10 +158,10 @@ export default function LoginPage() {
         </form>
 
         <Group justify="space-between" mt="lg" gap="xs">
-          <Anchor component="a" href="/auth/register" size="sm">
+          <Anchor component="button" type="button" onClick={toRegister} size="sm">
             {t('auth.no_account')}
           </Anchor>
-          <Anchor component="a" href="/auth/forgot-password" size="sm">
+          <Anchor component="button" type="button" onClick={toForgotPassword} size="sm">
             {t('auth.forgot_password')}
           </Anchor>
         </Group>

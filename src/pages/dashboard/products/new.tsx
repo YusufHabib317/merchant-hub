@@ -10,8 +10,10 @@ import { ProductForm } from '@/components/products/ProductForm';
 import { useCreateProduct } from '@/lib/hooks/useProducts';
 import { CreateProductInput } from '@/schemas/product';
 import { useAppRouter } from '@/lib/hooks/useAppRouter';
+import useTranslation from 'next-translate/useTranslation';
 
 export default function NewProductPage() {
+  const { t } = useTranslation('common');
   const { toProducts } = useAppRouter();
   const createProduct = useCreateProduct();
 
@@ -29,7 +31,7 @@ export default function NewProductPage() {
       <DashboardLayout>
         <Stack gap="lg">
           <Group justify="space-between" align="center">
-            <Title order={1}>Add New Product</Title>
+            <Title order={1}>{t('add_new_product')}</Title>
           </Group>
 
           <ProductForm
@@ -42,7 +44,7 @@ export default function NewProductPage() {
               variant="default"
               onClick={toProducts}
             >
-              Cancel
+              {t('cancel')}
             </Button>
           </Group>
         </Stack>

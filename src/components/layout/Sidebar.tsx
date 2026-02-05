@@ -6,6 +6,7 @@ import {
   IconSettings,
   IconMessageCircle,
   IconBrain,
+  IconUserCircle,
 } from '@tabler/icons-react';
 import { useAppRouter, useIsActiveRoute } from '@/lib/hooks/useAppRouter';
 import { getRoutePath } from '@/config/routes';
@@ -26,6 +27,9 @@ const navItems = [
   },
   {
     labelKey: 'nav.ai_context', icon: IconBrain, path: getRoutePath.aiContext(),
+  },
+  {
+    labelKey: 'nav.profile', icon: IconUserCircle, path: getRoutePath.profile(),
   },
   {
     labelKey: 'nav.settings', icon: IconSettings, path: getRoutePath.settings(),

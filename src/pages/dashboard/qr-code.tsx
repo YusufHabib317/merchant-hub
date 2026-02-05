@@ -6,37 +6,51 @@ import {
   IconDownload, IconCopy, IconCheck, IconAlertCircle,
 } from '@tabler/icons-react';
 import { useEffect, useState, useRef } from 'react';
+import useTranslation from 'next-translate/useTranslation';
 import QRCode from 'qrcode';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { useMyMerchant } from '@/lib/hooks/useMerchants';
 import { useAppRouter } from '@/lib/hooks/useAppRouter';
 
-export default function QRCodePage() {
-  const { toSettings } = useAppRouter();
-  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
+function StoreQRCanvas({ url, onGenerated }: { url: string; onGenerated: (dataUrl: string) => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const { data: merchant, isLoading, error } = useMyMerchant();
-
-  const storeUrl = merchant
-    ? `${typeof window !== 'undefined' ? window.location.origin : ''}/m/${merchant.slug}`
-    : '';
-
   useEffect(() => {
-    if (storeUrl && canvasRef.current) {
-      QRCode.toCanvas(canvasRef.current, storeUrl, {
+    if (url && canvasRef.current) {
+      QRCode.toCanvas(canvasRef.current, url, {
         width: 300,
         margin: 2,
         color: {
           dark: '#000000',
           light: '#ffffff',
         },
-      }).then(() => {
-        setQrDataUrl(canvasRef.current?.toDataURL('image/png') || null);
-      });
+      })
+        .then(() => {
+          if (canvasRef.current) {
+            onGenerated(canvasRef.current.toDataURL('image/png'));
+          }
+        })
+        .catch((err) => {
+          // eslint-disable-next-line no-console
+          console.error('QR Generation error', err);
+        });
     }
-  }, [storeUrl]);
+  }, [url, onGenerated]);
+
+  return <canvas ref={canvasRef} />;
+}
+
+export default function QRCodePage() {
+  const { t } = useTranslation('common');
+  const { toSettings } = useAppRouter();
+  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
+
+  const { data: merchant, isLoading, error } = useMyMerchant();
+
+  const storeUrl = merchant
+    ? `${typeof window !== 'undefined' ? window.location.origin : ''}/m/${merchant.slug}`
+    : '';
 
   const handleDownload = () => {
     if (qrDataUrl) {
@@ -51,10 +65,10 @@ export default function QRCodePage() {
     <ProtectedRoute>
       <DashboardLayout>
         <Stack gap="lg">
-          <Title order={1}>QR Code</Title>
+          <Title order={1}>{t('qr_code_page.title')}</Title>
 
           <Text c="dimmed">
-            Share your store QR code with customers so they can easily access your products.
+            {t('qr_code_page.description')}
           </Text>
 
           {isLoading && (
@@ -66,14 +80,13 @@ export default function QRCodePage() {
           {!isLoading && (error || !merchant) && (
             <Alert
               icon={<IconAlertCircle size={16} />}
-              title="No Store Found"
+              title={t('qr_code_page.no_store_title')}
               color="yellow"
               variant="light"
             >
               <Stack gap="md">
                 <Text size="sm">
-                  You need to create a store before you can generate a QR code.
-                  Go to Settings to set up your merchant profile.
+                  {t('qr_code_page.no_store_message')}
                 </Text>
                 <Button
                   onClick={toSettings}
@@ -82,7 +95,7 @@ export default function QRCodePage() {
                   size="sm"
                   style={{ alignSelf: 'flex-start' }}
                 >
-                  Go to Settings
+                  {t('qr_code_page.go_to_settings')}
                 </Button>
               </Stack>
             </Alert>
@@ -94,7 +107,7 @@ export default function QRCodePage() {
                 <Card withBorder padding="xl" radius="md">
                   <Stack align="center" gap="lg">
                     <Text fw={600} size="lg">
-                      {merchant?.name || 'Your Store'}
+                      {merchant?.name || t('qr_code_page.your_store')}
                     </Text>
 
                     <Box
@@ -105,12 +118,12 @@ export default function QRCodePage() {
                         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                       }}
                     >
-                      <canvas ref={canvasRef} />
+                      <StoreQRCanvas url={storeUrl} onGenerated={setQrDataUrl} />
                     </Box>
 
                     <Box w="100%" maw={400}>
                       <Text size="sm" fw={500} mb="xs">
-                        Store URL
+                        {t('qr_code_page.store_url')}
                       </Text>
                       <Group gap={4}>
                         <Paper
@@ -128,7 +141,7 @@ export default function QRCodePage() {
                         </Paper>
                         <CopyButton value={storeUrl}>
                           {({ copied, copy }) => (
-                            <Tooltip label={copied ? 'Copied!' : 'Copy URL'}>
+                            <Tooltip label={copied ? t('qr_code_page.copy_tooltip_copied') : t('qr_code_page.copy_tooltip')}>
                               <ActionIcon
                                 color={copied ? 'teal' : 'gray'}
                                 onClick={copy}
@@ -149,7 +162,7 @@ export default function QRCodePage() {
                         onClick={handleDownload}
                         disabled={!qrDataUrl}
                       >
-                        Download QR Code
+                        {t('qr_code_page.download_button')}
                       </Button>
                     </Group>
                   </Stack>
@@ -159,33 +172,33 @@ export default function QRCodePage() {
               <Grid.Col span={{ base: 12, md: 6 }}>
                 <Card withBorder padding="lg" radius="md">
                   <Title order={4} mb="sm">
-                    How to use your QR Code
+                    {t('qr_code_page.how_to_use_title')}
                   </Title>
                   <Stack gap="xs">
-                    <Text size="sm">1. Download the QR code image above</Text>
+                    <Text size="sm">{t('qr_code_page.step_1')}</Text>
                     <Text size="sm">
-                      2. Print it on flyers, business cards, or display it in your store
+                      {t('qr_code_page.step_2')}
                     </Text>
                     <Text size="sm">
-                      3. Customers can scan the code to view your products and chat with you
+                      {t('qr_code_page.step_3')}
                     </Text>
                   </Stack>
 
                   <Title order={4} mt="lg" mb="sm">
-                    Best Practices
+                    {t('qr_code_page.best_practices_title')}
                   </Title>
                   <Stack gap="xs">
                     <Text size="sm" c="dimmed">
-                      • Use a high-contrast design for better scanning
+                      {t('qr_code_page.practice_1')}
                     </Text>
                     <Text size="sm" c="dimmed">
-                      • Test the QR code before printing
+                      {t('qr_code_page.practice_2')}
                     </Text>
                     <Text size="sm" c="dimmed">
-                      • Place QR codes at eye level
+                      {t('qr_code_page.practice_3')}
                     </Text>
                     <Text size="sm" c="dimmed">
-                      • Include instructions near the QR code
+                      {t('qr_code_page.practice_4')}
                     </Text>
                   </Stack>
                 </Card>

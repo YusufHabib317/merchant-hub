@@ -23,7 +23,7 @@ import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 
 export default function RegisterPage() {
   const { t, lang } = useTranslation('common');
-  const { toDashboard, toLogin } = useAppRouter();
+  const { to, toLogin } = useAppRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -59,9 +59,9 @@ export default function RegisterPage() {
       }
 
       if (data) {
-        // Redirect to dashboard on successful registration
+        // Redirect to OTP verification page
         setIsLoading(false);
-        toDashboard();
+        to(`/auth/verify-otp?email=${encodeURIComponent(validated.email)}`);
       }
     } catch (err) {
       if (err instanceof z.ZodError) {

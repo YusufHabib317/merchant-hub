@@ -1,13 +1,8 @@
 import {
-  Table,
-  Image,
-  Text,
-  Badge,
-  Group,
-  ActionIcon,
-  Box,
+  ActionIcon, Badge, Box, Group, Image, Table, Text,
 } from '@mantine/core';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
+import useTranslation from 'next-translate/useTranslation';
 import { formatCurrency } from '@/utils/currency';
 
 interface Product {
@@ -33,6 +28,8 @@ export function ProductTable({
   onDelete = undefined,
   showActions = false,
 }: ProductTableProps) {
+  const { t } = useTranslation('common');
+
   const rows = products.map((product) => (
     <Table.Tr key={product.id}>
       <Table.Td>
@@ -95,11 +92,11 @@ export function ProductTable({
     <Table striped highlightOnHover>
       <Table.Thead>
         <Table.Tr>
-          <Table.Th>Image</Table.Th>
-          <Table.Th>Name</Table.Th>
-          <Table.Th>Category</Table.Th>
-          <Table.Th>Price</Table.Th>
-          {showActions && <Table.Th>Actions</Table.Th>}
+          <Table.Th>{t('image')}</Table.Th>
+          <Table.Th>{t('name')}</Table.Th>
+          <Table.Th>{t('category')}</Table.Th>
+          <Table.Th>{t('price')}</Table.Th>
+          {showActions && <Table.Th>{t('actions')}</Table.Th>}
         </Table.Tr>
       </Table.Thead>
       <Table.Tbody>{rows}</Table.Tbody>

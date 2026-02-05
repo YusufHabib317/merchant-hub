@@ -1,4 +1,5 @@
 import { Center, Pagination, Text } from '@mantine/core';
+import useTranslation from 'next-translate/useTranslation';
 import { ProductList } from './ProductList';
 import { ProductTable } from './ProductTable';
 import { ViewMode } from './ProductViewControls';
@@ -25,10 +26,12 @@ export function ProductsContent({
   toEditProduct,
   setProductToDelete,
 }: ProductsContentProps) {
+  const { t } = useTranslation('common');
+
   if (!isLoading && products.length === 0) {
     return (
       <Text c="dimmed" ta="center" py="xl">
-        No products found
+        {t('no_products_found')}
       </Text>
     );
   }

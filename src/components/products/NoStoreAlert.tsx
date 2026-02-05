@@ -2,23 +2,24 @@ import {
   Alert, Stack, Text, Button,
 } from '@mantine/core';
 import { IconAlertCircle } from '@tabler/icons-react';
+import useTranslation from 'next-translate/useTranslation';
 
 interface NoStoreAlertProps {
   onSettingsClick: () => void;
 }
 
 export function NoStoreAlert({ onSettingsClick }: NoStoreAlertProps) {
+  const { t } = useTranslation('common');
   return (
     <Alert
       icon={<IconAlertCircle size={16} />}
-      title="No Store Found"
+      title={t('no_store_found_title')}
       color="yellow"
       variant="light"
     >
       <Stack gap="md">
         <Text size="sm">
-          You need to create a store before you can add products.
-          Go to Settings to set up your merchant profile.
+          {t('no_store_found_message')}
         </Text>
         <Button
           onClick={onSettingsClick}
@@ -27,7 +28,7 @@ export function NoStoreAlert({ onSettingsClick }: NoStoreAlertProps) {
           size="sm"
           style={{ alignSelf: 'flex-start' }}
         >
-          Go to Settings
+          {t('go_to_settings')}
         </Button>
       </Stack>
     </Alert>

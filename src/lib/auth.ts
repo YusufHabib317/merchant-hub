@@ -1,8 +1,8 @@
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
-import { customSession } from 'better-auth/plugins';
+import { customSession, emailOTP } from 'better-auth/plugins';
 import { prisma } from './prisma';
-import { sendVerificationEmail, sendPasswordResetEmail, sendWelcomeEmail } from './email';
+import { sendPasswordResetEmail, sendOTPEmail } from './email';
 
 interface AuthUser {
   id: string;
@@ -35,28 +35,8 @@ const authOptions = {
     },
   },
   emailVerification: {
-    sendVerificationEmail: async ({ user, url }: { user: { email: string; name?: string }; url: string }) => {
-      try {
-        await sendVerificationEmail(user.email, url);
-        // eslint-disable-next-line no-console
-        console.log(`Verification email sent to ${user.email}`);
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('Failed to send verification email:', error);
-        // Don't throw error to prevent blocking signup flow
-      }
-    },
-    autoSignUpCallback: async (user: AuthUser) => {
-      // Send welcome email after email verification
-      try {
-        await sendWelcomeEmail(user.email, user.name);
-        // eslint-disable-next-line no-console
-        console.log(`Welcome email sent to ${user.email}`);
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('Failed to send welcome email:', error);
-      }
-    },
+    sendOnSignUp: false, // We use OTP instead
+    autoSignIn: false, // Don't auto sign in, require OTP verification first
     sendResetPasswordEmail: async ({ user, url }: { user: { email: string; name?: string }; url: string }) => {
       try {
         await sendPasswordResetEmail(user.email, url);
@@ -65,7 +45,6 @@ const authOptions = {
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error('Failed to send password reset email:', error);
-        // Don't throw error to prevent blocking password reset flow
       }
     },
   },
@@ -95,6 +74,21 @@ const authOptions = {
 export const auth = betterAuth({
   ...authOptions,
   plugins: [
+    emailOTP({
+      otpLength: 6,
+      expiresIn: 600, // 10 minutes
+      async sendVerificationOTP({ email, otp, type }) {
+        try {
+          await sendOTPEmail(email, otp, type);
+          // eslint-disable-next-line no-console
+          console.log(`OTP email sent to ${email} for ${type}`);
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error('Failed to send OTP email:', error);
+          throw error;
+        }
+      },
+    }),
     customSession(async ({ user, session }) => ({
       user: {
         id: user.id,

@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { fromNodeHeaders } from 'better-auth/node';
 import { auth } from '@/lib/auth';
 
 interface SessionUser {
@@ -24,7 +25,7 @@ export interface AuthenticatedRequest extends NextApiRequest {
 export async function getServerSession(req: NextApiRequest): Promise<Session | null> {
   try {
     const session = await auth.api.getSession({
-      headers: req.headers as unknown as Headers,
+      headers: fromNodeHeaders(req.headers),
     });
     return session as Session | null;
   } catch {

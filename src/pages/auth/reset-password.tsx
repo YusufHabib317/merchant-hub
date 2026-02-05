@@ -11,48 +11,81 @@ import {
   Anchor,
   Alert,
   Loader,
+  PinInput,
+  Center,
 } from '@mantine/core';
 import { authClient } from '@/lib/auth-client';
 import { z } from 'zod';
 import { useAppRouter } from '@/lib/hooks/useAppRouter';
 import { getRoutePath } from '@/config/routes';
+import useTranslation from 'next-translate/useTranslation';
 
-const ResetPasswordSchema = z
+const createResetPasswordSchema = (t: (key: string) => string) => z
   .object({
+    otp: z.string().length(6, t('common:auth.otp_must_be_6_digits')),
     password: z
       .string()
-      .min(8, 'Password must be at least 8 characters'),
+      .min(8, t('common:auth.password_min_length')),
     // .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
     // .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
     // .regex(/[0-9]/, 'Password must contain at least one number'),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: 'Passwords do not match',
+    message: t('common:auth.passwords_dont_match'),
     path: ['confirmPassword'],
   });
 
 export default function ResetPasswordPage() {
-  const { query, to } = useAppRouter();
-  const { token } = query;
+  const { t } = useTranslation();
+  const { query, to, toLogin } = useAppRouter();
+  const { email } = query;
+  const [otp, setOtp] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isResending, setIsResending] = useState(false);
+
+  const ResetPasswordSchema = createResetPasswordSchema(t);
 
   useEffect(() => {
-    if (!token) {
-      setError('Invalid or missing reset token');
+    if (!email) {
+      setError(t('common:auth.email_required'));
     }
-  }, [token]);
+  }, [email, t]);
+
+  const handleResendOTP = async () => {
+    if (!email || typeof email !== 'string') {
+      setError(t('common:auth.otp_email_required'));
+      return;
+    }
+
+    setIsResending(true);
+    setError(null);
+
+    try {
+      const { error: resendError } = await authClient.emailOtp.requestPasswordReset({
+        email,
+      });
+
+      if (resendError) {
+        setError(resendError.message || t('common:auth.failed_to_resend'));
+      }
+    } catch {
+      setError(t('common:auth.failed_to_resend'));
+    } finally {
+      setIsResending(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setIsLoading(true);
 
-    if (!token) {
-      setError('Invalid reset token');
+    if (!email || typeof email !== 'string') {
+      setError(t('common:auth.otp_email_required'));
       setIsLoading(false);
       return;
     }
@@ -60,18 +93,20 @@ export default function ResetPasswordPage() {
     try {
       // Validate input
       const validated = ResetPasswordSchema.parse({
+        otp,
         password,
         confirmPassword,
       });
 
-      // Reset password
-      const { error: resetError } = await authClient.resetPassword({
-        token: token as string,
-        newPassword: validated.password,
+      // Reset password using OTP
+      const { error: resetError } = await authClient.emailOtp.resetPassword({
+        email,
+        otp: validated.otp,
+        password: validated.password,
       });
 
       if (resetError) {
-        setError(resetError.message || 'Failed to reset password');
+        setError(resetError.message || t('common:auth.otp_verification_failed'));
         setIsLoading(false);
         return;
       }
@@ -79,14 +114,14 @@ export default function ResetPasswordPage() {
       setIsLoading(false);
       // Redirect to login with success message
       to(`${getRoutePath.login()}?reset=success`);
-    } catch (err) {
-      if (err instanceof z.ZodError) {
-        const errorMessage = err.issues[0]?.message || 'Validation error';
+    } catch (resetError) {
+      if (resetError instanceof z.ZodError) {
+        const errorMessage = resetError.issues[0]?.message || t('common:error');
         setError(errorMessage);
-      } else if (err instanceof Error) {
-        setError(err.message);
+      } else if (resetError instanceof Error) {
+        setError(resetError.message);
       } else {
-        setError('An unexpected error occurred');
+        setError(t('common:error'));
       }
       setIsLoading(false);
     }
@@ -95,10 +130,10 @@ export default function ResetPasswordPage() {
   return (
     <Container size={420} my={40}>
       <Title ta="center" order={2} mb="lg">
-        Reset Your Password
+        {t('common:auth.reset_password_title')}
       </Title>
       <Text c="dimmed" size="sm" ta="center" mb={30}>
-        Enter your new password below
+        {t('common:auth.reset_password_subtitle', { email: email || '' })}
       </Text>
 
       <Paper withBorder shadow="md" p={30} mt={30} radius="md">
@@ -110,9 +145,26 @@ export default function ResetPasswordPage() {
 
         <form onSubmit={handleSubmit}>
           <Stack gap="md">
+            <div>
+              <Text size="sm" fw={500} mb="xs">
+                {t('common:auth.verification_code')}
+              </Text>
+              <Center>
+                <PinInput
+                  length={6}
+                  type="number"
+                  value={otp}
+                  onChange={setOtp}
+                  disabled={isLoading}
+                  size="lg"
+                  oneTimeCode
+                />
+              </Center>
+            </div>
+
             <PasswordInput
-              label="New Password"
-              placeholder="Create a strong password"
+              label={t('common:auth.new_password')}
+              placeholder={t('common:auth.new_password_placeholder')}
               required
               value={password}
               onChange={(e) => setPassword(e.currentTarget.value)}
@@ -121,8 +173,8 @@ export default function ResetPasswordPage() {
             />
 
             <PasswordInput
-              label="Confirm Password"
-              placeholder="Confirm your password"
+              label={t('common:auth.confirm_new_password')}
+              placeholder={t('common:auth.confirm_new_password_placeholder')}
               required
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.currentTarget.value)}
@@ -133,17 +185,32 @@ export default function ResetPasswordPage() {
             <Button
               fullWidth
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || otp.length !== 6}
               leftSection={isLoading ? <Loader size={16} /> : null}
             >
-              {isLoading ? 'Resetting...' : 'Reset Password'}
+              {isLoading ? t('common:auth.resetting') : t('common:auth.reset_password_button')}
             </Button>
           </Stack>
         </form>
 
-        <Group justify="center" mt="lg">
-          <Anchor component="a" href="/auth/login" size="sm">
-            Back to login
+        <Group justify="center" mt="lg" gap="md">
+          <Text size="sm" c="dimmed">
+            {t('common:auth.didnt_receive_code')}
+          </Text>
+          <Anchor
+            component="button"
+            type="button"
+            onClick={handleResendOTP}
+            disabled={isResending}
+            size="sm"
+          >
+            {isResending ? t('common:auth.sending') : t('common:auth.resend_code_button')}
+          </Anchor>
+        </Group>
+
+        <Group justify="center" mt="md">
+          <Anchor component="button" type="button" onClick={toLogin} size="sm">
+            {t('common:auth.back_to_login')}
           </Anchor>
         </Group>
       </Paper>
