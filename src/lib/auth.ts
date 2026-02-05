@@ -49,8 +49,8 @@ const authOptions = {
     },
   },
   session: {
-    expiresIn: 60 * 60 * 24 * 7, // 7 days - balanced security and UX
-    updateAge: 60 * 60 * 24, // 1 day - refresh session daily
+    expiresIn: 60 * 60 * 24 * 3, // 3 days - security-focused session duration
+    updateAge: 60 * 60 * 12, // 12 hours - refresh session twice daily
     cookieCache: {
       enabled: true,
       maxAge: 5 * 60, // 5 minutes

@@ -27,17 +27,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return;
     }
 
-    // Fetch merchant by slug
+    // Fetch merchant by slug - use select to only return public-facing fields
+    // This prevents leaking internal data like userId, subscriptionTier, etc.
     const merchant = await prisma.merchant.findUnique({
       where: { slug },
-      include: {
+      select: {
+        // Only expose public merchant info
+        id: true,
+        name: true,
+        slug: true,
+        description: true,
+        logoUrl: true,
+        isChatEnabled: true,
+        createdAt: true,
+        // Include owner's public info only
         user: {
           select: {
             name: true,
             image: true,
           },
         },
+        // Include products with only public fields
         products: {
+          where: { isPublished: true },
           select: {
             id: true,
             name: true,
@@ -46,8 +58,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             priceSYP: true,
             imageUrls: true,
             category: true,
-            // Explicitly exclude exchangeRate from public API
-            // exchangeRate: false, // Not needed, just don't select it
+            condition: true,
+            // Explicitly exclude exchangeRate, stock, and other internal fields
           },
         },
         _count: {

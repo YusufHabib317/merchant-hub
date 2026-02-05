@@ -3,9 +3,17 @@ import nextTranslate from 'next-translate-plugin';
 
 const chatServerUrl = process.env.NEXT_PUBLIC_CHAT_URL || 'http://localhost:9001';
 const chatServerWsUrl = chatServerUrl.replace('https://', 'wss://').replace('http://', 'ws://');
+const isProduction = process.env.NODE_ENV === 'production';
 
 const nextConfig = {
   reactStrictMode: true,
+
+  // Global API body size limit for security (1MB default, specific routes can override)
+  api: {
+    bodyParser: {
+      sizeLimit: '1mb',
+    },
+  },
 
   // Security headers
   async headers() {
@@ -39,13 +47,22 @@ const nextConfig = {
             value: 'camera=(), microphone=(), geolocation=()',
           },
           // Content Security Policy - prevents XSS and other injection attacks
+          // Production: remove 'unsafe-eval' for better security
+          // Development: allow 'unsafe-eval' for React DevTools and HMR
           {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://uploadthing.com",
+              // In production, we avoid 'unsafe-eval' for better XSS protection
+              // 'unsafe-inline' is still needed for inline styles from Mantine
+              isProduction
+                ? "script-src 'self' 'unsafe-inline' https://uploadthing.com"
+                : "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://uploadthing.com",
               "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: blob: https: http:",
+              // Restrict images to HTTPS only in production
+              isProduction
+                ? "img-src 'self' data: blob: https:"
+                : "img-src 'self' data: blob: https: http:",
               "font-src 'self' data:",
               `connect-src 'self' https://uploadthing.com https://*.uploadthing.com wss://*.uploadthing.com https://api.uploadthing.com ${chatServerUrl} ${chatServerWsUrl}`,
               "frame-ancestors 'self'",
