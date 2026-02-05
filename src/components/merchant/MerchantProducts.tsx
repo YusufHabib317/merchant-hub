@@ -67,9 +67,9 @@ export function MerchantProducts({
     return (
       <>
         {viewMode === 'grid' ? (
-          <ProductList products={products} />
+          <ProductList products={products} key={`grid-${page}`} />
         ) : (
-          <ProductTable products={products} />
+          <ProductTable products={products} key={`table-${page}`} />
         )}
 
         {pagination && pagination.totalPages > 1 && (

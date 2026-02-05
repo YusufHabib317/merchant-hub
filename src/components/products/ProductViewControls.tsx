@@ -36,10 +36,17 @@ export function ProductViewControls({
   const { t } = useTranslation('common');
   const [search, setSearch] = useState(initialSearch);
   const [debouncedSearch] = useDebouncedValue(search, 500);
+  const [isInitialMount, setIsInitialMount] = useState(true);
 
   useEffect(() => {
+    // Skip the initial mount to prevent resetting page on load
+    if (isInitialMount) {
+      setIsInitialMount(false);
+      return;
+    }
     onSearchChange(debouncedSearch);
-  }, [debouncedSearch, onSearchChange]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedSearch]);
 
   return (
     <Group justify="space-between" mb="lg">
