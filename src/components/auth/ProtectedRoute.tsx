@@ -14,24 +14,30 @@ export function ProtectedRoute({
   children,
   requiredRole = undefined,
 }: ProtectedRouteProps) {
-  const { toLogin, toDashboard } = useAppRouter();
+  const { toLogin, toDashboard, to } = useAppRouter();
   const { data: session, isPending } = authClient.useSession();
 
   useEffect(() => {
-    if (!isPending && !session) {
-      toLogin();
-    }
-  }, [session, isPending, toLogin]);
+    if (isPending) return;
 
-  // Check role-based access if required
-  useEffect(() => {
-    if (!isPending && session && requiredRole) {
+    if (!session) {
+      toLogin();
+      return;
+    }
+
+    if (!session.user.emailVerified) {
+      to(`/auth/verify-otp?email=${encodeURIComponent(session.user.email)}`);
+      return;
+    }
+
+    // Check role-based access if required
+    if (requiredRole) {
       const userRole = (session.user as Record<string, unknown>).role as string | undefined;
       if (!userRole || !requiredRole.includes(userRole)) {
         toDashboard();
       }
     }
-  }, [session, requiredRole, toDashboard, isPending]);
+  }, [session, isPending, toLogin, toDashboard, requiredRole, to]);
 
   if (isPending) {
     return (

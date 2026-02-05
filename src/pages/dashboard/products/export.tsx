@@ -20,6 +20,8 @@ import {
   ThemeIcon,
   SegmentedControl,
   Collapse,
+  MultiSelect,
+  NumberInput,
 } from '@mantine/core';
 import {
   IconDownload,
@@ -34,6 +36,9 @@ import {
   IconChevronDown,
   IconChevronUp,
   IconFilter,
+  IconTag,
+  IconPackage,
+  IconCash,
 } from '@tabler/icons-react';
 import {
   useState, useRef, useEffect, useMemo,
@@ -59,6 +64,36 @@ interface SortableExportItemProps {
   isSelected: boolean;
   onToggle: () => void;
 }
+
+// Filter helper functions
+const matchesCondition = (p: ExportProduct, conditionFilter: string) => conditionFilter === 'ALL' || p.condition === conditionFilter;
+
+const matchesCategory = (p: ExportProduct, categoryFilter: string[]) => categoryFilter.length === 0 || categoryFilter.includes(p.category || '');
+
+const matchesStock = (p: ExportProduct, stockFilter: string) => {
+  if (stockFilter === 'IN_STOCK') return p.stock !== undefined && p.stock > 0;
+  if (stockFilter === 'OUT_OF_STOCK') return !p.stock || p.stock <= 0;
+  return true;
+};
+
+const matchesPublished = (p: ExportProduct, publishedFilter: string) => {
+  if (publishedFilter === 'PUBLISHED') return p.isPublished === true;
+  if (publishedFilter === 'UNPUBLISHED') return p.isPublished === false;
+  return true;
+};
+
+const matchesTags = (p: ExportProduct, tagFilter: string[]) => {
+  if (tagFilter.length === 0) return true;
+  const productTags = p.tags || [];
+  return tagFilter.some((tag) => productTags.includes(tag));
+};
+
+const matchesPrice = (p: ExportProduct, minPrice: number | string, maxPrice: number | string) => {
+  const price = p.priceUSD;
+  const minValid = minPrice === '' || (typeof minPrice === 'number' && price >= minPrice);
+  const maxValid = maxPrice === '' || (typeof maxPrice === 'number' && price <= maxPrice);
+  return minValid && maxValid;
+};
 
 function SortableExportItem({ product, isSelected, onToggle }: SortableExportItemProps) {
   const controls = useDragControls();
@@ -108,6 +143,7 @@ function SortableExportItem({ product, isSelected, onToggle }: SortableExportIte
   );
 }
 
+/* eslint-disable complexity -- Main page component with extensive JSX rendering */
 export default function ExportProductsPage() {
   const { data: session } = authClient.useSession();
   const { data, isLoading } = useProducts(undefined, { page: 1, limit: 1000 });
@@ -191,12 +227,63 @@ export default function ExportProductsPage() {
   const [exportSuccess, setExportSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [conditionFilter, setConditionFilter] = useState<string>('ALL');
+  const [categoryFilter, setCategoryFilter] = useState<string[]>([]);
+  const [stockFilter, setStockFilter] = useState<string>('ALL');
+  const [publishedFilter, setPublishedFilter] = useState<string>('ALL');
+  const [tagFilter, setTagFilter] = useState<string[]>([]);
+  const [minPrice, setMinPrice] = useState<number | string>('');
+  const [maxPrice, setMaxPrice] = useState<number | string>('');
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
 
-  const filteredProducts = useMemo(() => products.filter((p) => {
-    if (conditionFilter === 'ALL') return true;
-    return p.condition === conditionFilter;
-  }), [products, conditionFilter]);
+  // Extract unique categories and tags from products
+  const availableCategories = useMemo(() => {
+    const categories = new Set<string>();
+    products.forEach((p) => {
+      if (p.category) categories.add(p.category);
+    });
+    return Array.from(categories).sort();
+  }, [products]);
+
+  const availableTags = useMemo(() => {
+    const tags = new Set<string>();
+    products.forEach((p) => {
+      if (p.tags && Array.isArray(p.tags)) {
+        p.tags.forEach((tag) => tags.add(tag));
+      }
+    });
+    return Array.from(tags).sort();
+  }, [products]);
+
+  const filteredProducts = useMemo(() => products.filter((p) => matchesCondition(p, conditionFilter)
+    && matchesCategory(p, categoryFilter)
+    && matchesStock(p, stockFilter)
+    && matchesPublished(p, publishedFilter)
+    && matchesTags(p, tagFilter)
+    && matchesPrice(p, minPrice, maxPrice)), [products, conditionFilter, categoryFilter, stockFilter, publishedFilter, tagFilter, minPrice, maxPrice]);
+
+  const activeFilterCount = useMemo(() => {
+    const filters = [
+      conditionFilter !== 'ALL',
+      categoryFilter.length > 0,
+      stockFilter !== 'ALL',
+      publishedFilter !== 'ALL',
+      tagFilter.length > 0,
+      minPrice !== '',
+      maxPrice !== '',
+    ];
+    return filters.filter(Boolean).length;
+  }, [conditionFilter, categoryFilter, stockFilter, publishedFilter, tagFilter, minPrice, maxPrice]);
+
+  const clearAllFilters = () => {
+    setConditionFilter('ALL');
+    setCategoryFilter([]);
+    setStockFilter('ALL');
+    setPublishedFilter('ALL');
+    setTagFilter([]);
+    setMinPrice('');
+    setMaxPrice('');
+  };
 
   const handleBgImageChange = (file: File | null) => {
     setBgImageFile(file);
@@ -358,26 +445,162 @@ export default function ExportProductsPage() {
                 </Group>
 
                 <Stack gap="md">
-                  <Box>
-                    <Group gap="xs" mb="xs">
-                      <ThemeIcon size="xs" variant="light" color="gray">
-                        <IconFilter size={12} />
-                      </ThemeIcon>
-                      <Text size="sm" fw={500}>{t('filter')}</Text>
+                  {/* Filter Section */}
+                  <Paper withBorder p="sm" radius="sm" bg="var(--mantine-color-gray-0)">
+                    <Group
+                      gap="xs"
+                      mb="xs"
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => setIsFiltersOpen((o) => !o)}
+                      justify="space-between"
+                    >
+                      <Group gap="xs">
+                        <ThemeIcon size="xs" variant="light" color="blue">
+                          <IconFilter size={12} />
+                        </ThemeIcon>
+                        <Text size="sm" fw={500}>{t('filter')}</Text>
+                        {activeFilterCount > 0 && (
+                          <Badge size="xs" variant="filled" color="blue">
+                            {activeFilterCount}
+                          </Badge>
+                        )}
+                      </Group>
+                      {isFiltersOpen ? <IconChevronUp size={16} /> : <IconChevronDown size={16} />}
                     </Group>
-                    <SegmentedControl
-                      value={conditionFilter}
-                      onChange={setConditionFilter}
-                      data={[
-                        { label: t('all'), value: 'ALL' },
-                        { label: t('condition_new'), value: 'NEW' },
-                        { label: t('condition_used'), value: 'USED' },
-                        { label: t('condition_refurbished'), value: 'REFURBISHED' },
-                      ]}
-                      fullWidth
-                      size="xs"
-                    />
-                  </Box>
+
+                    <Collapse in={isFiltersOpen}>
+                      <Stack gap="sm">
+                        {/* Condition Filter */}
+                        <Box>
+                          <Text size="xs" fw={500} mb={4}>Condition</Text>
+                          <SegmentedControl
+                            value={conditionFilter}
+                            onChange={setConditionFilter}
+                            data={[
+                              { label: t('all'), value: 'ALL' },
+                              { label: t('condition_new'), value: 'NEW' },
+                              { label: t('condition_used'), value: 'USED' },
+                              { label: t('condition_refurbished'), value: 'REFURBISHED' },
+                            ]}
+                            fullWidth
+                            size="xs"
+                          />
+                        </Box>
+
+                        {/* Category Filter */}
+                        {availableCategories.length > 0 && (
+                          <Box>
+                            <Group gap={4} mb={4}>
+                              <IconTag size={12} />
+                              <Text size="xs" fw={500}>Category</Text>
+                            </Group>
+                            <MultiSelect
+                              size="xs"
+                              placeholder="All categories"
+                              data={availableCategories}
+                              value={categoryFilter}
+                              onChange={setCategoryFilter}
+                              clearable
+                              searchable
+                            />
+                          </Box>
+                        )}
+
+                        {/* Stock Filter */}
+                        <Box>
+                          <Group gap={4} mb={4}>
+                            <IconPackage size={12} />
+                            <Text size="xs" fw={500}>Stock</Text>
+                          </Group>
+                          <SegmentedControl
+                            value={stockFilter}
+                            onChange={setStockFilter}
+                            data={[
+                              { label: 'All', value: 'ALL' },
+                              { label: 'In Stock', value: 'IN_STOCK' },
+                              { label: 'Out of Stock', value: 'OUT_OF_STOCK' },
+                            ]}
+                            fullWidth
+                            size="xs"
+                          />
+                        </Box>
+
+                        {/* Published Filter */}
+                        <Box>
+                          <Text size="xs" fw={500} mb={4}>Status</Text>
+                          <SegmentedControl
+                            value={publishedFilter}
+                            onChange={setPublishedFilter}
+                            data={[
+                              { label: 'All', value: 'ALL' },
+                              { label: 'Published', value: 'PUBLISHED' },
+                              { label: 'Unpublished', value: 'UNPUBLISHED' },
+                            ]}
+                            fullWidth
+                            size="xs"
+                          />
+                        </Box>
+
+                        {/* Tags Filter */}
+                        {availableTags.length > 0 && (
+                          <Box>
+                            <Group gap={4} mb={4}>
+                              <IconTag size={12} />
+                              <Text size="xs" fw={500}>Tags</Text>
+                            </Group>
+                            <MultiSelect
+                              size="xs"
+                              placeholder="All tags"
+                              data={availableTags}
+                              value={tagFilter}
+                              onChange={setTagFilter}
+                              clearable
+                              searchable
+                            />
+                          </Box>
+                        )}
+
+                        {/* Price Range Filter */}
+                        <Box>
+                          <Group gap={4} mb={4}>
+                            <IconCash size={12} />
+                            <Text size="xs" fw={500}>Price Range (USD)</Text>
+                          </Group>
+                          <Group gap="xs">
+                            <NumberInput
+                              size="xs"
+                              placeholder="Min"
+                              value={minPrice}
+                              onChange={setMinPrice}
+                              min={0}
+                              style={{ flex: 1 }}
+                            />
+                            <Text size="xs" c="dimmed">-</Text>
+                            <NumberInput
+                              size="xs"
+                              placeholder="Max"
+                              value={maxPrice}
+                              onChange={setMaxPrice}
+                              min={0}
+                              style={{ flex: 1 }}
+                            />
+                          </Group>
+                        </Box>
+
+                        {/* Clear Filters Button */}
+                        {activeFilterCount > 0 && (
+                          <Button
+                            variant="subtle"
+                            size="xs"
+                            onClick={clearAllFilters}
+                            fullWidth
+                          >
+                            Clear All Filters
+                          </Button>
+                        )}
+                      </Stack>
+                    </Collapse>
+                  </Paper>
 
                   <Group gap="xs">
                     <Button variant="light" size="xs" onClick={selectAll}>

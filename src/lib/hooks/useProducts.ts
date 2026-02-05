@@ -24,6 +24,14 @@ export interface ProductQueryParams {
   search?: string;
   sortBy?: 'createdAt' | 'name' | 'priceUSD';
   sortOrder?: 'asc' | 'desc';
+  // Filter parameters
+  condition?: string;
+  categories?: string[];
+  stock?: string;
+  published?: string;
+  tags?: string[];
+  minPrice?: number | string;
+  maxPrice?: number | string;
 }
 
 /**
@@ -36,9 +44,21 @@ export function useProducts(merchantId?: string, params: ProductQueryParams = {}
     search,
     sortBy,
     sortOrder,
+    condition,
+    categories,
+    stock,
+    published,
+    tags,
+    minPrice,
+    maxPrice,
   } = params;
+
+  // Convert arrays to comma-separated strings for API
+  const categoriesParam = categories && categories.length > 0 ? categories.join(',') : undefined;
+  const tagsParam = tags && tags.length > 0 ? tags.join(',') : undefined;
+
   return useQuery<ProductsResponse>({
-    queryKey: [...PRODUCTS_QUERY_KEY, merchantId, page, limit, search, sortBy, sortOrder],
+    queryKey: [...PRODUCTS_QUERY_KEY, merchantId, page, limit, search, sortBy, sortOrder, condition, categoriesParam, stock, published, tagsParam, minPrice, maxPrice],
     queryFn: async () => {
       const { data } = await apiClient.get(API_ENDPOINTS.products.list, {
         params: {
@@ -48,6 +68,13 @@ export function useProducts(merchantId?: string, params: ProductQueryParams = {}
           search,
           sortBy,
           sortOrder,
+          condition,
+          categories: categoriesParam,
+          stock,
+          published,
+          tags: tagsParam,
+          minPrice,
+          maxPrice,
         },
       });
       return data.data;

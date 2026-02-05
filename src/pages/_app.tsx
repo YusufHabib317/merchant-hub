@@ -11,6 +11,7 @@ import { AppProps } from 'next/app';
 import { Roboto, Cairo } from 'next/font/google';
 import { useRouter } from 'next/router';
 import { getLocaleClientCookie, setLocaleClientCookie } from '@/lib/locale';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 const roboto = Roboto({
   subsets: ['latin'],
@@ -88,7 +89,9 @@ export default function App({ Component, pageProps }: AppProps) {
             backgroundColor: 'var(--mantine-color-body)',
           }}
         >
-          <Component {...pageProps} />
+          <ErrorBoundary>
+            <Component {...pageProps} />
+          </ErrorBoundary>
         </div>
       </MantineProvider>
     </QueryClientProvider>

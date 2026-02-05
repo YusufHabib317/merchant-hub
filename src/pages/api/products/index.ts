@@ -1,5 +1,5 @@
 import { NextApiResponse } from 'next';
-import { Prisma } from '@prisma/client';
+import { Prisma, ProductCondition } from '@prisma/client';
 import { withAuth, AuthenticatedRequest } from '@/lib/auth/middleware';
 import { ListProductsRequestSchema, CreateProductRequestSchema } from '@/schemas/api/products';
 import { prisma } from '@/lib/prisma';
@@ -7,6 +7,7 @@ import { httpCode, DEFAULT_EXCHANGE_RATE } from '@/lib/constants';
 import createApiError from '@/lib/api/createApiError';
 import { sanitizeProductInput, rateLimit, RATE_LIMITS } from '@/lib/security';
 
+/* eslint-disable complexity, sonarjs/cognitive-complexity -- Server-side filtering with multiple filter parameters */
 async function handleGetProducts(req: AuthenticatedRequest, res: NextApiResponse) {
   try {
     // Validate query params
@@ -18,16 +19,68 @@ async function handleGetProducts(req: AuthenticatedRequest, res: NextApiResponse
       search,
       sortBy,
       sortOrder,
+      condition,
+      categories,
+      stock,
+      published,
+      tags,
+      minPrice,
+      maxPrice,
     } = queryParams;
 
     // Build where clause
     const where: Prisma.ProductWhereInput = merchantId ? { merchantId } : {};
 
+    // Search filter
     if (search) {
       where.OR = [
         { name: { contains: search, mode: 'insensitive' } },
         { description: { contains: search, mode: 'insensitive' } },
       ];
+    }
+
+    // Condition filter
+    if (condition && condition !== 'ALL') {
+      where.condition = condition as ProductCondition;
+    }
+
+    // Category filter
+    if (categories) {
+      const categoryArray = categories.split(',').filter(Boolean);
+      if (categoryArray.length > 0) {
+        where.category = { in: categoryArray };
+      }
+    }
+
+    // Stock filter
+    if (stock === 'IN_STOCK') {
+      where.stock = { gt: 0 };
+    } else if (stock === 'OUT_OF_STOCK') {
+      where.stock = { lte: 0 };
+    }
+
+    // Published filter
+    if (published === 'PUBLISHED') {
+      where.isPublished = true;
+    } else if (published === 'UNPUBLISHED') {
+      where.isPublished = false;
+    }
+
+    // Tags filter
+    if (tags) {
+      const tagArray = tags.split(',').filter(Boolean);
+      if (tagArray.length > 0) {
+        where.tags = { hasSome: tagArray };
+      }
+    }
+
+    // Price range filter
+    const hasMinPrice = minPrice !== undefined && !Number.isNaN(minPrice) && minPrice !== null;
+    const hasMaxPrice = maxPrice !== undefined && !Number.isNaN(maxPrice) && maxPrice !== null;
+    if (hasMinPrice || hasMaxPrice) {
+      where.priceUSD = {};
+      if (hasMinPrice) where.priceUSD.gte = minPrice;
+      if (hasMaxPrice) where.priceUSD.lte = maxPrice;
     }
 
     // Build order by

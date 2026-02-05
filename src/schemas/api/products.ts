@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import { ProductSchema, CreateProductSchema, UpdateProductSchema } from '../product';
 
-// List Products
 export const ListProductsRequestSchema = z.object({
   merchantId: z.string().cuid().optional(),
   page: z.coerce.number().int().positive().default(1),
@@ -10,6 +9,13 @@ export const ListProductsRequestSchema = z.object({
   search: z.string().optional(),
   sortBy: z.enum(['createdAt', 'name', 'priceUSD']).optional(),
   sortOrder: z.enum(['asc', 'desc']).optional(),
+  condition: z.string().optional(),
+  categories: z.string().optional(),
+  stock: z.string().optional(),
+  published: z.string().optional(),
+  tags: z.string().optional(),
+  minPrice: z.preprocess((val) => (val === '' || val === null ? undefined : val), z.coerce.number().optional()),
+  maxPrice: z.preprocess((val) => (val === '' || val === null ? undefined : val), z.coerce.number().optional()),
 });
 
 export const ListProductsResponseSchema = z.object({

@@ -6,11 +6,15 @@ import {
   Text,
   Loader,
   Center,
+  Menu,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import {
   IconPlus,
-  IconFileExport,
+  IconFileImport,
+  IconDownload,
+  IconPhoto,
+  IconChevronDown,
 } from '@tabler/icons-react';
 import { useState } from 'react';
 import useTranslation from 'next-translate/useTranslation';
@@ -24,6 +28,11 @@ import { useAppRouter } from '@/lib/hooks/useAppRouter';
 import { NoStoreAlert } from '@/components/products/NoStoreAlert';
 import { ProductsContent } from '@/components/products/ProductsContent';
 import { DeleteProductModal } from '@/components/products/DeleteProductModal';
+import { ImportCSVModal } from '@/components/products/ImportCSVModal';
+import { apiClient } from '@/lib/api/client';
+import { downloadCSV } from '@/utils/csv';
+import { ProductFilters } from '@/components/products/ProductFilters';
+import { useProductFilters } from '@/lib/hooks/useProductFilters';
 
 export default function ProductsPage() {
   const { t } = useTranslation('common');
@@ -49,12 +58,38 @@ export default function ProductsPage() {
   const [productToDelete, setProductToDelete] = useState<string | null>(null);
   const deleteProduct = useDeleteProduct();
 
+  // Import modal state
+  const [importModalOpened, setImportModalOpened] = useState(false);
+  const [isExportingCSV, setIsExportingCSV] = useState(false);
+
+  // Fetch all products for filter options (categories and tags)
+  const { data: allProductsData } = useProducts(undefined, { page: 1, limit: 1000 });
+  const allProducts = allProductsData?.products || [];
+
+  // Filter state - using the reusable hook with all products for options
+  const {
+    filterValues,
+    filterOptions,
+    isOpen: filtersOpen,
+    updateFilters,
+    clearFilters,
+    toggleFilters,
+  } = useProductFilters({ products: allProducts });
+
   const { data, isLoading, error } = useProducts(undefined, {
     page,
     limit: 12, // 12 works well for grid (2, 3, 4 cols)
     search,
     sortBy,
     sortOrder,
+    // Server-side filters
+    condition: filterValues.condition,
+    categories: filterValues.categories,
+    stock: filterValues.stock,
+    published: filterValues.published,
+    tags: filterValues.tags,
+    minPrice: filterValues.minPrice,
+    maxPrice: filterValues.maxPrice,
   });
 
   const { data: merchant, isLoading: merchantLoading, error: merchantError } = useMyMerchant();
@@ -85,6 +120,38 @@ export default function ProductsPage() {
     }
   };
 
+  const handleExportCSV = async () => {
+    if (!pagination?.total) {
+      notifications.show({
+        title: t('warning'),
+        message: t('no_products_to_export'),
+        color: 'yellow',
+      });
+      return;
+    }
+
+    setIsExportingCSV(true);
+    try {
+      const response = await apiClient.get('/products/export-csv', {
+        responseType: 'text',
+      });
+      downloadCSV(response.data, `products-${Date.now()}.csv`);
+      notifications.show({
+        title: t('success'),
+        message: t('csv_exported_successfully'),
+        color: 'green',
+      });
+    } catch {
+      notifications.show({
+        title: t('error'),
+        message: t('csv_export_failed'),
+        color: 'red',
+      });
+    } finally {
+      setIsExportingCSV(false);
+    }
+  };
+
   return (
     <ProtectedRoute>
       <DashboardLayout>
@@ -93,13 +160,40 @@ export default function ProductsPage() {
             <Title order={1}>{t('products')}</Title>
             {hasMerchant && (
               <Group gap="xs" wrap="nowrap">
-                <Button
-                  variant="light"
-                  leftSection={<IconFileExport size={16} />}
-                  onClick={handleExportClick}
-                >
-                  {t('export_products_action')}
-                </Button>
+                <Menu shadow="md" width={200}>
+                  <Menu.Target>
+                    <Button
+                      variant="light"
+                      rightSection={<IconChevronDown size={14} />}
+                    >
+                      {t('import_export')}
+                    </Button>
+                  </Menu.Target>
+                  <Menu.Dropdown>
+                    <Menu.Label>{t('export')}</Menu.Label>
+                    <Menu.Item
+                      leftSection={<IconPhoto size={16} />}
+                      onClick={handleExportClick}
+                    >
+                      {t('export_as_image')}
+                    </Menu.Item>
+                    <Menu.Item
+                      leftSection={<IconDownload size={16} />}
+                      onClick={handleExportCSV}
+                      disabled={isExportingCSV}
+                    >
+                      {t('export_as_csv')}
+                    </Menu.Item>
+                    <Menu.Divider />
+                    <Menu.Label>{t('import')}</Menu.Label>
+                    <Menu.Item
+                      leftSection={<IconFileImport size={16} />}
+                      onClick={() => setImportModalOpened(true)}
+                    >
+                      {t('import_from_csv')}
+                    </Menu.Item>
+                  </Menu.Dropdown>
+                </Menu>
                 <Button
                   leftSection={<IconPlus size={16} />}
                   onClick={toNewProduct}
@@ -115,19 +209,38 @@ export default function ProductsPage() {
           )}
 
           {hasMerchant && (
-            <ProductViewControls
-              viewMode={viewMode}
-              onViewModeChange={setViewMode}
-              onSearchChange={(val) => {
-                setSearch(val);
-                setPage(1); // Reset page on search
-              }}
-              onSortChange={setSortBy as (sort: string) => void}
-              onSortOrderChange={setSortOrder}
-              initialSearch={search}
-              initialSort={sortBy}
-              initialSortOrder={sortOrder}
-            />
+            <>
+              <ProductViewControls
+                viewMode={viewMode}
+                onViewModeChange={setViewMode}
+                onSearchChange={(val) => {
+                  setSearch(val);
+                  setPage(1); // Reset page on search
+                }}
+                onSortChange={setSortBy as (sort: string) => void}
+                onSortOrderChange={setSortOrder}
+                initialSearch={search}
+                initialSort={sortBy}
+                initialSortOrder={sortOrder}
+              />
+
+              {/* Server-side Filters */}
+              <ProductFilters
+                values={filterValues}
+                options={filterOptions}
+                onChange={(newValues) => {
+                  updateFilters(newValues);
+                  setPage(1); // Reset page on filter change
+                }}
+                onClear={() => {
+                  clearFilters();
+                  setPage(1);
+                }}
+                isOpen={filtersOpen}
+                onToggle={toggleFilters}
+                showToggle
+              />
+            </>
           )}
 
           {isLoading && (
@@ -159,6 +272,11 @@ export default function ProductsPage() {
           onClose={() => setProductToDelete(null)}
           onConfirm={handleDelete}
           loading={deleteProduct.isPending}
+        />
+
+        <ImportCSVModal
+          opened={importModalOpened}
+          onClose={() => setImportModalOpened(false)}
         />
       </DashboardLayout>
     </ProtectedRoute>

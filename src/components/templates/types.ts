@@ -11,6 +11,9 @@ export interface ExportProduct {
   imageUrls?: string[] | null;
   category?: string | null;
   condition?: z.infer<typeof ProductConditionEnum>;
+  stock?: number;
+  isPublished?: boolean;
+  tags?: string[];
 }
 
 export type CurrencyDisplay = 'usd' | 'syp' | 'both';
