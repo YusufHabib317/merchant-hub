@@ -410,5 +410,18 @@
   "import_result": "تم إنشاء {{created}} منتج، فشل {{failed}}",
   "import_errors": "الأخطاء",
   "row": "صف",
-  "and_more": "و {{count}} أخرى..."
+  "and_more": "و {{count}} أخرى...",
+  "dashboard_page": {
+    "title": "لوحة التحكم",
+    "set_up_store_title": "إعداد متجرك",
+    "set_up_store_message": "تحتاج إلى إنشاء متجر قبل أن تتمكن من إضافة منتجات وإدارة عملك.",
+    "go_to_settings": "الذهاب إلى الإعدادات",
+    "total_products": "إجمالي المنتجات",
+    "active_chats": "المحادثات النشطة",
+    "total_views": "إجمالي المشاهدات",
+    "quick_actions": "إجراءات سريعة",
+    "add_new_product": "إضافة منتج جديد",
+    "export_products": "تصدير المنتجات",
+    "generate_qr_code": "إنشاء رمز الاستجابة السريعة"
+  }
 }

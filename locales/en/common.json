@@ -409,5 +409,18 @@
   "import_result": "Created {{created}} products, {{failed}} failed",
   "import_errors": "Errors",
   "row": "Row",
-  "and_more": "and {{count}} more..."
+  "and_more": "and {{count}} more...",
+  "dashboard_page": {
+    "title": "Dashboard",
+    "set_up_store_title": "Set Up Your Store",
+    "set_up_store_message": "You need to create a store before you can add products and manage your business.",
+    "go_to_settings": "Go to Settings",
+    "total_products": "Total Products",
+    "active_chats": "Active Chats",
+    "total_views": "Total Views",
+    "quick_actions": "Quick Actions",
+    "add_new_product": "Add New Product",
+    "export_products": "Export Products",
+    "generate_qr_code": "Generate QR Code"
+  }
 }

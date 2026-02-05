@@ -18,6 +18,7 @@ import {
   IconAlertCircle,
 } from '@tabler/icons-react';
 import Link from 'next/link';
+import useTranslation from 'next-translate/useTranslation';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { useQuery } from '@tanstack/react-query';
@@ -40,6 +41,8 @@ interface MerchantData {
 }
 
 export default function DashboardPage() {
+  const { t } = useTranslation('common');
+
   const { data: stats, isLoading: isStatsLoading } = useQuery<DashboardStats>({
     queryKey: ['dashboard-stats'],
     queryFn: async () => {
@@ -62,19 +65,19 @@ export default function DashboardPage() {
 
   const statCards = [
     {
-      title: 'Total Products',
+      title: t('dashboard_page.total_products'),
       value: stats?.totalProducts || 0,
       icon: IconShoppingCart,
       color: 'blue',
     },
     {
-      title: 'Active Chats',
+      title: t('dashboard_page.active_chats'),
       value: stats?.totalChats || 0,
       icon: IconMessageCircle,
       color: 'green',
     },
     {
-      title: 'Total Views',
+      title: t('dashboard_page.total_views'),
       value: stats?.totalViews || 0,
       icon: IconTrendingUp,
       color: 'purple',
@@ -85,7 +88,7 @@ export default function DashboardPage() {
     <ProtectedRoute>
       <DashboardLayout>
         <Stack gap="lg">
-          <Title order={1}>Dashboard</Title>
+          <Title order={1}>{t('dashboard_page.title')}</Title>
 
           {isLoading ? (
             <Skeleton height={100} radius="md" />
@@ -93,17 +96,17 @@ export default function DashboardPage() {
             !hasStore && (
               <Alert
                 icon={<IconAlertCircle size={16} />}
-                title="Set Up Your Store"
+                title={t('dashboard_page.set_up_store_title')}
                 color="yellow"
                 variant="light"
               >
                 <Group justify="space-between">
                   <Text size="sm">
-                    You need to create a store before you can add products and manage your business.
+                    {t('dashboard_page.set_up_store_message')}
                   </Text>
                   <Link href="/dashboard/settings" style={{ textDecoration: 'none' }}>
                     <Button variant="filled" color="blue" size="sm">
-                      Go to Settings
+                      {t('dashboard_page.go_to_settings')}
                     </Button>
                   </Link>
                 </Group>
@@ -142,7 +145,7 @@ export default function DashboardPage() {
 
           <Card withBorder padding="lg" radius="md">
             <Title order={3} mb="md">
-              Quick Actions
+              {t('dashboard_page.quick_actions')}
             </Title>
             <Group>
               <Link href="/dashboard/products/new" style={{ textDecoration: 'none' }}>
@@ -151,7 +154,7 @@ export default function DashboardPage() {
                   fw={500}
                   style={{ cursor: 'pointer', color: 'var(--mantine-color-blue-6)' }}
                 >
-                  Add New Product
+                  {t('dashboard_page.add_new_product')}
                 </Text>
               </Link>
               <Link href="/dashboard/products/export" style={{ textDecoration: 'none' }}>
@@ -160,7 +163,7 @@ export default function DashboardPage() {
                   fw={500}
                   style={{ cursor: 'pointer', color: 'var(--mantine-color-blue-6)' }}
                 >
-                  Export Products
+                  {t('dashboard_page.export_products')}
                 </Text>
               </Link>
               <Link href="/dashboard/qr-code" style={{ textDecoration: 'none' }}>
@@ -169,7 +172,7 @@ export default function DashboardPage() {
                   fw={500}
                   style={{ cursor: 'pointer', color: 'var(--mantine-color-blue-6)' }}
                 >
-                  Generate QR Code
+                  {t('dashboard_page.generate_qr_code')}
                 </Text>
               </Link>
             </Group>
