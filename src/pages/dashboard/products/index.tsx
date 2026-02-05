@@ -16,7 +16,9 @@ import {
   IconPhoto,
   IconChevronDown,
 } from '@tabler/icons-react';
-import { useState } from 'react';
+import {
+  useState, useEffect, useCallback, useRef,
+} from 'react';
 import useTranslation from 'next-translate/useTranslation';
 import { useLocalStorage } from '@mantine/hooks';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
@@ -37,14 +39,61 @@ import { useProductFilters } from '@/lib/hooks/useProductFilters';
 export default function ProductsPage() {
   const { t } = useTranslation('common');
   const {
-    toNewProduct, toSettings, toExportProducts, toEditProduct,
+    toNewProduct, toSettings, toExportProducts, toEditProduct, router,
   } = useAppRouter();
+
+  // Next router object identity can change when the query changes.
+  // Keep a ref so callbacks (like setPage) can stay stable.
+  const routerRef = useRef(router);
+  useEffect(() => {
+    routerRef.current = router;
+  }, [router]);
   const [viewMode, setViewMode] = useLocalStorage<ViewMode>({
     key: 'products-view-mode',
     defaultValue: 'grid',
   });
-  const [page, setPage] = useState(1);
+
+  const [page, setPageState] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlPage = parseInt(urlParams.get('page') || '1', 10);
+      return Number.isNaN(urlPage) || urlPage < 1 ? 1 : urlPage;
+    }
+    return 1;
+  });
+
+  const setPage = useCallback((newPage: number) => {
+    setPageState(newPage);
+
+    const r = routerRef.current;
+
+    // eslint-disable-next-line no-void
+    void r.replace(
+      {
+        pathname: r.pathname,
+        query: {
+          ...r.query,
+          page: String(newPage),
+        },
+      },
+      undefined,
+      { shallow: true, scroll: false },
+    );
+  }, []);
+
   const [search, setSearch] = useState('');
+
+  // Memoize search handler so ProductViewControls' effect doesn't re-run every render.
+  // (Otherwise it keeps calling onSearchChange() and we keep resetting to page 1.)
+  const handleSearchChange = useCallback((val: string) => {
+    setSearch((prev) => {
+      // Only reset pagination if the search value actually changed.
+      // This avoids forcing the user back to page 1 on initial mount.
+      if (prev === val) return prev;
+      setPage(1);
+      return val;
+    });
+  }, [setPage]);
   const [sortBy, setSortBy] = useLocalStorage<NonNullable<ProductQueryParams['sortBy']>>({
     key: 'products-sort-by',
     defaultValue: 'createdAt',
@@ -213,10 +262,7 @@ export default function ProductsPage() {
               <ProductViewControls
                 viewMode={viewMode}
                 onViewModeChange={setViewMode}
-                onSearchChange={(val) => {
-                  setSearch(val);
-                  setPage(1); // Reset page on search
-                }}
+                onSearchChange={handleSearchChange}
                 onSortChange={setSortBy as (sort: string) => void}
                 onSortOrderChange={setSortOrder}
                 initialSearch={search}

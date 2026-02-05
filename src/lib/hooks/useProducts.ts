@@ -57,8 +57,10 @@ export function useProducts(merchantId?: string, params: ProductQueryParams = {}
   const categoriesParam = categories && categories.length > 0 ? categories.join(',') : undefined;
   const tagsParam = tags && tags.length > 0 ? tags.join(',') : undefined;
 
+  const queryKey = [...PRODUCTS_QUERY_KEY, merchantId, page, limit, search, sortBy, sortOrder, condition, categoriesParam, stock, published, tagsParam, minPrice, maxPrice];
+
   return useQuery<ProductsResponse>({
-    queryKey: [...PRODUCTS_QUERY_KEY, merchantId, page, limit, search, sortBy, sortOrder, condition, categoriesParam, stock, published, tagsParam, minPrice, maxPrice],
+    queryKey,
     queryFn: async () => {
       const { data } = await apiClient.get(API_ENDPOINTS.products.list, {
         params: {

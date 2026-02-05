@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
-  Center, Loader, Stack, Text,
+  Center, Loader, Stack, Text, Box,
 } from '@mantine/core';
 import { authClient } from '@/lib/auth-client';
 import { useAppRouter } from '@/lib/hooks/useAppRouter';
@@ -16,9 +16,12 @@ export function ProtectedRoute({
 }: ProtectedRouteProps) {
   const { toLogin, toDashboard, to } = useAppRouter();
   const { data: session, isPending } = authClient.useSession();
+  const [isInitialCheckDone, setIsInitialCheckDone] = useState(false);
 
   useEffect(() => {
     if (isPending) return;
+
+    setIsInitialCheckDone(true);
 
     if (!session) {
       toLogin();
@@ -39,7 +42,7 @@ export function ProtectedRoute({
     }
   }, [session, isPending, toLogin, toDashboard, requiredRole, to]);
 
-  if (isPending) {
+  if (isPending && !isInitialCheckDone) {
     return (
       <Center style={{ height: '100vh' }}>
         <Stack align="center" gap="md">
@@ -54,5 +57,27 @@ export function ProtectedRoute({
     return null;
   }
 
-  return children;
+  return (
+    <Box pos="relative">
+      {isPending && (
+        <Box
+          pos="absolute"
+          top={0}
+          left={0}
+          right={0}
+          bottom={0}
+          style={{
+            backgroundColor: 'rgba(255, 255, 255, 0.7)',
+            zIndex: 1000,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Loader />
+        </Box>
+      )}
+      {children}
+    </Box>
+  );
 }
