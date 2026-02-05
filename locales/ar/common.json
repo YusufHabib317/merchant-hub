@@ -354,5 +354,18 @@
     "error_update": "فشل في تحديث السياق",
     "error_delete": "فشل في حذف السياق",
     "error_title": "خطأ"
+  },
+  "chat_settings": {
+    "title": "إعدادات المحادثة",
+    "enable_chat": "تفعيل المحادثة",
+    "enable_chat_description": "السماح للعملاء ببدء جلسات محادثة معك ومع المساعد الذكي.",
+    "enable_chat_confirm_title": "تفعيل المحادثة؟",
+    "enable_chat_confirm_message": "هل أنت متأكد من رغبتك في تفعيل المحادثة؟ سيتمكن العملاء من مراسلتك.",
+    "enable_chat_confirm_action": "تفعيل المحادثة",
+    "disable_chat_confirm_title": "تعطيل المحادثة؟",
+    "disable_chat_confirm_message": "هل أنت متأكد من رغبتك في تعطيل المحادثة؟ لن يتمكن العملاء من مراسلتك بعد الآن.",
+    "disable_chat_confirm_action": "تعطيل المحادثة",
+    "chat_status_changed": "تم تحديث إعدادات المحادثة بنجاح",
+    "confirm": "تأكيد"
   }
 }

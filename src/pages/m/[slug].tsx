@@ -147,7 +147,9 @@ export default function MerchantPublicPage() {
       />
 
       {/* Floating Chat Widget */}
-      <ChatWidget merchantId={merchant.id} merchantName={merchant.name} />
+      {merchant.isChatEnabled && (
+        <ChatWidget merchantId={merchant.id} merchantName={merchant.name} />
+      )}
 
       {/* QR Code Modal */}
       <Modal

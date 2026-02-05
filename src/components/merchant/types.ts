@@ -7,6 +7,7 @@ export interface PublicMerchant {
   description: string | null;
   logoUrl: string | null;
   address: string | null;
+  isChatEnabled: boolean;
   products: Product[];
   _count: {
     products: number;

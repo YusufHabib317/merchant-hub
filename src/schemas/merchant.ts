@@ -19,6 +19,7 @@ export const UpdateMerchantSchema = z.object({
   logoUrl: z.string().url('Invalid logo URL').optional(),
   address: z.string().optional(),
   aiContext: z.string().optional(),
+  isChatEnabled: z.boolean().optional(),
 });
 
 export type Merchant = z.infer<typeof MerchantSchema>;

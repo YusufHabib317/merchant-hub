@@ -354,5 +354,18 @@
     "error_update": "Failed to update context",
     "error_delete": "Failed to delete context",
     "error_title": "Error"
+  },
+  "chat_settings": {
+    "title": "Chat Settings",
+    "enable_chat": "Enable Chat",
+    "enable_chat_description": "Allow customers to start chat sessions with you and your AI assistant.",
+    "enable_chat_confirm_title": "Enable Chat?",
+    "enable_chat_confirm_message": "Are you sure you want to enable chat? Customers will be able to message you.",
+    "enable_chat_confirm_action": "Enable Chat",
+    "disable_chat_confirm_title": "Disable Chat?",
+    "disable_chat_confirm_message": "Are you sure you want to disable chat? Customers will no longer be able to message you.",
+    "disable_chat_confirm_action": "Disable Chat",
+    "chat_status_changed": "Chat settings updated successfully",
+    "confirm": "Confirm"
   }
 }

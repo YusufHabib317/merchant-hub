@@ -40,6 +40,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void>
         description: merchant.description,
         logoUrl: merchant.logoUrl,
         address: merchant.address,
+        isChatEnabled: merchant.isChatEnabled,
         subscriptionTier: merchant.subscriptionTier,
       },
     });

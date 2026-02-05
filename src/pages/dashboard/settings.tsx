@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import {
   Title,
   Stack,
@@ -13,11 +14,14 @@ import {
   ActionIcon,
   CopyButton,
   Tooltip,
+  Switch,
+  Modal,
 } from '@mantine/core';
 import {
-  IconCheck, IconAlertCircle, IconCopy, IconCheck as IconCheckmark,
+  IconCheck, IconAlertCircle, IconCopy, IconCheck as IconCheckmark, IconMessageChatbot,
 } from '@tabler/icons-react';
 import { useState, useEffect } from 'react';
+import { useDisclosure } from '@mantine/hooks';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { authClient } from '@/lib/auth-client';
@@ -34,18 +38,59 @@ interface MerchantData {
   description?: string;
   logoUrl?: string;
   address?: string;
+  isChatEnabled?: boolean;
+}
+
+interface ChatConfirmationModalProps {
+  opened: boolean;
+  onClose: () => void;
+  pendingChatState: boolean | null;
+  onConfirm: () => void;
+}
+
+function ChatConfirmationModal({
+  opened,
+  onClose,
+  pendingChatState,
+  onConfirm,
+}: ChatConfirmationModalProps) {
+  const { t } = useTranslation('common');
+
+  return (
+    <Modal
+      opened={opened}
+      onClose={onClose}
+      title={pendingChatState ? t('chat_settings.enable_chat_confirm_title') : t('chat_settings.disable_chat_confirm_title')}
+      centered
+    >
+      <Text size="sm" mb="lg">
+        {pendingChatState ? t('chat_settings.enable_chat_confirm_message') : t('chat_settings.disable_chat_confirm_message')}
+      </Text>
+      <Group justify="flex-end">
+        <Button variant="default" onClick={onClose}>
+          {t('cancel')}
+        </Button>
+        <Button color={pendingChatState ? 'blue' : 'red'} onClick={onConfirm}>
+          {pendingChatState ? t('chat_settings.enable_chat_confirm_action') : t('chat_settings.disable_chat_confirm_action')}
+        </Button>
+      </Group>
+    </Modal>
+  );
 }
 
 export default function SettingsPage() {
   const { t } = useTranslation('common');
   const { data: session } = authClient.useSession();
   const queryClient = useQueryClient();
+  const [opened, { open, close }] = useDisclosure(false);
+  const [pendingChatState, setPendingChatState] = useState<boolean | null>(null);
 
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     logoUrl: '',
     address: '',
+    isChatEnabled: true,
   });
 
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -68,6 +113,7 @@ export default function SettingsPage() {
         description: merchant.description || '',
         logoUrl: merchant.logoUrl || '',
         address: merchant.address || '',
+        isChatEnabled: merchant.isChatEnabled ?? true,
       });
     }
   }, [merchant]);
@@ -130,9 +176,29 @@ export default function SettingsPage() {
 
   const isNewMerchant = !merchant && !createMerchant.isError;
 
+  const handleChatToggle = (checked: boolean) => {
+    setPendingChatState(checked);
+    open();
+  };
+
+  const confirmChatToggle = () => {
+    if (pendingChatState === null) return;
+    const updatedData = { ...formData, isChatEnabled: pendingChatState };
+    setFormData(updatedData);
+    updateMerchant.mutate(updatedData);
+    close();
+  };
+
   return (
     <ProtectedRoute>
       <DashboardLayout>
+        <ChatConfirmationModal
+          opened={opened}
+          onClose={close}
+          pendingChatState={pendingChatState}
+          onConfirm={confirmChatToggle}
+        />
+
         <Stack gap="lg">
           <Title order={1}>{isNewMerchant ? t('settings_page.create_store_title') : t('settings_page.title')}</Title>
 
@@ -193,6 +259,31 @@ export default function SettingsPage() {
                   />
                 </Stack>
               </Card>
+
+              {!isNewMerchant && (
+                <Card withBorder padding="lg" radius="md">
+                  <Title order={3} mb="md">
+                    {t('chat_settings.title')}
+                  </Title>
+                  <Stack gap="md">
+                    <Group justify="space-between" wrap="nowrap">
+                      <div>
+                        <Text fw={500}>{t('chat_settings.enable_chat')}</Text>
+                        <Text size="sm" c="dimmed">
+                          {t('chat_settings.enable_chat_description')}
+                        </Text>
+                      </div>
+                      <Switch
+                        checked={formData.isChatEnabled}
+                        onChange={(event) => handleChatToggle(event.currentTarget.checked)}
+                        size="md"
+                        onLabel={<IconCheck size={16} stroke={2.5} />}
+                        offLabel={<IconMessageChatbot size={16} stroke={2.5} />}
+                      />
+                    </Group>
+                  </Stack>
+                </Card>
+              )}
 
               {!isNewMerchant && (
                 <Card withBorder padding="lg" radius="md">
