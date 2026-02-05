@@ -121,9 +121,13 @@ model Product {
   description  String?
   priceUSD     Float
   priceSYP     Float
-  exchangeRate Float    @default(10000) // Merchant's custom exchange rate (1 USD = X SYP)
+  exchangeRate Float    @default(10000)
   imageUrls    String[]
   category     String?
+
+  stock       Int      @default(0)
+  isPublished Boolean  @default(true)
+  tags        String[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

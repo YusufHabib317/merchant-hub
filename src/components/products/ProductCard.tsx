@@ -28,11 +28,15 @@ interface ProductCardProps {
   priceSYP: number;
   imageUrls?: string[];
   category?: string;
+  stock?: number;
+  isPublished?: boolean;
+  tags?: string[];
   showActions?: boolean;
   onEdit?: (id: string) => void;
   onDelete?: (id: string) => void;
 }
 
+// eslint-disable-next-line complexity
 export function ProductCard({
   id,
   name,
@@ -41,6 +45,9 @@ export function ProductCard({
   priceSYP,
   imageUrls = undefined,
   category = undefined,
+  stock = 0,
+  isPublished = true,
+  tags = [],
   showActions = false,
   onEdit = undefined,
   onDelete = undefined,
@@ -131,10 +138,29 @@ export function ProductCard({
           <Stack gap="xs" p="sm" style={{ flex: 1, overflow: 'hidden' }}>
             <Group justify="space-between" align="flex-start" wrap="nowrap">
               <Box style={{ flex: 1 }}>
-                <Text fw={600} size="md" lineClamp={1}>
-                  {name}
-                </Text>
-                {category && <Badge size="xs" mt={4}>{category}</Badge>}
+                <Group gap="xs" align="center">
+                  <Text fw={600} size="md" lineClamp={1}>
+                    {name}
+                  </Text>
+                  {!isPublished && (
+                    <Badge size="xs" color="gray">
+                      {t('unpublished')}
+                    </Badge>
+                  )}
+                </Group>
+                <Group gap="xs" mt={4}>
+                  {category && <Badge size="xs">{category}</Badge>}
+                  {stock === 0 && (
+                    <Badge size="xs" color="red">
+                      {t('out_of_stock')}
+                    </Badge>
+                  )}
+                  {stock > 0 && stock <= 5 && (
+                    <Badge size="xs" color="orange">
+                      {t('low_stock')}
+                    </Badge>
+                  )}
+                </Group>
               </Box>
               {showActions && (
                 <Menu shadow="md" width={150}>
@@ -166,6 +192,22 @@ export function ProductCard({
               <Text size="xs" c="dimmed" lineClamp={2}>
                 {description}
               </Text>
+            )}
+
+            {tags && tags.length > 0 && (
+              <Group gap={4}>
+                {tags.slice(0, 3).map((tag) => (
+                  <Badge key={tag} size="xs" variant="dot" color="blue">
+                    {tag}
+                  </Badge>
+                ))}
+                {tags.length > 3 && (
+                  <Text size="xs" c="dimmed">
+                    +
+                    {tags.length - 3}
+                  </Text>
+                )}
+              </Group>
             )}
 
             <Group justify="space-between" mt="auto">

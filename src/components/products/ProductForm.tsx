@@ -6,6 +6,9 @@ import {
   Group,
   Alert,
   Loader,
+  Switch,
+  TagsInput,
+  Text,
 } from '@mantine/core';
 import { useState, useMemo } from 'react';
 import useTranslation from 'next-translate/useTranslation';
@@ -21,6 +24,7 @@ interface ProductFormProps {
   isLoading?: boolean;
 }
 
+// eslint-disable-next-line complexity
 export function ProductForm({
   initialData = undefined,
   onSubmit,
@@ -35,6 +39,9 @@ export function ProductForm({
     exchangeRate: initialData?.exchangeRate ?? DEFAULT_EXCHANGE_RATE,
     imageUrls: initialData?.imageUrls ?? [],
     category: initialData?.category ?? '',
+    stock: initialData?.stock ?? 0,
+    isPublished: initialData?.isPublished ?? true,
+    tags: initialData?.tags ?? [],
   });
 
   const [error, setError] = useState<string | null>(null);
@@ -116,6 +123,41 @@ export function ProductForm({
           maxImages={3}
           required
         />
+
+        <TextInput
+          label={t('stock')}
+          placeholder={t('enter_stock')}
+          type="number"
+          min={0}
+          value={formData.stock}
+          onChange={(e) => setFormData({ ...formData, stock: parseInt(e.currentTarget.value, 10) || 0 })}
+          disabled={isLoading}
+        />
+
+        <TagsInput
+          label={t('tags')}
+          description={t('tags_description')}
+          placeholder={t('enter_tag_press_enter')}
+          value={formData.tags}
+          onChange={(value) => setFormData({ ...formData, tags: value })}
+          disabled={isLoading}
+          clearable
+        />
+
+        <Stack gap="xs">
+          <Switch
+            label={t('publish_product')}
+            description={t('publish_product_description')}
+            checked={formData.isPublished}
+            onChange={(e) => setFormData({ ...formData, isPublished: e.currentTarget.checked })}
+            disabled={isLoading}
+          />
+          {!formData.isPublished && (
+            <Text size="sm" c="dimmed">
+              {t('unpublished_product_note')}
+            </Text>
+          )}
+        </Stack>
 
         <Group justify="flex-end">
           <Button

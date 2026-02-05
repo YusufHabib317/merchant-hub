@@ -47,6 +47,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Build where clause
     const where: Prisma.ProductWhereInput = {
       merchantId: id,
+      isPublished: true, // Only show published products on public page
     };
 
     if (search) {
@@ -81,6 +82,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         priceSYP: true,
         imageUrls: true,
         category: true,
+        isPublished: true,
         createdAt: true,
         // Exclude internal fields
       },

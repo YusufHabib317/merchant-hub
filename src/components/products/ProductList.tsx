@@ -9,6 +9,9 @@ interface Product {
   priceSYP?: number;
   imageUrls?: string[];
   category?: string;
+  stock?: number;
+  isPublished?: boolean;
+  tags?: string[];
 }
 
 interface ProductListProps {
@@ -36,6 +39,9 @@ export function ProductList({
             priceSYP={product.priceSYP || 0}
             imageUrls={product.imageUrls}
             category={product.category}
+            stock={product.stock}
+            isPublished={product.isPublished}
+            tags={product.tags}
             showActions={showActions}
             onEdit={onEdit}
             onDelete={onDelete}
