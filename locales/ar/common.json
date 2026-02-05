@@ -83,6 +83,9 @@
   "next": "التالي",
   "previous": "السابق",
   "submit": "إرسال",
+  "error_codes": {
+    "INVALID_EMAIL_OR_PASSWORD": "فشل تسجيل الدخول. يرجى التحقق من بيانات الاعتماد."
+  },
   "close": "إغلاق",
   "open": "فتح",
   "select": "اختيار",
@@ -165,6 +168,7 @@
     "sign_in": "تسجيل الدخول",
     "sign_up": "إنشاء حساب",
     "welcome_back": "مرحباً بعودتك!",
+    "sign_in_failed": "فشل تسجيل الدخول",
     "create_account": "إنشاء حسابك في ميرشانت هاب",
     "register_subtitle": "ابدأ البيع وإدارة منتجاتك اليوم",
     "business_name": "الاسم",

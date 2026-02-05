@@ -25,6 +25,8 @@ interface PriceListTemplateProps {
   watermark?: boolean;
   styleOptions?: PriceListStyleOptions;
   currencyDisplay?: 'usd' | 'syp' | 'both';
+  /** Custom category order. If provided, categories will be displayed in this order. */
+  categoryOrder?: string[];
 }
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -35,6 +37,7 @@ export function PriceListTemplate({
   watermark,
   styleOptions,
   currencyDisplay: propCurrencyDisplay,
+  categoryOrder: propCategoryOrder,
 }: PriceListTemplateProps) {
   const pageBgColor = styleOptions?.pageBgColor ?? '#ffffff';
   const pageBgOpacity = styleOptions?.pageBgOpacity ?? 1;
@@ -62,7 +65,19 @@ export function PriceListTemplate({
     return acc;
   }, {});
 
-  const categories = Object.keys(groups).sort((a, b) => a.localeCompare(b));
+  // Use custom category order if provided, otherwise sort alphabetically
+  const allCategories = Object.keys(groups);
+  const categories = propCategoryOrder
+    ? propCategoryOrder.filter((cat) => allCategories.includes(cat))
+    : allCategories.sort((a, b) => a.localeCompare(b));
+  // Add any categories not in the custom order
+  if (propCategoryOrder) {
+    allCategories.forEach((cat) => {
+      if (!categories.includes(cat)) {
+        categories.push(cat);
+      }
+    });
+  }
 
   const showUSD = currencyDisplay === 'usd' || currencyDisplay === 'both';
   const showSYP = currencyDisplay === 'syp' || currencyDisplay === 'both';

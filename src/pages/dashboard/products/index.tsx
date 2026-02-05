@@ -147,6 +147,17 @@ export default function ProductsPage() {
   const pagination = data?.pagination;
   const hasMerchant = !!merchant;
 
+  // Auto-adjust page if current page exceeds total pages (e.g., after deleting products)
+  useEffect(() => {
+    if (
+      pagination
+      && pagination.totalPages > 0
+      && page > pagination.totalPages
+    ) {
+      setPage(pagination.totalPages);
+    }
+  }, [pagination, page, setPage]);
+
   const handleExportClick = () => {
     if (!pagination?.total) {
       notifications.show({

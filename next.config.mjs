@@ -8,13 +8,6 @@ const isProduction = process.env.NODE_ENV === 'production';
 const nextConfig = {
   reactStrictMode: true,
 
-  // Global API body size limit for security (1MB default, specific routes can override)
-  api: {
-    bodyParser: {
-      sizeLimit: '1mb',
-    },
-  },
-
   // Security headers
   async headers() {
     return [

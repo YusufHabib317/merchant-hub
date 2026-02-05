@@ -37,7 +37,7 @@ const createResetPasswordSchema = (t: (key: string) => string) => z
   });
 
 export default function ResetPasswordPage() {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   const { query, to, toLogin } = useAppRouter();
   const { email } = query;
   const [otp, setOtp] = useState('');
@@ -70,7 +70,18 @@ export default function ResetPasswordPage() {
       });
 
       if (resendError) {
-        setError(resendError.message || t('common:auth.failed_to_resend'));
+        // Try to translate the error code if it exists
+        const errorCode = resendError.code;
+        let errorMessage: string = t('common:auth.failed_to_resend');
+
+        if (errorCode) {
+          const translatedError = t(`error:${errorCode}`);
+          if (translatedError && translatedError !== `error:${errorCode}`) {
+            errorMessage = translatedError;
+          }
+        }
+
+        setError(errorMessage);
       }
     } catch {
       setError(t('common:auth.failed_to_resend'));
@@ -106,7 +117,20 @@ export default function ResetPasswordPage() {
       });
 
       if (resetError) {
-        setError(resetError.message || t('common:auth.otp_verification_failed'));
+        // Check if error has a code (like INVALID_OTP) and translate it
+        const errorCode = resetError.code;
+        let errorMessage: string = t('auth.otp_verification_failed');
+
+        // Try to translate the error code if it exists
+        if (errorCode) {
+          const translatedError = t(`error:${errorCode}`);
+          // Check if translation was found (it won't equal the key if found)
+          if (translatedError && translatedError !== `error:${errorCode}`) {
+            errorMessage = translatedError;
+          }
+        }
+
+        setError(errorMessage);
         setIsLoading(false);
         return;
       }
@@ -118,9 +142,8 @@ export default function ResetPasswordPage() {
       if (resetError instanceof z.ZodError) {
         const errorMessage = resetError.issues[0]?.message || t('common:error');
         setError(errorMessage);
-      } else if (resetError instanceof Error) {
-        setError(resetError.message);
       } else {
+        // Use generic translated error for all other errors
         setError(t('common:error'));
       }
       setIsLoading(false);

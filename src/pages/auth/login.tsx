@@ -62,7 +62,9 @@ export default function LoginPage() {
       });
 
       if (authError) {
-        setError(authError.message || 'Failed to sign in');
+        const errorCode = authError.code;
+        const translatedError = errorCode ? t(`error_codes.${errorCode}`) : null;
+        setError(translatedError || t('error.login_failed') || t('auth.sign_in_failed') || 'فشل تسجيل الدخول');
         setIsLoading(false);
         return;
       }

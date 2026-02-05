@@ -18,5 +18,12 @@
   "upload_failed": "Upload failed. Please try again.",
   "file_too_large": "File is too large.",
   "invalid_file_type": "Invalid file type.",
-  "session_expired": "Your session has expired. Please login again."
+  "session_expired": "Your session has expired. Please login again.",
+  "invalid.email.or.password": "Login failed. Please check your credentials.",
+  "invalid.password": "Invalid password.",
+  "email.not.found": "Email not found.",
+  "email_not_found": "Email not found.",
+  "credentials.signin": "Login failed. Please check your credentials.",
+  "invalid_otp": "Invalid verification code. Please check and try again.",
+  "INVALID_OTP": "Invalid verification code. Please check and try again."
 }

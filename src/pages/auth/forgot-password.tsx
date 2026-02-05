@@ -13,6 +13,7 @@ import {
   Loader,
 } from '@mantine/core';
 import { authClient } from '@/lib/auth-client';
+import { apiClient } from '@/lib/api/client';
 import { z } from 'zod';
 import { useAppRouter } from '@/lib/hooks/useAppRouter';
 import useTranslation from 'next-translate/useTranslation';
@@ -40,6 +41,17 @@ export default function ForgotPasswordPage() {
     try {
       // Validate input
       const validated = ForgotPasswordSchema.parse({ email });
+
+      // Check if email exists in the database
+      const checkEmailResponse = await apiClient.post('/auth/check-email', {
+        email: validated.email,
+      });
+
+      if (!checkEmailResponse.data.exists) {
+        setError(t('error:email_not_found'));
+        setIsLoading(false);
+        return;
+      }
 
       // Request password reset OTP using better-auth's emailOTP plugin
       const { error: resetError } = await authClient.emailOtp.requestPasswordReset({

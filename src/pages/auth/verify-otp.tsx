@@ -48,7 +48,18 @@ export default function VerifyOtpPage() {
       });
 
       if (sendError) {
-        setError(sendError.message || t('auth.otp_send_failed'));
+        // Try to translate the error code if it exists
+        const errorCode = sendError.code;
+        let errorMessage: string = t('auth.otp_send_failed');
+
+        if (errorCode) {
+          const translatedError = t(`error:${errorCode}`);
+          if (translatedError && translatedError !== `error:${errorCode}`) {
+            errorMessage = translatedError;
+          }
+        }
+
+        setError(errorMessage);
       } else {
         if (!initial) {
           setSuccess(t('auth.otp_resent'));
@@ -106,7 +117,17 @@ export default function VerifyOtpPage() {
       });
 
       if (verifyError) {
-        setError(verifyError.message || t('auth.otp_verification_failed'));
+        const errorCode = verifyError.code;
+        let errorMessage: string = t('auth.otp_verification_failed');
+
+        if (errorCode) {
+          const translatedError = t(`error:${errorCode}`);
+          if (translatedError && translatedError !== `error:${errorCode}`) {
+            errorMessage = translatedError;
+          }
+        }
+
+        setError(errorMessage);
         setIsLoading(false);
         return;
       }

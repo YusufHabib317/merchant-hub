@@ -14,6 +14,8 @@ export interface TemplatePreviewProps {
   onExport?: () => Promise<void>;
   watermark?: boolean;
   currencyDisplay?: 'usd' | 'syp' | 'both';
+  /** Custom category order for price-list template */
+  categoryOrder?: string[];
 }
 
 export const TemplatePreview = forwardRef<HTMLDivElement, TemplatePreviewProps>(
@@ -26,6 +28,7 @@ export const TemplatePreview = forwardRef<HTMLDivElement, TemplatePreviewProps>(
       priceListStyle,
       watermark = false,
       currencyDisplay = 'both',
+      categoryOrder,
     },
     ref,
   ) => {
@@ -42,11 +45,11 @@ export const TemplatePreview = forwardRef<HTMLDivElement, TemplatePreviewProps>(
         case 'elegant':
           return <ElegantTemplate {...commonProps} />;
         case 'price-list':
-          return <PriceListTemplate {...commonProps} styleOptions={priceListStyle} />;
+          return <PriceListTemplate {...commonProps} styleOptions={priceListStyle} categoryOrder={categoryOrder} />;
         default:
           return <ElegantTemplate {...commonProps} />;
       }
-    }, [template, products, merchantName, merchantAddress, priceListStyle, watermark, currencyDisplay]);
+    }, [template, products, merchantName, merchantAddress, priceListStyle, watermark, currencyDisplay, categoryOrder]);
 
     return (
       <Stack gap="md">

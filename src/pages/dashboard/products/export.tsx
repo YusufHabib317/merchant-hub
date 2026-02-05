@@ -56,8 +56,144 @@ import { authClient } from '@/lib/auth-client';
 import { apiClient } from '@/lib/api/client';
 import { API_ENDPOINTS } from '@/lib/api/endpoints';
 import { useQuery } from '@tanstack/react-query';
-import { useProductSort } from '@/lib/hooks';
+import { useProductSort, useCategorySort } from '@/lib/hooks';
 import useTranslation from 'next-translate/useTranslation';
+
+interface SortableCategoryItemProps {
+  product: ExportProduct;
+  isSelected: boolean;
+  onToggle: () => void;
+}
+
+function SortableCategoryItem({ product, isSelected, onToggle }: SortableCategoryItemProps) {
+  const controls = useDragControls();
+
+  return (
+    <Reorder.Item
+      value={product.id}
+      dragListener={false}
+      dragControls={controls}
+      style={{ listStyle: 'none' }}
+    >
+      <Paper
+        p="xs"
+        withBorder
+        style={{
+          cursor: 'pointer',
+          borderColor: isSelected ? 'var(--mantine-color-blue-filled)' : undefined,
+          backgroundColor: isSelected ? 'var(--mantine-color-blue-light)' : undefined,
+        }}
+        onClick={onToggle}
+      >
+        <Group wrap="nowrap" gap="xs">
+          <ThemeIcon
+            variant="transparent"
+            color="gray"
+            size="sm"
+            style={{ cursor: 'grab', touchAction: 'none' }}
+            onPointerDown={(e) => controls.start(e)}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <IconGripVertical size={14} />
+          </ThemeIcon>
+          <Checkbox
+            size="xs"
+            label={product.name}
+            checked={isSelected}
+            onChange={() => {}}
+            styles={{ body: { alignItems: 'center' }, input: { cursor: 'pointer' }, label: { cursor: 'pointer' } }}
+            style={{ flex: 1, pointerEvents: 'none' }}
+          />
+          <Text size="xs" c="dimmed">
+            $
+            {product.priceUSD}
+          </Text>
+        </Group>
+      </Paper>
+    </Reorder.Item>
+  );
+}
+
+interface CategoryGroupProps {
+  category: string;
+  products: ExportProduct[];
+  selectedProducts: string[];
+  onToggle: (id: string) => void;
+  onReorder: (productIds: string[]) => void;
+  isExpanded: boolean;
+  onToggleExpand: () => void;
+}
+
+function CategoryGroup({
+  category,
+  products,
+  selectedProducts,
+  onToggle,
+  onReorder,
+  isExpanded,
+  onToggleExpand,
+}: CategoryGroupProps) {
+  const selectedCount = products.filter((p) => selectedProducts.includes(p.id)).length;
+  const controls = useDragControls();
+
+  return (
+    <Reorder.Item
+      value={category}
+      dragListener={false}
+      dragControls={controls}
+      style={{ listStyle: 'none' }}
+    >
+      <Paper withBorder radius="sm" style={{ overflow: 'hidden' }}>
+        <Group
+          p="xs"
+          justify="space-between"
+          style={{ cursor: 'pointer', backgroundColor: 'var(--mantine-color-gray-0)' }}
+          onClick={onToggleExpand}
+        >
+          <Group gap="xs">
+            <ThemeIcon
+              variant="transparent"
+              color="gray"
+              size="sm"
+              style={{ cursor: 'grab', touchAction: 'none' }}
+              onPointerDown={(e) => { e.stopPropagation(); controls.start(e); }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <IconGripVertical size={14} />
+            </ThemeIcon>
+            <Text size="sm" fw={600}>{category}</Text>
+            <Badge size="xs" variant="light">
+              {selectedCount}
+              /
+              {products.length}
+            </Badge>
+          </Group>
+          {isExpanded ? <IconChevronUp size={16} /> : <IconChevronDown size={16} />}
+        </Group>
+
+        <Collapse in={isExpanded}>
+          <Box p="xs" pt={0}>
+            <Reorder.Group
+              axis="y"
+              values={products.map((p) => p.id)}
+              onReorder={onReorder}
+              style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
+            >
+              {products.map((product) => (
+                <SortableCategoryItem
+                  key={product.id}
+                  product={product}
+                  isSelected={selectedProducts.includes(product.id)}
+                  onToggle={() => onToggle(product.id)}
+                />
+              ))}
+            </Reorder.Group>
+          </Box>
+        </Collapse>
+      </Paper>
+    </Reorder.Item>
+  );
+}
 
 interface SortableExportItemProps {
   product: ExportProduct;
@@ -166,6 +302,32 @@ export default function ExportProductsPage() {
   });
 
   const products = getSortedProducts(rawProducts);
+
+  // Category-based sort for list template
+  const {
+    categoryOrder,
+    setCategoryOrder,
+    setProductOrderInCategory,
+    getSortedProductsByCategory,
+  } = useCategorySort({
+    merchantId: merchantData?.id || '',
+    products: rawProducts,
+  });
+
+  // Track which categories are expanded
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
+
+  const toggleCategoryExpanded = (category: string) => {
+    setExpandedCategories((prev) => {
+      const next = new Set(prev);
+      if (next.has(category)) {
+        next.delete(category);
+      } else {
+        next.add(category);
+      }
+      return next;
+    });
+  };
 
   const [selectedProducts, setSelectedProducts] = useLocalStorage<string[]>({
     key: 'export-selected-products',
@@ -360,8 +522,85 @@ export default function ExportProductsPage() {
     }
   };
 
-  const selectedProductsData = products.filter((p) => selectedProducts.includes(p.id));
+  const PRICE_LIST_TEMPLATE = 'price-list';
+  const isPriceListTemplate = template === PRICE_LIST_TEMPLATE;
+
+  // Get selected products in the correct order based on template
+  const selectedProductsData = useMemo(() => {
+    const selected = products.filter((p) => selectedProducts.includes(p.id));
+    if (isPriceListTemplate) {
+      // For list template, flatten the category-sorted order
+      return getSortedProductsByCategory(selected).flatMap((group) => group.products);
+    }
+    return selected;
+  }, [products, selectedProducts, isPriceListTemplate, getSortedProductsByCategory]);
+
   const hasWatermark = merchantData?.subscriptionTier === 'FREE';
+
+  // Render product list based on template type
+  const renderProductList = () => {
+    if (filteredProducts.length === 0) {
+      return (
+        <Paper p="xl" ta="center" bg="var(--mantine-color-gray-light)">
+          <Text c="dimmed">
+            {products.length === 0
+              ? 'No products available. Create some products first.'
+              : 'No products match the selected filter.'}
+          </Text>
+        </Paper>
+      );
+    }
+
+    if (isPriceListTemplate) {
+      // Category-grouped reordering for list template
+      return (
+        <ScrollArea.Autosize mah={350} offsetScrollbars>
+          <Reorder.Group
+            axis="y"
+            values={categoryOrder}
+            onReorder={setCategoryOrder}
+            style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+          >
+            {getSortedProductsByCategory(filteredProducts).map(({ category, products: catProducts }) => (
+              <CategoryGroup
+                key={category}
+                category={category}
+                products={catProducts}
+                selectedProducts={selectedProducts}
+                onToggle={toggleProduct}
+                onReorder={(productIds) => setProductOrderInCategory(category, productIds)}
+                isExpanded={expandedCategories.has(category)}
+                onToggleExpand={() => toggleCategoryExpanded(category)}
+              />
+            ))}
+          </Reorder.Group>
+        </ScrollArea.Autosize>
+      );
+    }
+
+    // Flat list reordering for other templates
+    return (
+      <ScrollArea.Autosize mah={280} offsetScrollbars>
+        <Reorder.Group
+          axis="y"
+          values={filteredProducts.map((p) => p.id)}
+          onReorder={(newOrder) => {
+            setSortOrder(newOrder);
+          }}
+          style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+        >
+          {filteredProducts.map((product) => (
+            <SortableExportItem
+              key={product.id}
+              product={product}
+              isSelected={selectedProducts.includes(product.id)}
+              onToggle={() => toggleProduct(product.id)}
+            />
+          ))}
+        </Reorder.Group>
+      </ScrollArea.Autosize>
+    );
+  };
 
   if (isLoading) {
     return (
@@ -611,39 +850,7 @@ export default function ExportProductsPage() {
                     </Button>
                   </Group>
 
-                  {filteredProducts.length === 0 ? (
-                    <Paper p="xl" ta="center" bg="var(--mantine-color-gray-light)">
-                      <Text c="dimmed">
-                        {products.length === 0
-                          ? 'No products available. Create some products first.'
-                          : 'No products match the selected filter.'}
-                      </Text>
-                    </Paper>
-                  ) : (
-                    <ScrollArea.Autosize mah={280} offsetScrollbars>
-                      <Reorder.Group
-                        axis="y"
-                        values={filteredProducts.map((p) => p.id)}
-                        onReorder={(newOrder) => {
-                          // When reordering filtered list, we need to be careful.
-                          // Reorder.Group might return only the filtered items in new order.
-                          // We should probably disable reordering when filtered, or handle it carefully.
-                          // For now, let's just update the sort order for these items.
-                          setSortOrder(newOrder);
-                        }}
-                        style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
-                      >
-                        {filteredProducts.map((product) => (
-                          <SortableExportItem
-                            key={product.id}
-                            product={product}
-                            isSelected={selectedProducts.includes(product.id)}
-                            onToggle={() => toggleProduct(product.id)}
-                          />
-                        ))}
-                      </Reorder.Group>
-                    </ScrollArea.Autosize>
-                  )}
+                  {renderProductList()}
                 </Stack>
               </Paper>
 
@@ -691,7 +898,7 @@ export default function ExportProductsPage() {
               </Paper>
             )}
 
-            {template === 'price-list' && (
+            {isPriceListTemplate && (
               <Paper withBorder radius="md" p="md">
                 <Group
                   gap="xs"
@@ -931,6 +1138,7 @@ export default function ExportProductsPage() {
                     priceListStyle={priceListStyle}
                     watermark={hasWatermark}
                     currencyDisplay={currencyDisplay}
+                    categoryOrder={isPriceListTemplate ? categoryOrder : undefined}
                     ref={previewRef}
                   />
                 </Box>
