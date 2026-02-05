@@ -282,8 +282,6 @@ function SortableExportItem({ product, isSelected, onToggle }: SortableExportIte
 /* eslint-disable complexity -- Main page component with extensive JSX rendering */
 export default function ExportProductsPage() {
   const { data: session } = authClient.useSession();
-  const { data, isLoading } = useProducts(undefined, { page: 1, limit: 1000 });
-  const rawProducts = (data?.products || []) as ExportProduct[];
   const { t } = useTranslation('common');
 
   const { data: merchantData } = useQuery({
@@ -294,6 +292,9 @@ export default function ExportProductsPage() {
     },
     enabled: !!session?.user?.id,
   });
+
+  const { data, isLoading } = useProducts(merchantData?.id, { page: 1, limit: 1000 });
+  const rawProducts = (data?.products || []) as ExportProduct[];
 
   // Apply custom sort order to products
   const { getSortedProducts, setSortOrder } = useProductSort({

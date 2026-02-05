@@ -111,8 +111,10 @@ export default function ProductsPage() {
   const [importModalOpened, setImportModalOpened] = useState(false);
   const [isExportingCSV, setIsExportingCSV] = useState(false);
 
+  const { data: merchant, isLoading: merchantLoading, error: merchantError } = useMyMerchant();
+
   // Fetch all products for filter options (categories and tags)
-  const { data: allProductsData } = useProducts(undefined, { page: 1, limit: 1000 });
+  const { data: allProductsData } = useProducts(merchant?.id, { page: 1, limit: 1000 });
   const allProducts = allProductsData?.products || [];
 
   // Filter state - using the reusable hook with all products for options
@@ -125,7 +127,7 @@ export default function ProductsPage() {
     toggleFilters,
   } = useProductFilters({ products: allProducts });
 
-  const { data, isLoading, error } = useProducts(undefined, {
+  const { data, isLoading, error } = useProducts(merchant?.id, {
     page,
     limit: 12, // 12 works well for grid (2, 3, 4 cols)
     search,
@@ -140,8 +142,6 @@ export default function ProductsPage() {
     minPrice: filterValues.minPrice,
     maxPrice: filterValues.maxPrice,
   });
-
-  const { data: merchant, isLoading: merchantLoading, error: merchantError } = useMyMerchant();
 
   const products = data?.products || [];
   const pagination = data?.pagination;
