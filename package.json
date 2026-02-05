@@ -39,7 +39,7 @@
     "html-to-image": "^1.11.13",
     "jsonwebtoken": "^9.0.3",
     "lru-cache": "^11.2.5",
-    "next": "15.5.3",
+    "next": "15.5.9",
     "next-translate": "^2.6.2",
     "next-translate-plugin": "^2.6.2",
     "prisma": "^5.22.0",
