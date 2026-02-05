@@ -1,6 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import { Box, Text, Paper } from '@mantine/core';
 import { format } from 'date-fns';
+import useTranslation from 'next-translate/useTranslation';
 
 interface Message {
   id: string;
@@ -16,6 +17,7 @@ interface ChatMessageProps {
 }
 
 export function ChatMessage({ message }: ChatMessageProps) {
+  const { t } = useTranslation('common');
   const isCustomer = message.senderType === 'customer';
   const isAI = message.senderType === 'ai';
 
@@ -40,7 +42,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
       >
         {!isCustomer && (
           <Text size="xs" fw={600} mb={4} c={isAI ? 'blue' : 'dark'}>
-            {isAI ? 'AI Assistant' : 'Merchant'}
+            {isAI ? t('chat_dashboard.ai_assistant') : t('merchant')}
           </Text>
         )}
         <Text

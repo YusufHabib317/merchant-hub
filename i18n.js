@@ -7,6 +7,8 @@ module.exports = {
     "*": ["common", "error"],
     "/dashboard": ["common", "error"],
     "/dashboard/products": ["common", "error"],
+    "/dashboard/chat": ["common", "error"],
+
     "/dashboard/store": ["common", "error"],
     "/dashboard/qr": ["common", "error"],
     "/dashboard/templates": ["common", "error"],

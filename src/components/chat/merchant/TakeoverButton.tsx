@@ -1,11 +1,14 @@
 import { Button } from '@mantine/core';
 import { IconUserCheck } from '@tabler/icons-react';
+import useTranslation from 'next-translate/useTranslation';
 
 interface TakeoverButtonProps {
   onClick: () => void;
 }
 
 export function TakeoverButton({ onClick }: TakeoverButtonProps) {
+  const { t } = useTranslation('common');
+
   return (
     <Button
       leftSection={<IconUserCheck size={16} />}
@@ -14,7 +17,7 @@ export function TakeoverButton({ onClick }: TakeoverButtonProps) {
       size="sm"
       onClick={onClick}
     >
-      Take Over Chat
+      {t('chat_dashboard.take_over')}
     </Button>
   );
 }

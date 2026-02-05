@@ -1,5 +1,6 @@
 /* eslint-disable consistent-return */
 import { useEffect, useState } from 'react';
+import useTranslation from 'next-translate/useTranslation';
 import {
   Title, Grid, Paper, Text, Box, Stack,
 } from '@mantine/core';
@@ -28,7 +29,9 @@ interface ChatSession {
 const CHAT_SERVER_URL = process.env.NEXT_PUBLIC_CHAT_URL || 'http://localhost:9001';
 
 function ChatDashboardPage() {
+  const { t } = useTranslation('common');
   const { data: session } = authClient.useSession();
+
   const [socket, setSocket] = useState<Socket | null>(null);
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
@@ -110,13 +113,13 @@ function ChatDashboardPage() {
 
   return (
     <Stack gap="lg">
-      <Title order={1}>Chat Management</Title>
+      <Title order={1}>{t('chat_dashboard.title')}</Title>
 
       <Grid gutter="md">
         <Grid.Col span={{ base: 12, md: 4 }}>
           <Paper withBorder h={600}>
             <Box p="md" style={{ borderBottom: '1px solid #e9ecef' }}>
-              <Text fw={600}>Active Conversations</Text>
+              <Text fw={600}>{t('chat_dashboard.active_conversations')}</Text>
             </Box>
             <ChatList
               sessions={sessions}
@@ -139,7 +142,7 @@ function ChatDashboardPage() {
                   height: '100%',
                 }}
               >
-                <Text c="dimmed">Select a conversation to view</Text>
+                <Text c="dimmed">{t('chat_dashboard.select_conversation')}</Text>
               </Box>
             )}
           </Paper>

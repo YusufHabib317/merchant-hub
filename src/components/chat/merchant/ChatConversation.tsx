@@ -1,6 +1,7 @@
 /* eslint-disable consistent-return */
 /* eslint-disable sonarjs/no-duplicate-string */
 import { useEffect, useState, useRef } from 'react';
+import useTranslation from 'next-translate/useTranslation';
 import {
   Box, Stack, Text, Loader, Badge, Button,
 } from '@mantine/core';
@@ -37,6 +38,7 @@ interface ChatConversationProps {
 }
 
 export function ChatConversation({ session, socket }: ChatConversationProps) {
+  const { t } = useTranslation('common');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isTyping, setIsTyping] = useState(false);
@@ -187,7 +189,7 @@ export function ChatConversation({ session, socket }: ChatConversationProps) {
         <Box mt="xs">
           {hasTakenOver ? (
             <Button size="xs" variant="light" color="blue" onClick={handleEnableAI}>
-              Enable AI
+              {t('chat_dashboard.enable_ai')}
             </Button>
           ) : (
             <TakeoverButton onClick={handleTakeover} />
@@ -211,7 +213,7 @@ export function ChatConversation({ session, socket }: ChatConversationProps) {
         {isTyping && (
           <Box mt="xs">
             <Badge size="sm" variant="light">
-              Customer is typing...
+              {t('chat_dashboard.customer_typing')}
             </Badge>
           </Box>
         )}
