@@ -1,6 +1,8 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import { z } from 'zod';
 
+export const ProductConditionEnum = z.enum(['NEW', 'USED', 'REFURBISHED']);
+
 export const ProductSchema = z.object({
   id: z.string().cuid(),
   merchantId: z.string().cuid(),
@@ -14,6 +16,7 @@ export const ProductSchema = z.object({
   stock: z.number().int().min(0).default(0),
   isPublished: z.boolean().default(true),
   tags: z.array(z.string()).default([]),
+  condition: ProductConditionEnum.default('NEW'),
   createdAt: z.date(),
   updatedAt: z.date(),
 });
@@ -31,6 +34,7 @@ export const CreateProductSchema = z.object({
   stock: z.coerce.number().int().min(0).default(0),
   isPublished: z.boolean().default(true),
   tags: z.array(z.string()).default([]),
+  condition: ProductConditionEnum.default('NEW'),
 });
 
 export const UpdateProductSchema = CreateProductSchema.partial();

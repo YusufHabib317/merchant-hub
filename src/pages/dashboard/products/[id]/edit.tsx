@@ -7,6 +7,7 @@ import {
   Center,
   Text,
 } from '@mantine/core';
+import useTranslation from 'next-translate/useTranslation';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { ProductForm } from '@/components/products/ProductForm';
@@ -15,6 +16,7 @@ import { CreateProductInput } from '@/schemas/product';
 import { useAppRouter } from '@/lib/hooks/useAppRouter';
 
 export default function EditProductPage() {
+  const { t } = useTranslation('common');
   const { toProducts, query } = useAppRouter();
   const { id } = query;
   const { data: product, isLoading, error } = useProduct(id as string);
@@ -45,7 +47,7 @@ export default function EditProductPage() {
     return (
       <ProtectedRoute>
         <DashboardLayout>
-          <Text c="red">Failed to load product</Text>
+          <Text c="red">{t('failed_to_load_product')}</Text>
         </DashboardLayout>
       </ProtectedRoute>
     );
@@ -56,7 +58,7 @@ export default function EditProductPage() {
       <DashboardLayout>
         <Stack gap="lg">
           <Group justify="space-between" align="center">
-            <Title order={1}>Edit Product</Title>
+            <Title order={1}>{t('edit_product')}</Title>
           </Group>
 
           <ProductForm
@@ -70,7 +72,7 @@ export default function EditProductPage() {
               variant="default"
               onClick={toProducts}
             >
-              Cancel
+              {t('cancel')}
             </Button>
           </Group>
         </Stack>

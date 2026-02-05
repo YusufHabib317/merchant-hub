@@ -9,11 +9,12 @@ import {
   Switch,
   TagsInput,
   Text,
+  SegmentedControl,
 } from '@mantine/core';
 import { useState, useMemo } from 'react';
 import useTranslation from 'next-translate/useTranslation';
 import { z } from 'zod';
-import { CreateProductSchema, CreateProductInput } from '@/schemas/product';
+import { CreateProductSchema, CreateProductInput, ProductConditionEnum } from '@/schemas/product';
 import { ProductPriceInput } from './ProductPriceInput';
 import { MultiImageUpload } from './MultiImageUpload';
 import { DEFAULT_EXCHANGE_RATE } from '@/lib/constants';
@@ -42,6 +43,7 @@ export function ProductForm({
     stock: initialData?.stock ?? 0,
     isPublished: initialData?.isPublished ?? true,
     tags: initialData?.tags ?? [],
+    condition: initialData?.condition ?? 'NEW',
   });
 
   const [error, setError] = useState<string | null>(null);
@@ -95,6 +97,20 @@ export function ProductForm({
           required
           disabled={isLoading}
         />
+
+        <Stack gap="xs">
+          <Text size="sm" fw={500}>{t('condition')}</Text>
+          <SegmentedControl
+            value={formData.condition}
+            onChange={(value) => setFormData({ ...formData, condition: value as z.infer<typeof ProductConditionEnum> })}
+            data={[
+              { label: t('condition_new'), value: 'NEW' },
+              { label: t('condition_used'), value: 'USED' },
+              { label: t('condition_refurbished'), value: 'REFURBISHED' },
+            ]}
+            disabled={isLoading}
+          />
+        </Stack>
 
         <Textarea
           label={t('description')}

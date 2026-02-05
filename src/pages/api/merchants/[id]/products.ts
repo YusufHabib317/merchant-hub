@@ -83,6 +83,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         imageUrls: true,
         category: true,
         isPublished: true,
+        condition: true,
         createdAt: true,
         // Exclude internal fields
       },

@@ -1,4 +1,5 @@
 import { NavLink, Stack } from '@mantine/core';
+import Link from 'next/link';
 import {
   IconHome,
   IconShoppingCart,
@@ -8,7 +9,7 @@ import {
   IconBrain,
   IconUserCircle,
 } from '@tabler/icons-react';
-import { useAppRouter, useIsActiveRoute } from '@/lib/hooks/useAppRouter';
+import { useIsActiveRoute } from '@/lib/hooks/useAppRouter';
 import { getRoutePath } from '@/config/routes';
 import useTranslation from 'next-translate/useTranslation';
 
@@ -38,7 +39,6 @@ const navItems = [
 
 export function Sidebar() {
   const { t } = useTranslation('common');
-  const { to } = useAppRouter();
   const isActive = useIsActiveRoute();
 
   return (
@@ -46,11 +46,11 @@ export function Sidebar() {
       {navItems.map((item) => (
         <NavLink
           key={item.path}
+          component={Link}
+          href={item.path}
           label={t(item.labelKey)}
           leftSection={<item.icon size={16} />}
           active={isActive(item.path, item.exact)}
-          onClick={() => to(item.path)}
-          style={{ cursor: 'pointer' }}
         />
       ))}
     </Stack>

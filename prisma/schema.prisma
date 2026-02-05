@@ -111,6 +111,12 @@ enum SubscriptionTier {
   PREMIUM
 }
 
+enum ProductCondition {
+  NEW
+  USED
+  REFURBISHED
+}
+
 // Product
 model Product {
   id         String   @id @default(cuid())
@@ -125,9 +131,10 @@ model Product {
   imageUrls    String[]
   category     String?
 
-  stock       Int      @default(0)
-  isPublished Boolean  @default(true)
+  stock       Int              @default(0)
+  isPublished Boolean          @default(true)
   tags        String[]
+  condition   ProductCondition @default(NEW)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

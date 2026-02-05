@@ -1,4 +1,6 @@
 import { Grid } from '@mantine/core';
+import { z } from 'zod';
+import { ProductConditionEnum } from '@/schemas/product';
 import { ProductCard } from './ProductCard';
 
 interface Product {
@@ -12,6 +14,7 @@ interface Product {
   stock?: number;
   isPublished?: boolean;
   tags?: string[];
+  condition?: z.infer<typeof ProductConditionEnum>;
 }
 
 interface ProductListProps {
@@ -42,6 +45,7 @@ export function ProductList({
             stock={product.stock}
             isPublished={product.isPublished}
             tags={product.tags}
+            condition={product.condition}
             showActions={showActions}
             onEdit={onEdit}
             onDelete={onDelete}

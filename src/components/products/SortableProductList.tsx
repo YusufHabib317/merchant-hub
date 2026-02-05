@@ -16,6 +16,8 @@ import {
   IconCheck,
 } from '@tabler/icons-react';
 import { motion, Reorder, AnimatePresence } from 'framer-motion';
+import { z } from 'zod';
+import { ProductConditionEnum } from '@/schemas/product';
 import { ProductCard } from './ProductCard';
 
 interface Product {
@@ -26,6 +28,7 @@ interface Product {
   priceSYP?: number;
   imageUrls?: string[];
   category?: string;
+  condition?: z.infer<typeof ProductConditionEnum>;
 }
 
 interface SortableProductListProps {
@@ -113,6 +116,7 @@ function SortableItem({
               priceSYP={product.priceSYP || 0}
               imageUrls={product.imageUrls}
               category={product.category}
+              condition={product.condition}
               showActions={showActions}
               onEdit={onEdit}
               onDelete={onDelete}

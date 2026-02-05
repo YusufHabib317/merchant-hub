@@ -3,6 +3,8 @@ import {
 } from '@mantine/core';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
 import useTranslation from 'next-translate/useTranslation';
+import { z } from 'zod';
+import { ProductConditionEnum } from '@/schemas/product';
 import { formatCurrency } from '@/utils/currency';
 
 interface Product {
@@ -13,6 +15,7 @@ interface Product {
   priceSYP?: number | null;
   imageUrls?: string[];
   category?: string | null;
+  condition?: z.infer<typeof ProductConditionEnum>;
 }
 
 interface ProductTableProps {
@@ -59,6 +62,11 @@ export function ProductTable({
           <Badge variant="light">{product.category}</Badge>
         ) : (
           <Text size="sm" c="dimmed">-</Text>
+        )}
+        {product.condition && product.condition !== 'NEW' && (
+          <Badge variant="outline" color={product.condition === 'USED' ? 'orange' : 'blue'} ml="xs">
+            {t(`condition_${product.condition.toLowerCase()}`)}
+          </Badge>
         )}
       </Table.Td>
       <Table.Td>

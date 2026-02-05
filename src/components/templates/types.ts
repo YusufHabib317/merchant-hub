@@ -1,4 +1,6 @@
 // Shared types for export templates
+import { z } from 'zod';
+import { ProductConditionEnum } from '@/schemas/product';
 
 export interface ExportProduct {
   id: string;
@@ -8,6 +10,7 @@ export interface ExportProduct {
   priceSYP?: number | null;
   imageUrls?: string[] | null;
   category?: string | null;
+  condition?: z.infer<typeof ProductConditionEnum>;
 }
 
 export type CurrencyDisplay = 'usd' | 'syp' | 'both';
