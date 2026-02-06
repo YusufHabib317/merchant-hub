@@ -36,7 +36,6 @@ export default function ProductsPage() {
   const {
     toNewProduct, toSettings, toExportProducts, toEditProduct, router,
   } = useAppRouter();
-
   // Next router object identity can change when the query changes.
   // Keep a ref so callbacks (like setPage) can stay stable.
   const routerRef = useRef(router);
