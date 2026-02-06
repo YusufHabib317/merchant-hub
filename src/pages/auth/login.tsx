@@ -24,7 +24,7 @@ import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 
 export default function LoginPage() {
   const { t, lang } = useTranslation('common');
-  const { toDashboard, toRegister, toForgotPassword, query } = useAppRouter();
+  const { toDashboard, toAdmin, toRegister, toForgotPassword, query } = useAppRouter();
   const { reset } = query;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -70,9 +70,16 @@ export default function LoginPage() {
       }
 
       if (data) {
-        // Redirect to dashboard on successful login
+        // Redirect based on user role
         setIsLoading(false);
-        toDashboard();
+
+        // Check if user is admin and redirect accordingly
+        const userRole = (data.user as Record<string, unknown>).role as string | undefined;
+        if (userRole === 'ADMIN') {
+          toAdmin();
+        } else {
+          toDashboard();
+        }
       }
     } catch (err) {
       if (err instanceof z.ZodError) {

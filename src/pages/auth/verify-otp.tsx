@@ -20,7 +20,7 @@ import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 
 export default function VerifyOtpPage() {
   const { t, lang } = useTranslation('common');
-  const { toDashboard, toLogin, query } = useAppRouter();
+  const { toDashboard, toAdmin, toLogin, query } = useAppRouter();
   const { email } = query;
   const [otp, setOtp] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -93,6 +93,29 @@ export default function VerifyOtpPage() {
 
   const handleResendOtp = () => sendOtp(false);
 
+  const getErrorMessage = (errorCode?: string): string => {
+    // eslint-disable-next-line sonarjs/no-duplicate-string
+    if (!errorCode) return t('auth.otp_verification_failed');
+
+    const translatedError = t(`error:${errorCode}`);
+    if (translatedError && translatedError !== `error:${errorCode}`) {
+      return translatedError;
+    }
+    return t('auth.otp_verification_failed');
+  };
+
+  const redirectAfterVerification = (user?: Record<string, unknown>) => {
+    setSuccess(t('auth.email_verified_success'));
+    setTimeout(() => {
+      const userRole = user?.role as string | undefined;
+      if (userRole === 'ADMIN') {
+        toAdmin();
+      } else {
+        toDashboard();
+      }
+    }, 1500);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -117,24 +140,13 @@ export default function VerifyOtpPage() {
       });
 
       if (verifyError) {
-        const errorCode = verifyError.code;
-        let errorMessage: string = t('auth.otp_verification_failed');
-
-        if (errorCode) {
-          const translatedError = t(`error:${errorCode}`);
-          if (translatedError && translatedError !== `error:${errorCode}`) {
-            errorMessage = translatedError;
-          }
-        }
-
-        setError(errorMessage);
+        setError(getErrorMessage(verifyError.code));
         setIsLoading(false);
         return;
       }
 
       if (data) {
-        setSuccess(t('auth.email_verified_success'));
-        setTimeout(() => toDashboard(), 1500);
+        redirectAfterVerification(data.user as Record<string, unknown>);
       }
     } catch {
       setError(t('auth.otp_verification_failed'));

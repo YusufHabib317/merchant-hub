@@ -152,6 +152,34 @@ export const ROUTES = {
       metadata: { title: 'Merchant Store' },
     },
   },
+
+  // Admin routes
+  admin: {
+    index: {
+      path: '/admin',
+      metadata: {
+        title: 'Admin Dashboard',
+        requiresAuth: true,
+        requiredRoles: ['ADMIN'],
+      },
+    },
+    users: {
+      path: '/admin/users',
+      metadata: {
+        title: 'Admin - Users',
+        requiresAuth: true,
+        requiredRoles: ['ADMIN'],
+      },
+    },
+    products: {
+      path: '/admin/products',
+      metadata: {
+        title: 'Admin - Products',
+        requiresAuth: true,
+        requiredRoles: ['ADMIN'],
+      },
+    },
+  },
 } as const;
 
 /**
@@ -197,4 +225,9 @@ export const getRoutePath = {
 
   // Merchant
   merchantStore: (slug: string) => buildRoute(ROUTES.merchant.view, { slug }),
+
+  // Admin
+  adminDashboard: () => ROUTES.admin.index.path,
+  adminUsers: () => ROUTES.admin.users.path,
+  adminProducts: () => ROUTES.admin.products.path,
 } as const;

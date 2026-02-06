@@ -29,6 +29,11 @@ export function useAppRouter() {
     toChat: useCallback(() => router.push(getRoutePath.chat()), [router]),
     toSettings: useCallback(() => router.push(getRoutePath.settings()), [router]),
 
+    // Admin routes
+    toAdmin: useCallback(() => router.push(getRoutePath.adminDashboard()), [router]),
+    toAdminUsers: useCallback(() => router.push(getRoutePath.adminUsers()), [router]),
+    toAdminProducts: useCallback(() => router.push(getRoutePath.adminProducts()), [router]),
+
     // Merchant routes
     toMerchantStore: useCallback(
       (slug: string) => router.push(getRoutePath.merchantStore(slug)),

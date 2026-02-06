@@ -9,7 +9,7 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ children, requiredRole = undefined }: ProtectedRouteProps) {
-  const { toLogin, toDashboard, to } = useAppRouter();
+  const { toLogin, toDashboard, toAdmin, to } = useAppRouter();
   const { data: session, isPending } = authClient.useSession();
   const [isInitialCheckDone, setIsInitialCheckDone] = useState(false);
 
@@ -32,9 +32,15 @@ export function ProtectedRoute({ children, requiredRole = undefined }: Protected
     if (requiredRole) {
       const userRole = (session.user as Record<string, unknown>).role as string | undefined;
       if (!userRole || !requiredRole.includes(userRole)) {
-        toDashboard();
+        // Redirect based on user's actual role
+        if (userRole === 'ADMIN') {
+          toAdmin();
+        } else {
+          toDashboard();
+        }
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, isPending, toLogin, toDashboard, requiredRole, to]);
 
   if (isPending && !isInitialCheckDone) {

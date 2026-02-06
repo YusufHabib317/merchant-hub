@@ -54,6 +54,13 @@ export const API_ENDPOINTS = {
   export: {
     products: '/export/products',
   },
+
+  // Admin
+  admin: {
+    stats: '/admin/stats',
+    users: '/admin/users',
+    products: '/admin/products',
+  },
 } as const;
 
 /**
