@@ -78,30 +78,53 @@ async function handleRevertPrices(
       return res.status(httpCode.BAD_REQUEST).json(apiError);
     }
 
-    // Revert products to original prices using a transaction
-    const revertedProducts = await prisma.$transaction(async (tx) => {
-      // Requirement 5.3: Restore priceSYP to originalPriceSYP
-      // Requirement 5.4: Clear originalPriceSYP after reversion
-      const updatePromises = productsWithOriginalPrice.map(async (product) =>
-        tx.product.update({
-          where: { id: product.id },
-          data: {
-            priceSYP: product.originalPriceSYP!, // We know it's not null from filter
-            originalPriceSYP: null,
-          },
-          select: {
-            id: true,
-            name: true,
-            priceUSD: true,
-            priceSYP: true,
-            exchangeRate: true,
-            originalPriceSYP: true,
-          },
-        })
-      );
+    // Revert products to original prices using a transaction with increased timeout
+    const revertedProducts = await prisma.$transaction(
+      async (tx) => {
+        // Batch update products in chunks to avoid timeout
+        const BATCH_SIZE = 50;
+        const results: Array<{
+          id: string;
+          name: string;
+          priceUSD: number;
+          priceSYP: number;
+          exchangeRate: number;
+          originalPriceSYP: number | null;
+        }> = [];
 
-      return Promise.all(updatePromises);
-    });
+        for (let i = 0; i < productsWithOriginalPrice.length; i += BATCH_SIZE) {
+          const batch = productsWithOriginalPrice.slice(i, i + BATCH_SIZE);
+          // Requirement 5.3: Restore priceSYP to originalPriceSYP
+          // Requirement 5.4: Clear originalPriceSYP after reversion
+          const batchPromises = batch.map(async (product) =>
+            tx.product.update({
+              where: { id: product.id },
+              data: {
+                priceSYP: product.originalPriceSYP!, // We know it's not null from filter
+                originalPriceSYP: null,
+              },
+              select: {
+                id: true,
+                name: true,
+                priceUSD: true,
+                priceSYP: true,
+                exchangeRate: true,
+                originalPriceSYP: true,
+              },
+            })
+          );
+
+          // eslint-disable-next-line no-await-in-loop -- Intentional sequential batching to avoid DB overload
+          const batchResults = await Promise.all(batchPromises);
+          results.push(...batchResults);
+        }
+
+        return results;
+      },
+      {
+        timeout: 30000, // 30 seconds for bulk operations
+      }
+    );
 
     return res.status(httpCode.SUCCESS).json({
       success: true,

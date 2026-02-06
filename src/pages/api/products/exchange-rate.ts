@@ -73,43 +73,64 @@ async function handleApplyExchangeRate(
     }
 
     // Update products with new exchange rate and calculated SYP prices
-    // Using a transaction to ensure atomicity
-    const updatedProducts = await prisma.$transaction(async (tx) => {
-      // Update merchant's default exchange rate (Requirement 4.1)
-      await tx.merchant.update({
-        where: { id: merchant.id },
-        data: { defaultExchangeRate: exchangeRate },
-      });
-
-      // Update each product
-      const updatePromises = products.map(async (product) => {
-        const newPriceSYP = calculateSYPPrice(product.priceUSD, exchangeRate);
-
-        // Store original SYP price only if it's null (Requirement 5.1)
-        // This preserves the original price for potential reversion
-        const originalPriceSYP =
-          product.originalPriceSYP === null ? product.priceSYP : product.originalPriceSYP;
-
-        return tx.product.update({
-          where: { id: product.id },
-          data: {
-            priceSYP: newPriceSYP,
-            exchangeRate,
-            originalPriceSYP,
-          },
-          select: {
-            id: true,
-            name: true,
-            priceUSD: true,
-            priceSYP: true,
-            exchangeRate: true,
-            originalPriceSYP: true,
-          },
+    // Using a transaction with increased timeout for bulk operations
+    const updatedProducts = await prisma.$transaction(
+      async (tx) => {
+        // Update merchant's default exchange rate (Requirement 4.1)
+        await tx.merchant.update({
+          where: { id: merchant.id },
+          data: { defaultExchangeRate: exchangeRate },
         });
-      });
 
-      return Promise.all(updatePromises);
-    });
+        // Batch update products in chunks to avoid timeout
+        const BATCH_SIZE = 50;
+        const results: Array<{
+          id: string;
+          name: string;
+          priceUSD: number;
+          priceSYP: number;
+          exchangeRate: number;
+          originalPriceSYP: number | null;
+        }> = [];
+
+        for (let i = 0; i < products.length; i += BATCH_SIZE) {
+          const batch = products.slice(i, i + BATCH_SIZE);
+          const batchPromises = batch.map(async (product) => {
+            const newPriceSYP = calculateSYPPrice(product.priceUSD, exchangeRate);
+
+            // Store original SYP price only if it's null (Requirement 5.1)
+            const originalPriceSYP =
+              product.originalPriceSYP === null ? product.priceSYP : product.originalPriceSYP;
+
+            return tx.product.update({
+              where: { id: product.id },
+              data: {
+                priceSYP: newPriceSYP,
+                exchangeRate,
+                originalPriceSYP,
+              },
+              select: {
+                id: true,
+                name: true,
+                priceUSD: true,
+                priceSYP: true,
+                exchangeRate: true,
+                originalPriceSYP: true,
+              },
+            });
+          });
+
+          // eslint-disable-next-line no-await-in-loop -- Intentional sequential batching to avoid DB overload
+          const batchResults = await Promise.all(batchPromises);
+          results.push(...batchResults);
+        }
+
+        return results;
+      },
+      {
+        timeout: 30000, // 30 seconds for bulk operations
+      }
+    );
 
     return res.status(httpCode.SUCCESS).json({
       success: true,
