@@ -1,6 +1,4 @@
-import {
-  Modal, Stack, Text, Center, PinInput, Alert, Group, Button, Title,
-} from '@mantine/core';
+import { Modal, Stack, Text, Center, PinInput, Alert, Group, Button, Title } from '@mantine/core';
 import { IconAlertCircle } from '@tabler/icons-react';
 import useTranslation from 'next-translate/useTranslation';
 
@@ -40,11 +38,7 @@ export function OtpVerificationModal({
     >
       <Stack gap="md">
         <Text size="sm" c="dimmed">
-          {t('profile_page.otp_modal_description')}
-          {' '}
-          <strong>{email}</strong>
-          .
-          {' '}
+          {t('profile_page.otp_modal_description')} <strong>{email}</strong>.{' '}
           {t('profile_page.otp_modal_instruction')}
         </Text>
 
@@ -74,11 +68,7 @@ export function OtpVerificationModal({
           >
             {t('profile_page.resend_otp')}
           </Button>
-          <Button
-            onClick={onSubmit}
-            loading={isVerifying}
-            disabled={otp.length !== 6}
-          >
+          <Button onClick={onSubmit} loading={isVerifying} disabled={otp.length !== 6}>
             {t('profile_page.verify_button')}
           </Button>
         </Group>

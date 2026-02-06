@@ -1,16 +1,18 @@
 /* eslint-disable complexity */
 /* eslint-disable react/require-default-props */
-import {
-  Paper, Text, Stack, Box, Table,
-} from '@mantine/core';
+import { Paper, Text, Stack, Box, Table } from '@mantine/core';
 import { formatCurrency } from '@/utils/currency';
 import type { ExportProduct, PriceListStyleOptions } from './types';
 
 function hexToRgba(hex: string, alpha: number) {
   const raw = hex.replace('#', '').trim();
-  const normalized = raw.length === 3
-    ? raw.split('').map((c) => `${c}${c}`).join('')
-    : raw;
+  const normalized =
+    raw.length === 3
+      ? raw
+          .split('')
+          .map((c) => `${c}${c}`)
+          .join('')
+      : raw;
   if (normalized.length !== 6) return hex;
   const r = parseInt(normalized.slice(0, 2), 16);
   const g = parseInt(normalized.slice(2, 4), 16);
@@ -147,7 +149,13 @@ export function PriceListTemplate({
                 backgroundColor: hexToRgba(cardBgColor, cardBgOpacity),
               }}
             >
-              <Box style={{ backgroundColor: categoryHeaderBg, padding: '10px 14px', textAlign: 'center' }}>
+              <Box
+                style={{
+                  backgroundColor: categoryHeaderBg,
+                  padding: '10px 14px',
+                  textAlign: 'center',
+                }}
+              >
                 <Text fw={700} size="sm" style={{ color: categoryHeaderText }}>
                   {category}
                 </Text>
@@ -156,14 +164,20 @@ export function PriceListTemplate({
               <Table highlightOnHover>
                 <Table.Thead>
                   <Table.Tr style={{ backgroundColor: tableHeaderBg }}>
-                    <Table.Th style={{ padding: '10px 14px', color: tableHeaderText }}>Product</Table.Th>
+                    <Table.Th style={{ padding: '10px 14px', color: tableHeaderText }}>
+                      Product
+                    </Table.Th>
                     {showUSD && (
-                      <Table.Th style={{ textAlign: 'right', padding: '10px 14px', color: tableHeaderText }}>
+                      <Table.Th
+                        style={{ textAlign: 'right', padding: '10px 14px', color: tableHeaderText }}
+                      >
                         {currencyDisplay === 'usd' ? 'Price' : 'USD'}
                       </Table.Th>
                     )}
                     {showSYP && (
-                      <Table.Th style={{ textAlign: 'right', padding: '10px 14px', color: tableHeaderText }}>
+                      <Table.Th
+                        style={{ textAlign: 'right', padding: '10px 14px', color: tableHeaderText }}
+                      >
                         {currencyDisplay === 'syp' ? 'Price' : 'SYP'}
                       </Table.Th>
                     )}
@@ -176,20 +190,30 @@ export function PriceListTemplate({
                       style={{ backgroundColor: index % 2 === 0 ? rowOddBg : rowEvenBg }}
                     >
                       <Table.Td style={{ padding: '10px 14px' }}>
-                        <Text fw={500} style={{ color: rowText }}>{product.name}</Text>
+                        <Text fw={500} style={{ color: rowText }}>
+                          {product.name}
+                        </Text>
                       </Table.Td>
                       {showUSD && (
-                        <Table.Td style={{
-                          padding: '10px 14px', textAlign: 'right', fontWeight: 600, color: rowText,
-                        }}
+                        <Table.Td
+                          style={{
+                            padding: '10px 14px',
+                            textAlign: 'right',
+                            fontWeight: 600,
+                            color: rowText,
+                          }}
                         >
                           {formatCurrency(product.priceUSD, 'USD')}
                         </Table.Td>
                       )}
                       {showSYP && (
-                        <Table.Td style={{
-                          padding: '10px 14px', textAlign: 'right', fontWeight: 600, color: rowText,
-                        }}
+                        <Table.Td
+                          style={{
+                            padding: '10px 14px',
+                            textAlign: 'right',
+                            fontWeight: 600,
+                            color: rowText,
+                          }}
                         >
                           {product.priceSYP ? formatCurrency(product.priceSYP, 'SYP') : '-'}
                         </Table.Td>

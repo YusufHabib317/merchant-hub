@@ -5,13 +5,59 @@
 
 const BAD_WORDS = [
   // Sexual content
-  'sex', 'porn', 'xxx', 'nude', 'naked', 'erotic', 'sexual', 'penis', 'vagina', 'boobs', 'tits', 'ass', 'anal', 'orgasm', 'cum', 'dick', 'cock', 'pussy', 'bitch', 'whore', 'slut',
+  'sex',
+  'porn',
+  'xxx',
+  'nude',
+  'naked',
+  'erotic',
+  'sexual',
+  'penis',
+  'vagina',
+  'boobs',
+  'tits',
+  'ass',
+  'anal',
+  'orgasm',
+  'cum',
+  'dick',
+  'cock',
+  'pussy',
+  'bitch',
+  'whore',
+  'slut',
 
   // Violence
-  'kill', 'murder', 'death', 'die', 'suicide', 'blood', 'gore', 'violent', 'attack', 'shoot', 'gun', 'knife', 'bomb', 'terrorist', 'rape', 'assault', 'abuse', 'torture',
+  'kill',
+  'murder',
+  'death',
+  'die',
+  'suicide',
+  'blood',
+  'gore',
+  'violent',
+  'attack',
+  'shoot',
+  'gun',
+  'knife',
+  'bomb',
+  'terrorist',
+  'rape',
+  'assault',
+  'abuse',
+  'torture',
 
   // Hate speech / Offensive
-  'nigger', 'faggot', 'retard', 'spic', 'kike', 'chink', 'cunt', 'bastard', 'idiot', 'stupid',
+  'nigger',
+  'faggot',
+  'retard',
+  'spic',
+  'kike',
+  'chink',
+  'cunt',
+  'bastard',
+  'idiot',
+  'stupid',
 ];
 
 /**
@@ -43,7 +89,10 @@ export function validateAIContext(content: string): { valid: boolean; error?: st
   }
 
   if (containsBadWords(content)) {
-    return { valid: false, error: 'Content contains inappropriate language (violence, sexual content, etc.)' };
+    return {
+      valid: false,
+      error: 'Content contains inappropriate language (violence, sexual content, etc.)',
+    };
   }
 
   return { valid: true };

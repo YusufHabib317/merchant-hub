@@ -57,12 +57,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
         >
           {message.content}
         </Text>
-        <Text
-          size="xs"
-          mt={4}
-          c={isCustomer ? 'white' : 'dimmed'}
-          style={{ opacity: 0.7 }}
-        >
+        <Text size="xs" mt={4} c={isCustomer ? 'white' : 'dimmed'} style={{ opacity: 0.7 }}>
           {format(new Date(message.createdAt), 'HH:mm')}
         </Text>
       </Paper>

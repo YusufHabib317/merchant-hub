@@ -1,7 +1,5 @@
 /* eslint-disable react/require-default-props */
-import {
-  Paper, Text, Stack, Group, Box, Badge,
-} from '@mantine/core';
+import { Paper, Text, Stack, Group, Box, Badge } from '@mantine/core';
 import { formatCurrency } from '@/utils/currency';
 
 export interface ExportProduct {
@@ -24,10 +22,13 @@ export function ClassicTemplate({ products, merchantName, watermark }: ClassicTe
   return (
     <Paper p="xl" bg="white" style={{ width: '100%', minHeight: 400 }}>
       <Stack gap="md">
-        <Text fw={700} size="xl" ta="center" style={{ borderBottom: '2px solid #e9ecef', paddingBottom: 12 }}>
-          {merchantName}
-          {' '}
-          - Product Catalog
+        <Text
+          fw={700}
+          size="xl"
+          ta="center"
+          style={{ borderBottom: '2px solid #e9ecef', paddingBottom: 12 }}
+        >
+          {merchantName} - Product Catalog
         </Text>
 
         <Stack gap="sm">

@@ -1,12 +1,4 @@
-import {
-  Title,
-  Stack,
-  Button,
-  Group,
-  Loader,
-  Center,
-  Text,
-} from '@mantine/core';
+import { Title, Stack, Button, Group, Loader, Center, Text } from '@mantine/core';
 import useTranslation from 'next-translate/useTranslation';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
@@ -23,12 +15,15 @@ export default function EditProductPage() {
   const updateProduct = useUpdateProduct();
 
   const handleSubmit = (data: CreateProductInput) => {
-    updateProduct.mutate({ id: id as string, data }, {
-      onSuccess: () => {
-        toProducts();
-      },
-      // Error is already handled in the hook's onError callback
-    });
+    updateProduct.mutate(
+      { id: id as string, data },
+      {
+        onSuccess: () => {
+          toProducts();
+        },
+        // Error is already handled in the hook's onError callback
+      }
+    );
   };
 
   if (isLoading) {
@@ -68,10 +63,7 @@ export default function EditProductPage() {
           />
 
           <Group justify="flex-end">
-            <Button
-              variant="default"
-              onClick={toProducts}
-            >
+            <Button variant="default" onClick={toProducts}>
               {t('cancel')}
             </Button>
           </Group>

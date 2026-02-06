@@ -45,11 +45,7 @@ async function handleGetProduct(id: string, res: NextApiResponse) {
   }
 }
 
-async function handleUpdateProduct(
-  id: string,
-  req: AuthenticatedRequest,
-  res: NextApiResponse,
-) {
+async function handleUpdateProduct(id: string, req: AuthenticatedRequest, res: NextApiResponse) {
   try {
     // Validate request body
     const input = UpdateProductRequestSchema.parse(req.body);
@@ -78,11 +74,16 @@ async function handleUpdateProduct(
       data: {
         ...sanitizedInput,
         // Use the provided exchange rate or keep the existing one
-        exchangeRate: sanitizedInput.exchangeRate !== undefined ? sanitizedInput.exchangeRate : product.exchangeRate,
+        exchangeRate:
+          sanitizedInput.exchangeRate !== undefined
+            ? sanitizedInput.exchangeRate
+            : product.exchangeRate,
         // Calculate priceSYP using the exchange rate (new or existing)
-        priceSYP: sanitizedInput.priceSYP || (sanitizedInput.priceUSD
-          ? sanitizedInput.priceUSD * (sanitizedInput.exchangeRate || product.exchangeRate)
-          : undefined),
+        priceSYP:
+          sanitizedInput.priceSYP ||
+          (sanitizedInput.priceUSD
+            ? sanitizedInput.priceUSD * (sanitizedInput.exchangeRate || product.exchangeRate)
+            : undefined),
       },
     });
 
@@ -97,11 +98,7 @@ async function handleUpdateProduct(
   }
 }
 
-async function handleDeleteProduct(
-  id: string,
-  req: AuthenticatedRequest,
-  res: NextApiResponse,
-) {
+async function handleDeleteProduct(id: string, req: AuthenticatedRequest, res: NextApiResponse) {
   try {
     // Get product
     const product = await prisma.product.findUnique({

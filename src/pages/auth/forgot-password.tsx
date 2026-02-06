@@ -18,9 +18,10 @@ import { z } from 'zod';
 import { useAppRouter } from '@/lib/hooks/useAppRouter';
 import useTranslation from 'next-translate/useTranslation';
 
-const createForgotPasswordSchema = (t: (key: string) => string) => z.object({
-  email: z.string().email(t('common:auth.invalid_email')),
-});
+const createForgotPasswordSchema = (t: (key: string) => string) =>
+  z.object({
+    email: z.string().email(t('common:auth.invalid_email')),
+  });
 
 export default function ForgotPasswordPage() {
   const { t } = useTranslation();

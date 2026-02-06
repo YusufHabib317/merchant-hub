@@ -1,6 +1,4 @@
-import {
-  Container, Title, Text, Button, Box, Group,
-} from '@mantine/core';
+import { Container, Title, Text, Button, Box, Group } from '@mantine/core';
 import { IconArrowRight, IconRocket } from '@tabler/icons-react';
 import { motion } from 'framer-motion';
 import { useAppRouter } from '@/lib/hooks/useAppRouter';

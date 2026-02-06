@@ -1,6 +1,4 @@
-import {
-  Alert, Stack, Text, Button,
-} from '@mantine/core';
+import { Alert, Stack, Text, Button } from '@mantine/core';
 import { IconAlertCircle } from '@tabler/icons-react';
 import useTranslation from 'next-translate/useTranslation';
 
@@ -18,9 +16,7 @@ export function NoStoreAlert({ onSettingsClick }: NoStoreAlertProps) {
       variant="light"
     >
       <Stack gap="md">
-        <Text size="sm">
-          {t('no_store_found_message')}
-        </Text>
+        <Text size="sm">{t('no_store_found_message')}</Text>
         <Button
           onClick={onSettingsClick}
           variant="filled"

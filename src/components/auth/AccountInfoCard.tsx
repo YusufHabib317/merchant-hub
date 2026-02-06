@@ -1,6 +1,4 @@
-import {
-  Card, Group, Stack, Text, TextInput,
-} from '@mantine/core';
+import { Card, Group, Stack, Text, TextInput } from '@mantine/core';
 import { IconUser, IconMail } from '@tabler/icons-react';
 import useTranslation from 'next-translate/useTranslation';
 
@@ -29,7 +27,9 @@ export function AccountInfoCard({ session }: AccountInfoCardProps) {
     <Card withBorder padding="lg" radius="md">
       <Group mb="md">
         <IconUser size={24} />
-        <Text fw={600} size="lg">{t('profile_page.account_info')}</Text>
+        <Text fw={600} size="lg">
+          {t('profile_page.account_info')}
+        </Text>
       </Group>
       <Stack gap="md">
         <TextInput

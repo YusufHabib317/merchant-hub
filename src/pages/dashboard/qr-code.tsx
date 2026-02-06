@@ -1,10 +1,21 @@
 import {
-  Title, Stack, Card, Text, Button, Group, Center, Loader, Box, Paper, Grid,
-  CopyButton, ActionIcon, Tooltip, Alert,
+  Title,
+  Stack,
+  Card,
+  Text,
+  Button,
+  Group,
+  Center,
+  Loader,
+  Box,
+  Paper,
+  Grid,
+  CopyButton,
+  ActionIcon,
+  Tooltip,
+  Alert,
 } from '@mantine/core';
-import {
-  IconDownload, IconCopy, IconCheck, IconAlertCircle,
-} from '@tabler/icons-react';
+import { IconDownload, IconCopy, IconCheck, IconAlertCircle } from '@tabler/icons-react';
 import { useEffect, useState, useRef } from 'react';
 import useTranslation from 'next-translate/useTranslation';
 import QRCode from 'qrcode';
@@ -13,7 +24,13 @@ import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { useMyMerchant } from '@/lib/hooks/useMerchants';
 import { useAppRouter } from '@/lib/hooks/useAppRouter';
 
-function StoreQRCanvas({ url, onGenerated }: { url: string; onGenerated: (dataUrl: string) => void }) {
+function StoreQRCanvas({
+  url,
+  onGenerated,
+}: {
+  url: string;
+  onGenerated: (dataUrl: string) => void;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -67,9 +84,7 @@ export default function QRCodePage() {
         <Stack gap="lg">
           <Title order={1}>{t('qr_code_page.title')}</Title>
 
-          <Text c="dimmed">
-            {t('qr_code_page.description')}
-          </Text>
+          <Text c="dimmed">{t('qr_code_page.description')}</Text>
 
           {isLoading && (
             <Center py="xl">
@@ -85,9 +100,7 @@ export default function QRCodePage() {
               variant="light"
             >
               <Stack gap="md">
-                <Text size="sm">
-                  {t('qr_code_page.no_store_message')}
-                </Text>
+                <Text size="sm">{t('qr_code_page.no_store_message')}</Text>
                 <Button
                   onClick={toSettings}
                   variant="filled"
@@ -141,7 +154,13 @@ export default function QRCodePage() {
                         </Paper>
                         <CopyButton value={storeUrl}>
                           {({ copied, copy }) => (
-                            <Tooltip label={copied ? t('qr_code_page.copy_tooltip_copied') : t('qr_code_page.copy_tooltip')}>
+                            <Tooltip
+                              label={
+                                copied
+                                  ? t('qr_code_page.copy_tooltip_copied')
+                                  : t('qr_code_page.copy_tooltip')
+                              }
+                            >
                               <ActionIcon
                                 color={copied ? 'teal' : 'gray'}
                                 onClick={copy}
@@ -176,12 +195,8 @@ export default function QRCodePage() {
                   </Title>
                   <Stack gap="xs">
                     <Text size="sm">{t('qr_code_page.step_1')}</Text>
-                    <Text size="sm">
-                      {t('qr_code_page.step_2')}
-                    </Text>
-                    <Text size="sm">
-                      {t('qr_code_page.step_3')}
-                    </Text>
+                    <Text size="sm">{t('qr_code_page.step_2')}</Text>
+                    <Text size="sm">{t('qr_code_page.step_3')}</Text>
                   </Stack>
 
                   <Title order={4} mt="lg" mb="sm">

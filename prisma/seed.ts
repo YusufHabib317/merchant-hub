@@ -8,7 +8,8 @@ import { auth } from '../src/lib/auth';
 const prisma = new PrismaClient();
 
 // Image URL for all products
-const PRODUCT_IMAGE_URL = 'https://fk9cgv8v5q.ufs.sh/f/KUl1DcDBjt0ByOLej7tB79LWEsSXKC1NeuYMjrUd4pxlnh3R';
+const PRODUCT_IMAGE_URL =
+  'https://fk9cgv8v5q.ufs.sh/f/KUl1DcDBjt0ByOLej7tB79LWEsSXKC1NeuYMjrUd4pxlnh3R';
 
 // Email constants
 const MOBILE_STORE_EMAIL = 'yhapiep@gmail.com';
@@ -78,7 +79,18 @@ const MOBILE_BRANDS = [
   },
   {
     brand: 'OnePlus',
-    models: ['12', '12R', 'Open', '11', '11R', 'Nord 4', 'Nord CE4', 'Nord 3', 'Pad Go', 'Buds Pro 2'],
+    models: [
+      '12',
+      '12R',
+      'Open',
+      '11',
+      '11R',
+      'Nord 4',
+      'Nord CE4',
+      'Nord 3',
+      'Pad Go',
+      'Buds Pro 2',
+    ],
   },
   {
     brand: 'Nothing',
@@ -112,11 +124,33 @@ const MOBILE_BRANDS = [
   },
   {
     brand: 'OPPO',
-    models: ['Find X7 Ultra', 'Find X7', 'Reno 11 Pro', 'Reno 11', 'Reno 10', 'A79 5G', 'A58', 'Pad Neo', 'Watch X', 'Enco X2'],
+    models: [
+      'Find X7 Ultra',
+      'Find X7',
+      'Reno 11 Pro',
+      'Reno 11',
+      'Reno 10',
+      'A79 5G',
+      'A58',
+      'Pad Neo',
+      'Watch X',
+      'Enco X2',
+    ],
   },
   {
     brand: 'Vivo',
-    models: ['X100 Pro', 'X100', 'V30 Pro', 'V30', 'V29 Pro', 'V29', 'Y200', 'Y100', 'Pad 2', 'TWS 3 Pro'],
+    models: [
+      'X100 Pro',
+      'X100',
+      'V30 Pro',
+      'V30',
+      'V29 Pro',
+      'V29',
+      'Y200',
+      'Y100',
+      'Pad 2',
+      'TWS 3 Pro',
+    ],
   },
   {
     brand: 'Realme',
@@ -397,7 +431,7 @@ async function createMerchantWithAuth(
   password: string,
   name: string,
   storeName: string,
-  storeDescription: string,
+  storeDescription: string
 ) {
   // Create user using Better Auth's signUp API
   const result = await auth.api.signUpEmail({
@@ -452,14 +486,16 @@ async function createMerchantWithAuth(
 // Create products for a merchant
 async function createProducts(
   products: Array<ReturnType<typeof generateMobileProducts>[number]>,
-  merchantId: string,
+  merchantId: string
 ) {
-  const productCreates = products.map((product) => prisma.product.create({
-    data: {
-      ...product,
-      merchantId,
-    },
-  }));
+  const productCreates = products.map((product) =>
+    prisma.product.create({
+      data: {
+        ...product,
+        merchantId,
+      },
+    })
+  );
 
   await Promise.all(productCreates);
 }
@@ -544,7 +580,7 @@ async function main() {
     MOBILE_STORE_EMAIL,
     'Mobile Store Owner',
     'Mobile Store',
-    'Your one-stop shop for the latest smartphones, tablets, smartwatches, and mobile accessories. We offer premium devices from top brands at competitive prices.',
+    'Your one-stop shop for the latest smartphones, tablets, smartwatches, and mobile accessories. We offer premium devices from top brands at competitive prices.'
   );
 
   console.log(`✅ Created Mobile Store merchant: ${mobileStoreData.user.email}`);
@@ -558,7 +594,7 @@ async function main() {
     SPICE_SHOP_EMAIL,
     'Spice Shop Owner',
     'Spice Shop',
-    'Discover the world of flavors with our premium collection of spices, herbs, and seasonings. From everyday essentials to exotic specialties, we bring authentic taste to your kitchen.',
+    'Discover the world of flavors with our premium collection of spices, herbs, and seasonings. From everyday essentials to exotic specialties, we bring authentic taste to your kitchen.'
   );
 
   console.log(`✅ Created Spice Shop merchant: ${spiceShopData.user.email}`);

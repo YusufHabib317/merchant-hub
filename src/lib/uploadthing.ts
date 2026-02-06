@@ -31,7 +31,9 @@ const f = createUploadthing({
  * Authenticate user from request using Better Auth
  * Throws UploadThingError if user is not authenticated
  */
-async function authenticateUser(req: Parameters<Parameters<ReturnType<typeof f>['middleware']>[0]>[0]['req']) {
+async function authenticateUser(
+  req: Parameters<Parameters<ReturnType<typeof f>['middleware']>[0]>[0]['req']
+) {
   try {
     const session = await auth.api.getSession({
       headers: req.headers as unknown as Headers,

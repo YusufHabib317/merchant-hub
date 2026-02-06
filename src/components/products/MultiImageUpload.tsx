@@ -10,9 +10,7 @@ import {
   SimpleGrid,
   Group,
 } from '@mantine/core';
-import {
-  IconUpload, IconX, IconPhoto,
-} from '@tabler/icons-react';
+import { IconUpload, IconX, IconPhoto } from '@tabler/icons-react';
 import { useState } from 'react';
 import { UploadButton } from '@uploadthing/react';
 import type { UploadRouter } from '@/lib/uploadthing';
@@ -51,15 +49,15 @@ export function MultiImageUpload({
       <Group justify="space-between">
         <Text size="sm" fw={500}>
           {t('product_images')}
-          {required && <Text component="span" c="red"> *</Text>}
+          {required && (
+            <Text component="span" c="red">
+              {' '}
+              *
+            </Text>
+          )}
         </Text>
         <Text size="xs" c="dimmed">
-          {value.length}
-          {' '}
-          /
-          {maxImages}
-          {' '}
-          {t('images')}
+          {value.length} /{maxImages} {t('images')}
         </Text>
       </Group>
 
@@ -95,12 +93,16 @@ export function MultiImageUpload({
                   <IconX size={14} />
                 </ActionIcon>
                 {index === 0 && (
-                  <Box
-                    pos="absolute"
-                    bottom={4}
-                    left={4}
-                  >
-                    <Text size="xs" fw={600} c="blue" bg="white" px={6} py={2} style={{ borderRadius: 4 }}>
+                  <Box pos="absolute" bottom={4} left={4}>
+                    <Text
+                      size="xs"
+                      fw={600}
+                      c="blue"
+                      bg="white"
+                      px={6}
+                      py={2}
+                      style={{ borderRadius: 4 }}
+                    >
                       {t('primary')}
                     </Text>
                   </Box>
@@ -123,7 +125,9 @@ export function MultiImageUpload({
               <ThemeIcon size={48} radius="xl" variant="light" color="blue">
                 <IconUpload size={24} />
               </ThemeIcon>
-              <Text size="sm" c="dimmed">{t('uploading')}</Text>
+              <Text size="sm" c="dimmed">
+                {t('uploading')}
+              </Text>
               <Progress value={progress} w="100%" size="sm" animated />
             </Stack>
           ) : (
@@ -132,9 +136,7 @@ export function MultiImageUpload({
                 <IconPhoto size={24} />
               </ThemeIcon>
               <Text size="sm" c="dimmed" ta="center">
-                {t('click_to_upload')}
-                {' '}
-                {value.length === 0 ? t('images') : t('more_images')}
+                {t('click_to_upload')} {value.length === 0 ? t('images') : t('more_images')}
               </Text>
               <UploadButton<UploadRouter, 'productImage'>
                 endpoint="productImage"
@@ -176,11 +178,7 @@ export function MultiImageUpload({
                 }}
               />
               <Text size="xs" c="dimmed">
-                {t('upload_instructions')}
-                {' '}
-                {maxImages}
-                {' '}
-                {t('images')}
+                {t('upload_instructions')} {maxImages} {t('images')}
               </Text>
             </Stack>
           )}

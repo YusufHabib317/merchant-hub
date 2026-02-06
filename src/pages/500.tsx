@@ -1,11 +1,4 @@
-import {
-  Container,
-  Title,
-  Text,
-  Button,
-  Group,
-  Center,
-} from '@mantine/core';
+import { Container, Title, Text, Button, Group, Center } from '@mantine/core';
 import { IconServerOff } from '@tabler/icons-react';
 import { useRouter } from 'next/router';
 

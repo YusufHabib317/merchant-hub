@@ -10,12 +10,7 @@ import {
   Paper,
   Code,
 } from '@mantine/core';
-import {
-  IconUpload,
-  IconAlertCircle,
-  IconCheck,
-  IconDownload,
-} from '@tabler/icons-react';
+import { IconUpload, IconAlertCircle, IconCheck, IconDownload } from '@tabler/icons-react';
 import { useState } from 'react';
 import useTranslation from 'next-translate/useTranslation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -62,8 +57,9 @@ export function ImportCSVModal({ opened, onClose }: ImportCSVModalProps) {
   };
 
   const handleDownloadTemplate = () => {
-    const templateContent = `${CSV_HEADERS.join(',')}\n`
-      + 'Example Product,Product description,99.99,1499850,15000,Electronics,10,true,tag1;tag2,NEW,https://example.com/image.jpg';
+    const templateContent =
+      `${CSV_HEADERS.join(',')}\n` +
+      'Example Product,Product description,99.99,1499850,15000,Electronics,10,true,tag1;tag2,NEW,https://example.com/image.jpg';
     downloadCSV(templateContent, 'products-template.csv');
   };
 
@@ -75,12 +71,7 @@ export function ImportCSVModal({ opened, onClose }: ImportCSVModalProps) {
   };
 
   return (
-    <Modal
-      opened={opened}
-      onClose={handleClose}
-      title={t('import_csv_title')}
-      size="lg"
-    >
+    <Modal opened={opened} onClose={handleClose} title={t('import_csv_title')} size="lg">
       <Stack gap="md">
         {!result ? (
           <>
@@ -90,8 +81,7 @@ export function ImportCSVModal({ opened, onClose }: ImportCSVModalProps) {
 
             <Paper withBorder p="sm" bg="gray.0">
               <Text size="xs" fw={500} mb="xs">
-                {t('csv_columns')}
-                :
+                {t('csv_columns')}:
               </Text>
               <Code block style={{ fontSize: '11px' }}>
                 {CSV_HEADERS.join(', ')}
@@ -151,18 +141,12 @@ export function ImportCSVModal({ opened, onClose }: ImportCSVModalProps) {
             {result.errors.length > 0 && (
               <Paper withBorder p="sm">
                 <Text size="sm" fw={500} mb="xs">
-                  {t('import_errors')}
-                  :
+                  {t('import_errors')}:
                 </Text>
                 <List size="xs" spacing="xs">
                   {result.errors.slice(0, 10).map((err) => (
                     <List.Item key={err.row}>
-                      {t('row')}
-                      {' '}
-                      {err.row}
-                      :
-                      {' '}
-                      {err.error}
+                      {t('row')} {err.row}: {err.error}
                     </List.Item>
                   ))}
                   {result.errors.length > 10 && (
@@ -176,9 +160,7 @@ export function ImportCSVModal({ opened, onClose }: ImportCSVModalProps) {
             )}
 
             <Group justify="flex-end" mt="md">
-              <Button onClick={handleClose}>
-                {t('close')}
-              </Button>
+              <Button onClick={handleClose}>{t('close')}</Button>
             </Group>
           </>
         )}

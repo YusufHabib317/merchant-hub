@@ -1,6 +1,4 @@
-import {
-  Box, Group, Text, Badge, ActionIcon,
-} from '@mantine/core';
+import { Box, Group, Text, Badge, ActionIcon } from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
 
 interface ChatHeaderProps {
@@ -10,9 +8,7 @@ interface ChatHeaderProps {
   onClose: () => void;
 }
 
-export function ChatHeader({
-  merchantName, isOnline, merchantTookOver, onClose,
-}: ChatHeaderProps) {
+export function ChatHeader({ merchantName, isOnline, merchantTookOver, onClose }: ChatHeaderProps) {
   return (
     <Box
       style={{
@@ -48,12 +44,7 @@ export function ChatHeader({
             )}
           </Group>
         </Box>
-        <ActionIcon
-          variant="subtle"
-          color="white"
-          onClick={onClose}
-          size="lg"
-        >
+        <ActionIcon variant="subtle" color="white" onClick={onClose} size="lg">
           <IconX size={20} />
         </ActionIcon>
       </Group>

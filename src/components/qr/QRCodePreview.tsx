@@ -1,13 +1,15 @@
 import {
-  Paper, Text, Stack, Group, Box, Button,
-  CopyButton, ActionIcon, Tooltip,
+  Paper,
+  Text,
+  Stack,
+  Group,
+  Box,
+  Button,
+  CopyButton,
+  ActionIcon,
+  Tooltip,
 } from '@mantine/core';
-import {
-  IconDownload,
-  IconRefresh,
-  IconCopy,
-  IconCheck,
-} from '@tabler/icons-react';
+import { IconDownload, IconRefresh, IconCopy, IconCheck } from '@tabler/icons-react';
 import { useState } from 'react';
 import { QRCodeGenerator } from './QRCodeGenerator';
 
@@ -49,12 +51,7 @@ export function QRCodePreview({
             borderRadius: 8,
           }}
         >
-          <QRCodeGenerator
-            value={canvasValue}
-            size={250}
-            margin={2}
-            onGenerate={() => {}}
-          />
+          <QRCodeGenerator value={canvasValue} size={250} margin={2} onGenerate={() => {}} />
         </Box>
       </Paper>
 
@@ -94,18 +91,10 @@ export function QRCodePreview({
       </Box>
 
       <Group>
-        <Button
-          leftSection={<IconDownload size={16} />}
-          onClick={onDownload}
-          disabled={!qrDataUrl}
-        >
+        <Button leftSection={<IconDownload size={16} />} onClick={onDownload} disabled={!qrDataUrl}>
           Download
         </Button>
-        <Button
-          variant="light"
-          leftSection={<IconRefresh size={16} />}
-          onClick={onRegenerate}
-        >
+        <Button variant="light" leftSection={<IconRefresh size={16} />} onClick={onRegenerate}>
           Regenerate
         </Button>
       </Group>

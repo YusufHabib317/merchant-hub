@@ -1,11 +1,4 @@
-import {
-  Box,
-  Container,
-  Group,
-  Text,
-  Anchor,
-  useMantineColorScheme,
-} from '@mantine/core';
+import { Box, Container, Group, Text, Anchor, useMantineColorScheme } from '@mantine/core';
 import { IconBuildingStore } from '@tabler/icons-react';
 import useTranslation from 'next-translate/useTranslation';
 import { ThemeSwitcher } from '@/components/layout/ThemeSwitcher';
@@ -19,7 +12,9 @@ export function MerchantPublicHeader() {
     <Box
       component="header"
       style={(theme) => ({
-        borderBottom: `1px solid ${colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]}`,
+        borderBottom: `1px solid ${
+          colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]
+        }`,
         backgroundColor: colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
         position: 'sticky',
         top: 0,
@@ -30,11 +25,7 @@ export function MerchantPublicHeader() {
       <Container size="lg">
         <Group justify="space-between" h={60}>
           {/* Logo/Branding */}
-          <Anchor
-            href="/"
-            underline="never"
-            style={{ textDecoration: 'none' }}
-          >
+          <Anchor href="/" underline="never" style={{ textDecoration: 'none' }}>
             <Group gap="xs">
               <Box
                 style={(theme) => ({

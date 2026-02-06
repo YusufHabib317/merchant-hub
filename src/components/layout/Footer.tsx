@@ -9,11 +9,7 @@ export function Footer() {
     <Container size="lg" py="md" mt="xl">
       <Group justify="space-between">
         <Text size="sm" c="dimmed">
-          ©
-          {' '}
-          {currentYear}
-          {' '}
-          {t('header.merchant_hub')}
+          © {currentYear} {t('header.merchant_hub')}
         </Text>
         <Group gap="lg">
           <Text size="sm" c="dimmed" component="a" href="#" style={{ textDecoration: 'none' }}>

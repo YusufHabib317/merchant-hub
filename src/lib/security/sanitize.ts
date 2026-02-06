@@ -78,7 +78,7 @@ export function sanitizeRich(input: string): string {
  */
 export function sanitizeObject<T extends Record<string, unknown>>(
   obj: T,
-  mode: 'strict' | 'basic' | 'rich' = 'strict',
+  mode: 'strict' | 'basic' | 'rich' = 'strict'
 ): T {
   if (!obj || typeof obj !== 'object') {
     return obj;
@@ -100,9 +100,14 @@ export function sanitizeObject<T extends Record<string, unknown>>(
     if (typeof value === 'string') {
       (result as Record<string, unknown>)[key] = sanitizeFn(value);
     } else if (Array.isArray(value)) {
-      (result as Record<string, unknown>)[key] = value.map((item) => (typeof item === 'string' ? sanitizeFn(item) : item));
+      (result as Record<string, unknown>)[key] = value.map((item) =>
+        typeof item === 'string' ? sanitizeFn(item) : item
+      );
     } else if (value && typeof value === 'object') {
-      (result as Record<string, unknown>)[key] = sanitizeObject(value as Record<string, unknown>, mode);
+      (result as Record<string, unknown>)[key] = sanitizeObject(
+        value as Record<string, unknown>,
+        mode
+      );
     }
   });
 
@@ -113,12 +118,14 @@ export function sanitizeObject<T extends Record<string, unknown>>(
  * Sanitize product input data
  * Applies strict sanitization to name/category, basic to description
  */
-export function sanitizeProductInput<T extends {
-  name?: string;
-  description?: string;
-  category?: string;
-  imageUrls?: string[];
-}>(input: T): T {
+export function sanitizeProductInput<
+  T extends {
+    name?: string;
+    description?: string;
+    category?: string;
+    imageUrls?: string[];
+  }
+>(input: T): T {
   return {
     ...input,
     name: input.name ? sanitizeStrict(input.name) : input.name,
@@ -132,12 +139,14 @@ export function sanitizeProductInput<T extends {
  * Sanitize merchant input data
  * Applies strict sanitization to name/address, basic to description
  */
-export function sanitizeMerchantInput<T extends {
-  name?: string;
-  description?: string;
-  address?: string;
-  aiContext?: string;
-}>(input: T): T {
+export function sanitizeMerchantInput<
+  T extends {
+    name?: string;
+    description?: string;
+    address?: string;
+    aiContext?: string;
+  }
+>(input: T): T {
   return {
     ...input,
     name: input.name ? sanitizeStrict(input.name) : input.name,

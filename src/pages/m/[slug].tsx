@@ -1,16 +1,7 @@
 import {
-  Container,
-  Text,
-  Box,
-  Loader,
-  Center,
-  Alert,
-  Modal,
-  Stack,
+  Container, Text, Box, Loader, Center, Alert, Modal, Stack,
 } from '@mantine/core';
-import {
-  IconAlertCircle,
-} from '@tabler/icons-react';
+import { IconAlertCircle } from '@tabler/icons-react';
 import { useRouter } from 'next/router';
 import { useQuery } from '@tanstack/react-query';
 import useTranslation from 'next-translate/useTranslation';
@@ -54,10 +45,16 @@ export default function MerchantPublicPage() {
   const [sortBy, setSortBy] = useState<NonNullable<ProductQueryParams['sortBy']>>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
-  const { data: merchant, isLoading: merchantLoading, error: merchantError } = useQuery<PublicMerchant>({
+  const {
+    data: merchant,
+    isLoading: merchantLoading,
+    error: merchantError,
+  } = useQuery<PublicMerchant>({
     queryKey: ['merchant', slug],
     queryFn: async () => {
-      const { data: response } = await apiClient.get(API_ENDPOINTS.merchants.getBySlug(slug as string));
+      const { data: response } = await apiClient.get(
+        API_ENDPOINTS.merchants.getBySlug(slug as string),
+      );
       return response.data;
     },
     enabled: !!slug && typeof slug === 'string',
@@ -110,7 +107,11 @@ export default function MerchantPublicPage() {
   if (merchantError || !merchant) {
     return (
       <Container size="lg" py="xl">
-        <Alert icon={<IconAlertCircle size={16} />} title={t('merchant_page.store_not_found')} color="red">
+        <Alert
+          icon={<IconAlertCircle size={16} />}
+          title={t('merchant_page.store_not_found')}
+          color="red"
+        >
           {t('merchant_page.store_not_found_desc')}
         </Alert>
       </Container>

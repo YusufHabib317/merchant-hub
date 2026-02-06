@@ -1,6 +1,4 @@
-import {
-  Paper, Text, Stack, Group, Box,
-} from '@mantine/core';
+import { Paper, Text, Stack, Group, Box } from '@mantine/core';
 import { formatCurrency } from '@/utils/currency';
 import type { ExportProduct } from './types';
 
@@ -98,31 +96,34 @@ export function ElegantTemplate({
                         </Text>
                       )}
                       {product.description && (
-                        <Text size="sm" mt="xs" c="dimmed" lineClamp={2} style={{ fontStyle: 'italic' }}>
+                        <Text
+                          size="sm"
+                          mt="xs"
+                          c="dimmed"
+                          lineClamp={2}
+                          style={{ fontStyle: 'italic' }}
+                        >
                           {product.description}
                         </Text>
                       )}
                     </Box>
                     <Box ta="right">
                       {(currencyDisplay === 'usd' || currencyDisplay === 'both') && (
-                        <Text
-                          fw={600}
-                          size="xl"
-                          style={PRICE_STYLE}
-                        >
+                        <Text fw={600} size="xl" style={PRICE_STYLE}>
                           {formatCurrency(product.priceUSD, 'USD')}
                         </Text>
                       )}
-                      {(currencyDisplay === 'syp' || currencyDisplay === 'both') && product.priceSYP && (
-                        <Text
-                          size={currencyDisplay === 'syp' ? 'xl' : 'xs'}
-                          fw={currencyDisplay === 'syp' ? 600 : undefined}
-                          style={currencyDisplay === 'syp' ? PRICE_STYLE : undefined}
-                          c={currencyDisplay === 'syp' ? undefined : 'dimmed'}
-                        >
-                          {formatCurrency(product.priceSYP, 'SYP')}
-                        </Text>
-                      )}
+                      {(currencyDisplay === 'syp' || currencyDisplay === 'both') &&
+                        product.priceSYP && (
+                          <Text
+                            size={currencyDisplay === 'syp' ? 'xl' : 'xs'}
+                            fw={currencyDisplay === 'syp' ? 600 : undefined}
+                            style={currencyDisplay === 'syp' ? PRICE_STYLE : undefined}
+                            c={currencyDisplay === 'syp' ? undefined : 'dimmed'}
+                          >
+                            {formatCurrency(product.priceSYP, 'SYP')}
+                          </Text>
+                        )}
                     </Box>
                   </Group>
                 </Box>

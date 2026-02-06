@@ -2,9 +2,7 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import { useEffect, useState, useRef } from 'react';
 import useTranslation from 'next-translate/useTranslation';
-import {
-  Box, Stack, Text, Loader, Badge, Button,
-} from '@mantine/core';
+import { Box, Stack, Text, Loader, Badge, Button } from '@mantine/core';
 import { Socket } from 'socket.io-client';
 import { ChatMessage } from '../ChatMessage';
 import { ChatInput } from '../ChatInput';
@@ -59,10 +57,12 @@ export function ChatConversation({ session, socket }: ChatConversationProps) {
       setIsLoading(true);
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_CHAT_URL || 'http://localhost:9001'}/api/sessions/${session.id}/messages`,
+          `${process.env.NEXT_PUBLIC_CHAT_URL || 'http://localhost:9001'}/api/sessions/${
+            session.id
+          }/messages`,
           {
             credentials: 'include',
-          },
+          }
         );
         const data = await response.json();
         setMessages(data);
@@ -165,9 +165,13 @@ export function ChatConversation({ session, socket }: ChatConversationProps) {
 
   if (isLoading) {
     return (
-      <Box style={{
-        display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%',
-      }}
+      <Box
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100%',
+        }}
       >
         <Loader />
       </Box>
@@ -222,11 +226,7 @@ export function ChatConversation({ session, socket }: ChatConversationProps) {
       </Box>
 
       {/* Input */}
-      <ChatInput
-        onSend={handleSendMessage}
-        onTyping={handleTyping}
-        disabled={!socket}
-      />
+      <ChatInput onSend={handleSendMessage} onTyping={handleTyping} disabled={!socket} />
     </Stack>
   );
 }

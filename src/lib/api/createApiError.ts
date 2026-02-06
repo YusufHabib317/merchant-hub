@@ -8,13 +8,19 @@ type CreateApiErrorArgs = {
 };
 
 // Helper to handle Axios errors
-const handleAxiosError = (error: AxiosError<BackendErrorBody>, isDebug: boolean): ApiErrorResponse => {
+const handleAxiosError = (
+  error: AxiosError<BackendErrorBody>,
+  isDebug: boolean
+): ApiErrorResponse => {
   const { response } = error;
   return {
     code: response?.data?.error?.status || response?.status || httpCode.BAD_REQUEST,
     message: {
       fallback: response?.data?.error?.message || error.message || FALLBACK_ERROR_MESSAGE,
-      key: response?.data?.error?.details?.key || response?.data?.error?.name || FALLBACK_ERROR_MESSAGE_KEY,
+      key:
+        response?.data?.error?.details?.key ||
+        response?.data?.error?.name ||
+        FALLBACK_ERROR_MESSAGE_KEY,
       params: response?.data?.error?.details?.params ?? {},
     },
     errors: isDebug ? [error as Error] : [],
@@ -39,12 +45,26 @@ const handleZodError = (error: z.ZodError, isDebug: boolean): ApiErrorResponse =
 };
 
 // Helper to handle specific error messages
-const getErrorByMessage = (message: string): { code: number; key: string; fallback: string } | null => {
+const getErrorByMessage = (
+  message: string
+): { code: number; key: string; fallback: string } | null => {
   const errorMap: Record<string, { code: number; key: string; fallback: string }> = {
-    unauthorized: { code: httpCode.UNAUTHORIZED, key: ErrorKeys.UNAUTHORIZED, fallback: 'Authentication required' },
+    unauthorized: {
+      code: httpCode.UNAUTHORIZED,
+      key: ErrorKeys.UNAUTHORIZED,
+      fallback: 'Authentication required',
+    },
     forbidden: { code: httpCode.FORBIDDEN, key: ErrorKeys.FORBIDDEN, fallback: 'Access denied' },
-    notFound: { code: httpCode.NOT_FOUND, key: ErrorKeys.NOT_FOUND, fallback: 'Resource not found' },
-    'Not found': { code: httpCode.NOT_FOUND, key: ErrorKeys.NOT_FOUND, fallback: 'Resource not found' },
+    notFound: {
+      code: httpCode.NOT_FOUND,
+      key: ErrorKeys.NOT_FOUND,
+      fallback: 'Resource not found',
+    },
+    'Not found': {
+      code: httpCode.NOT_FOUND,
+      key: ErrorKeys.NOT_FOUND,
+      fallback: 'Resource not found',
+    },
   };
   return errorMap[message] || null;
 };

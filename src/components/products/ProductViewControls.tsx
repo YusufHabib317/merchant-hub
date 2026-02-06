@@ -1,10 +1,4 @@
-import {
-  Group,
-  TextInput,
-  Select,
-  SegmentedControl,
-  Box,
-} from '@mantine/core';
+import { Group, TextInput, Select, SegmentedControl, Box } from '@mantine/core';
 import { IconSearch, IconLayoutGrid, IconList } from '@tabler/icons-react';
 import { useDebouncedValue } from '@mantine/hooks';
 import { useEffect, useState } from 'react';

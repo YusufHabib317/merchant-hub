@@ -27,7 +27,8 @@ export const CreateProductSchema = z.object({
   priceUSD: z.number().min(0, 'Price must be 0 or greater'),
   priceSYP: z.number().min(0, 'Price must be 0 or greater').optional(),
   exchangeRate: z.number().positive('Exchange rate must be positive').default(15000),
-  imageUrls: z.array(z.string().url('Invalid image URL'))
+  imageUrls: z
+    .array(z.string().url('Invalid image URL'))
     .min(1, 'At least one image is required')
     .max(3, 'Maximum 3 images allowed'),
   category: z.string().min(1, 'Category is required'),

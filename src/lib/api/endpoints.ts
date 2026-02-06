@@ -34,6 +34,8 @@ export const API_ENDPOINTS = {
     getById: (id: string) => `/products/${id}`,
     update: (id: string) => `/products/${id}`,
     delete: (id: string) => `/products/${id}`,
+    applyExchangeRate: '/products/exchange-rate',
+    revertPrices: '/products/revert-prices',
   },
 
   // Merchants
@@ -56,7 +58,10 @@ export const API_ENDPOINTS = {
 /**
  * Helper function to build endpoint paths with parameters
  */
-export function buildEndpoint(endpoint: string | ((param: string) => string), param?: string): string {
+export function buildEndpoint(
+  endpoint: string | ((param: string) => string),
+  param?: string
+): string {
   if (typeof endpoint === 'function' && param) {
     return endpoint(param);
   }

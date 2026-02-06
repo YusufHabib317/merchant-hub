@@ -149,7 +149,9 @@ async function handleCreateProduct(req: AuthenticatedRequest, res: NextApiRespon
         merchantId: merchant.id,
         // Use merchant's custom exchange rate if provided, otherwise use default
         exchangeRate: sanitizedInput.exchangeRate || DEFAULT_EXCHANGE_RATE,
-        priceSYP: sanitizedInput.priceSYP || sanitizedInput.priceUSD * (sanitizedInput.exchangeRate || DEFAULT_EXCHANGE_RATE),
+        priceSYP:
+          sanitizedInput.priceSYP ||
+          sanitizedInput.priceUSD * (sanitizedInput.exchangeRate || DEFAULT_EXCHANGE_RATE),
       },
     });
 

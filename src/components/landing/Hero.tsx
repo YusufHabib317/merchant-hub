@@ -1,6 +1,4 @@
-import {
-  Container, Title, Text, Button, Group, Box,
-} from '@mantine/core';
+import { Container, Title, Text, Button, Group, Box } from '@mantine/core';
 import { IconArrowRight, IconSparkles } from '@tabler/icons-react';
 import { motion } from 'framer-motion';
 import { authClient } from '@/lib/auth-client';

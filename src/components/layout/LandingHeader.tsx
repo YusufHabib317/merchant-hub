@@ -10,12 +10,7 @@ import {
   Drawer,
   Stack,
 } from '@mantine/core';
-import {
-  IconSun,
-  IconMoon,
-  IconLogin,
-  IconUserPlus,
-} from '@tabler/icons-react';
+import { IconSun, IconMoon, IconLogin, IconUserPlus } from '@tabler/icons-react';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { LanguageSwitcher } from './LanguageSwitcher';
@@ -107,10 +102,7 @@ export function LandingHeader({ activeSection = 'home' }: LandingHeaderProps) {
       <Container size="xl" px={{ base: 'md', sm: 'lg' }}>
         <Group h={{ base: 60, sm: 70 }} justify="space-between" wrap="nowrap">
           {/* Logo */}
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Button
               variant="subtle"
               size="lg"
@@ -155,11 +147,7 @@ export function LandingHeader({ activeSection = 'home' }: LandingHeaderProps) {
               aria-label="Toggle color scheme"
               visibleFrom="sm"
             >
-              {computedColorScheme === 'dark' ? (
-                <IconSun size={20} />
-              ) : (
-                <IconMoon size={20} />
-              )}
+              {computedColorScheme === 'dark' ? <IconSun size={20} /> : <IconMoon size={20} />}
             </ActionIcon>
 
             {/* Language Switcher - Desktop */}
@@ -244,9 +232,13 @@ export function LandingHeader({ activeSection = 'home' }: LandingHeaderProps) {
             onClick={toggleColorScheme}
             variant="default"
             fullWidth
-            leftSection={computedColorScheme === 'dark' ? <IconSun size={18} /> : <IconMoon size={18} />}
+            leftSection={
+              computedColorScheme === 'dark' ? <IconSun size={18} /> : <IconMoon size={18} />
+            }
           >
-            {computedColorScheme === 'dark' ? t('nav.light_mode') || 'Light Mode' : t('nav.dark_mode') || 'Dark Mode'}
+            {computedColorScheme === 'dark'
+              ? t('nav.light_mode') || 'Light Mode'
+              : t('nav.dark_mode') || 'Dark Mode'}
           </Button>
 
           {/* Language Switcher Mobile */}

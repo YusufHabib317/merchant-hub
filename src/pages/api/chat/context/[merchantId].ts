@@ -2,10 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '@/lib/prisma';
 import { rateLimit, RATE_LIMITS } from '@/lib/security';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse,
-): Promise<void> {
+export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
   // Apply rate limiting (this is a public endpoint for chat widget)
   if (!rateLimit(req, res, RATE_LIMITS.api)) {
     return;

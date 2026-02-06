@@ -29,8 +29,8 @@ function sleep(ms: number): Promise<void> {
  */
 function isRetryableError(error: unknown): boolean {
   return (
-    error instanceof Prisma.PrismaClientKnownRequestError
-    && RETRYABLE_ERROR_CODES.includes(error.code)
+    error instanceof Prisma.PrismaClientKnownRequestError &&
+    RETRYABLE_ERROR_CODES.includes(error.code)
   );
 }
 

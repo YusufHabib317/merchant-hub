@@ -1,12 +1,5 @@
 import {
-  Title,
-  Button,
-  Group,
-  Stack,
-  Text,
-  Loader,
-  Center,
-  Menu,
+  Title, Button, Group, Stack, Text, Loader, Center, Menu,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import {
@@ -15,6 +8,7 @@ import {
   IconDownload,
   IconPhoto,
   IconChevronDown,
+  IconCurrencyDollar,
 } from '@tabler/icons-react';
 import {
   useState, useEffect, useCallback, useRef,
@@ -31,6 +25,7 @@ import { NoStoreAlert } from '@/components/products/NoStoreAlert';
 import { ProductsContent } from '@/components/products/ProductsContent';
 import { DeleteProductModal } from '@/components/products/DeleteProductModal';
 import { ImportCSVModal } from '@/components/products/ImportCSVModal';
+import { ExchangeRateModal } from '@/components/products/ExchangeRateModal';
 import { apiClient } from '@/lib/api/client';
 import { downloadCSV } from '@/utils/csv';
 import { ProductFilters } from '@/components/products/ProductFilters';
@@ -85,15 +80,18 @@ export default function ProductsPage() {
 
   // Memoize search handler so ProductViewControls' effect doesn't re-run every render.
   // (Otherwise it keeps calling onSearchChange() and we keep resetting to page 1.)
-  const handleSearchChange = useCallback((val: string) => {
-    setSearch((prev) => {
-      // Only reset pagination if the search value actually changed.
-      // This avoids forcing the user back to page 1 on initial mount.
-      if (prev === val) return prev;
-      setPage(1);
-      return val;
-    });
-  }, [setPage]);
+  const handleSearchChange = useCallback(
+    (val: string) => {
+      setSearch((prev) => {
+        // Only reset pagination if the search value actually changed.
+        // This avoids forcing the user back to page 1 on initial mount.
+        if (prev === val) return prev;
+        setPage(1);
+        return val;
+      });
+    },
+    [setPage],
+  );
   const [sortBy, setSortBy] = useLocalStorage<NonNullable<ProductQueryParams['sortBy']>>({
     key: 'products-sort-by',
     defaultValue: 'createdAt',
@@ -110,6 +108,9 @@ export default function ProductsPage() {
   // Import modal state
   const [importModalOpened, setImportModalOpened] = useState(false);
   const [isExportingCSV, setIsExportingCSV] = useState(false);
+
+  // Exchange rate modal state
+  const [exchangeRateModalOpened, setExchangeRateModalOpened] = useState(false);
 
   const { data: merchant, isLoading: merchantLoading, error: merchantError } = useMyMerchant();
 
@@ -149,11 +150,7 @@ export default function ProductsPage() {
 
   // Auto-adjust page if current page exceeds total pages (e.g., after deleting products)
   useEffect(() => {
-    if (
-      pagination
-      && pagination.totalPages > 0
-      && page > pagination.totalPages
-    ) {
+    if (pagination && pagination.totalPages > 0 && page > pagination.totalPages) {
       setPage(pagination.totalPages);
     }
   }, [pagination, page, setPage]);
@@ -222,19 +219,13 @@ export default function ProductsPage() {
               <Group gap="xs" wrap="nowrap">
                 <Menu shadow="md" width={200}>
                   <Menu.Target>
-                    <Button
-                      variant="light"
-                      rightSection={<IconChevronDown size={14} />}
-                    >
+                    <Button variant="light" rightSection={<IconChevronDown size={14} />}>
                       {t('import_export')}
                     </Button>
                   </Menu.Target>
                   <Menu.Dropdown>
                     <Menu.Label>{t('export')}</Menu.Label>
-                    <Menu.Item
-                      leftSection={<IconPhoto size={16} />}
-                      onClick={handleExportClick}
-                    >
+                    <Menu.Item leftSection={<IconPhoto size={16} />} onClick={handleExportClick}>
                       {t('export_as_image')}
                     </Menu.Item>
                     <Menu.Item
@@ -255,9 +246,13 @@ export default function ProductsPage() {
                   </Menu.Dropdown>
                 </Menu>
                 <Button
-                  leftSection={<IconPlus size={16} />}
-                  onClick={toNewProduct}
+                  variant="light"
+                  leftSection={<IconCurrencyDollar size={16} />}
+                  onClick={() => setExchangeRateModalOpened(true)}
                 >
+                  {t('exchange_rate')}
+                </Button>
+                <Button leftSection={<IconPlus size={16} />} onClick={toNewProduct}>
                   {t('add_product')}
                 </Button>
               </Group>
@@ -306,11 +301,7 @@ export default function ProductsPage() {
             </Center>
           )}
 
-          {error && (
-            <Text c="red">
-              {t('error_loading_products')}
-            </Text>
-          )}
+          {error && <Text c="red">{t('error_loading_products')}</Text>}
 
           <ProductsContent
             isLoading={isLoading}
@@ -331,9 +322,11 @@ export default function ProductsPage() {
           loading={deleteProduct.isPending}
         />
 
-        <ImportCSVModal
-          opened={importModalOpened}
-          onClose={() => setImportModalOpened(false)}
+        <ImportCSVModal opened={importModalOpened} onClose={() => setImportModalOpened(false)} />
+
+        <ExchangeRateModal
+          opened={exchangeRateModalOpened}
+          onClose={() => setExchangeRateModalOpened(false)}
         />
       </DashboardLayout>
     </ProtectedRoute>

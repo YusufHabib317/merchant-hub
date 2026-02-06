@@ -101,9 +101,7 @@ export default function DashboardPage() {
                 variant="light"
               >
                 <Group justify="space-between">
-                  <Text size="sm">
-                    {t('dashboard_page.set_up_store_message')}
-                  </Text>
+                  <Text size="sm">{t('dashboard_page.set_up_store_message')}</Text>
                   <Link href="/dashboard/settings" style={{ textDecoration: 'none' }}>
                     <Button variant="filled" color="blue" size="sm">
                       {t('dashboard_page.go_to_settings')}
@@ -122,12 +120,7 @@ export default function DashboardPage() {
                     <Text size="sm" fw={500} c="dimmed">
                       {stat.title}
                     </Text>
-                    <ThemeIcon
-                      color={stat.color}
-                      variant="light"
-                      size="lg"
-                      radius="md"
-                    >
+                    <ThemeIcon color={stat.color} variant="light" size="lg" radius="md">
                       <stat.icon size={18} />
                     </ThemeIcon>
                   </Group>

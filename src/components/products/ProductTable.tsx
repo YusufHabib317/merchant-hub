@@ -1,6 +1,4 @@
-import {
-  ActionIcon, Badge, Box, Group, Image, Table, Text,
-} from '@mantine/core';
+import { ActionIcon, Badge, Box, Group, Image, Table, Text } from '@mantine/core';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
 import useTranslation from 'next-translate/useTranslation';
 import { z } from 'zod';
@@ -61,7 +59,9 @@ export function ProductTable({
         {product.category ? (
           <Badge variant="light">{product.category}</Badge>
         ) : (
-          <Text size="sm" c="dimmed">-</Text>
+          <Text size="sm" c="dimmed">
+            -
+          </Text>
         )}
         {product.condition && product.condition !== 'NEW' && (
           <Badge variant="outline" color={product.condition === 'USED' ? 'orange' : 'blue'} ml="xs">

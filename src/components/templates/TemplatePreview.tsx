@@ -30,7 +30,7 @@ export const TemplatePreview = forwardRef<HTMLDivElement, TemplatePreviewProps>(
       currencyDisplay = 'both',
       categoryOrder,
     },
-    ref,
+    ref
   ) => {
     const renderTemplate = useMemo(() => {
       const commonProps = {
@@ -45,11 +45,26 @@ export const TemplatePreview = forwardRef<HTMLDivElement, TemplatePreviewProps>(
         case 'elegant':
           return <ElegantTemplate {...commonProps} />;
         case 'price-list':
-          return <PriceListTemplate {...commonProps} styleOptions={priceListStyle} categoryOrder={categoryOrder} />;
+          return (
+            <PriceListTemplate
+              {...commonProps}
+              styleOptions={priceListStyle}
+              categoryOrder={categoryOrder}
+            />
+          );
         default:
           return <ElegantTemplate {...commonProps} />;
       }
-    }, [template, products, merchantName, merchantAddress, priceListStyle, watermark, currencyDisplay, categoryOrder]);
+    }, [
+      template,
+      products,
+      merchantName,
+      merchantAddress,
+      priceListStyle,
+      watermark,
+      currencyDisplay,
+      categoryOrder,
+    ]);
 
     return (
       <Stack gap="md">
@@ -62,10 +77,7 @@ export const TemplatePreview = forwardRef<HTMLDivElement, TemplatePreviewProps>(
             backgroundColor: '#f8f9fa',
           }}
         >
-          <div
-            ref={ref}
-            style={{ display: 'inline-block' }}
-          >
+          <div ref={ref} style={{ display: 'inline-block' }}>
             {renderTemplate}
           </div>
         </Paper>
@@ -76,5 +88,5 @@ export const TemplatePreview = forwardRef<HTMLDivElement, TemplatePreviewProps>(
         )}
       </Stack>
     );
-  },
+  }
 );

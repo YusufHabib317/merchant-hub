@@ -1,7 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import {
-  Box, Stack, Text, Paper, Badge, ScrollArea,
-} from '@mantine/core';
+import { Box, Stack, Text, Paper, Badge, ScrollArea } from '@mantine/core';
 import { format } from 'date-fns';
 import useTranslation from 'next-translate/useTranslation';
 

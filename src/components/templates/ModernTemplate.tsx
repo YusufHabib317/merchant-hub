@@ -1,6 +1,4 @@
-import {
-  Paper, Text, Stack, Group, Box, Badge,
-} from '@mantine/core';
+import { Paper, Text, Stack, Group, Box, Badge } from '@mantine/core';
 import { formatCurrency } from '@/utils/currency';
 
 export interface ExportProduct {
@@ -25,7 +23,10 @@ export function ModernTemplate({ products, merchantName, watermark }: ModernTemp
     <Paper
       p="xl"
       style={{
-        width: '100%', minHeight: 400, backgroundColor: '#1a1a2e', color: '#ffffff',
+        width: '100%',
+        minHeight: 400,
+        backgroundColor: '#1a1a2e',
+        color: '#ffffff',
       }}
     >
       <Stack gap="lg">

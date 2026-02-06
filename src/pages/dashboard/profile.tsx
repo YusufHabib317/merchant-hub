@@ -1,18 +1,5 @@
-import {
-  Title,
-  Stack,
-  Text,
-  Group,
-  Loader,
-  Center,
-  Alert,
-  Badge,
-} from '@mantine/core';
-import {
-  IconCheck,
-  IconAlertCircle,
-  IconShield,
-} from '@tabler/icons-react';
+import { Title, Stack, Text, Group, Loader, Center, Alert, Badge } from '@mantine/core';
+import { IconCheck, IconAlertCircle, IconShield } from '@tabler/icons-react';
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
@@ -192,9 +179,15 @@ export default function ProfilePage() {
             currentPassword={passwordForm.currentPassword}
             newPassword={passwordForm.newPassword}
             confirmPassword={passwordForm.confirmPassword}
-            onCurrentPasswordChange={(value) => setPasswordForm({ ...passwordForm, currentPassword: value })}
-            onNewPasswordChange={(value) => setPasswordForm({ ...passwordForm, newPassword: value })}
-            onConfirmPasswordChange={(value) => setPasswordForm({ ...passwordForm, confirmPassword: value })}
+            onCurrentPasswordChange={(value) =>
+              setPasswordForm({ ...passwordForm, currentPassword: value })
+            }
+            onNewPasswordChange={(value) =>
+              setPasswordForm({ ...passwordForm, newPassword: value })
+            }
+            onConfirmPasswordChange={(value) =>
+              setPasswordForm({ ...passwordForm, confirmPassword: value })
+            }
             onSubmit={handlePasswordChangeSubmit}
             isLoading={requestPasswordOTP.isPending}
             isDisabled={passwordChangeStep !== 'idle'}

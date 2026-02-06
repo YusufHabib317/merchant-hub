@@ -41,7 +41,7 @@ const handleForbidden = (withoutNotification: boolean): void => {
 const showNotificationIfNeeded = (
   errorKey: string,
   errorMessage: string,
-  isQueryRequest: boolean,
+  isQueryRequest: boolean
 ): void => {
   const canShowNotification = Date.now() - (errorCache[errorKey] ?? 0) > ERROR_CACHE_DURATION;
 
@@ -64,7 +64,7 @@ const showNotificationIfNeeded = (
  */
 export const handleApiError = (
   error: AxiosError<ApiErrorResponse>,
-  options: HandleApiErrorOptions = {},
+  options: HandleApiErrorOptions = {}
 ): void => {
   const { isQueryRequest = false, withoutNotification = false } = options;
 

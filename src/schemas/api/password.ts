@@ -5,17 +5,13 @@ const PASSWORD_MIN_LENGTH_ERROR = 'Password must be at least 8 characters';
 // Password change with OTP
 export const RequestPasswordChangeOTPSchema = z.object({
   currentPassword: z.string().min(1, 'Current password is required'),
-  newPassword: z
-    .string()
-    .min(8, PASSWORD_MIN_LENGTH_ERROR),
+  newPassword: z.string().min(8, PASSWORD_MIN_LENGTH_ERROR),
 });
 
 export const VerifyPasswordChangeOTPSchema = z.object({
   token: z.string().min(1, 'Token is required'),
   otp: z.string().length(6, 'OTP must be 6 digits'),
-  newPassword: z
-    .string()
-    .min(8, PASSWORD_MIN_LENGTH_ERROR),
+  newPassword: z.string().min(8, PASSWORD_MIN_LENGTH_ERROR),
 });
 
 // Password reset with OTP (forgot password)
@@ -26,9 +22,7 @@ export const RequestPasswordResetOTPSchema = z.object({
 export const VerifyPasswordResetOTPSchema = z.object({
   token: z.string().min(1, 'Token is required'),
   otp: z.string().length(6, 'OTP must be 6 digits'),
-  newPassword: z
-    .string()
-    .min(8, PASSWORD_MIN_LENGTH_ERROR),
+  newPassword: z.string().min(8, PASSWORD_MIN_LENGTH_ERROR),
 });
 
 // Type exports

@@ -33,7 +33,7 @@ interface ProductCreateResult {
 async function createProductFromCSV(
   merchantId: string,
   product: CSVProduct,
-  rowIndex: number,
+  rowIndex: number
 ): Promise<ProductCreateResult> {
   try {
     const exchangeRate = product.exchangeRate || DEFAULT_EXCHANGE_RATE;
@@ -125,7 +125,8 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
     } catch (parseError) {
       const apiError = createApiError({ error: parseError });
       apiError.code = httpCode.BAD_REQUEST;
-      apiError.message.fallback = parseError instanceof Error ? parseError.message : 'Failed to parse CSV';
+      apiError.message.fallback =
+        parseError instanceof Error ? parseError.message : 'Failed to parse CSV';
       return res.status(httpCode.BAD_REQUEST).json(apiError);
     }
 
@@ -136,7 +137,9 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
     }
 
     // Import all products in parallel
-    const createPromises = products.map((product, index) => createProductFromCSV(merchant.id, product, index + 2));
+    const createPromises = products.map((product, index) =>
+      createProductFromCSV(merchant.id, product, index + 2)
+    );
     const results = await Promise.all(createPromises);
 
     // Aggregate results
@@ -150,7 +153,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
         }
         return acc;
       },
-      { created: 0, failed: 0, errors: [] as Array<{ row: number; error: string }> },
+      { created: 0, failed: 0, errors: [] as Array<{ row: number; error: string }> }
     );
 
     return res.status(httpCode.SUCCESS).json({

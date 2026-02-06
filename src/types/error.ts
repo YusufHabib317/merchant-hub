@@ -17,10 +17,7 @@ export interface BackendErrorBody {
     message: string;
     details: {
       key?: string;
-      params?: Record<
-        string,
-        string | TranslatedField | TranslatedField[] | string[]
-      >;
+      params?: Record<string, string | TranslatedField | TranslatedField[] | string[]>;
     };
   };
 }
@@ -31,10 +28,7 @@ export interface ApiErrorResponse {
   message: {
     fallback: string;
     key: string;
-    params?: Record<
-      string,
-      string | TranslatedField | TranslatedField[] | string[]
-    >;
+    params?: Record<string, string | TranslatedField | TranslatedField[] | string[]>;
   };
   errors?: Error[];
 }
@@ -51,4 +45,4 @@ export const ErrorKeys = {
   METHOD_NOT_ALLOWED: 'methodNotAllowed',
 } as const;
 
-export type ErrorKey = typeof ErrorKeys[keyof typeof ErrorKeys];
+export type ErrorKey = (typeof ErrorKeys)[keyof typeof ErrorKeys];

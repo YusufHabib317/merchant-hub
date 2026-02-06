@@ -1,6 +1,4 @@
-import {
-  useState, useEffect, useCallback, useMemo,
-} from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 
 const getStorageKey = (merchantId: string) => `category-sort-order-${merchantId}`;
 
@@ -74,7 +72,9 @@ export function useCategorySort({
       if (stored) {
         const parsed = JSON.parse(stored) as CategorySortData;
         // Validate and merge with current categories
-        const validCategoryOrder = parsed.categoryOrder.filter((c) => productCategories.includes(c));
+        const validCategoryOrder = parsed.categoryOrder.filter((c) =>
+          productCategories.includes(c)
+        );
         const newCategories = productCategories.filter((c) => !validCategoryOrder.includes(c));
         const categoryOrder = [...validCategoryOrder, ...newCategories];
 
@@ -84,7 +84,9 @@ export function useCategorySort({
           const currentProducts = new Set(productsByCategory[cat] || []);
           const savedOrder = parsed.productOrderByCategory[cat] || [];
           const validOrder = savedOrder.filter((id) => currentProducts.has(id));
-          const newProducts = (productsByCategory[cat] || []).filter((id) => !validOrder.includes(id));
+          const newProducts = (productsByCategory[cat] || []).filter(
+            (id) => !validOrder.includes(id)
+          );
           productOrderByCategory[cat] = [...validOrder, ...newProducts];
         });
 
@@ -116,7 +118,7 @@ export function useCategorySort({
         }
       }
     },
-    [merchantId],
+    [merchantId]
   );
 
   const setCategoryOrder = useCallback(
@@ -127,7 +129,7 @@ export function useCategorySort({
         return newData;
       });
     },
-    [saveToStorage],
+    [saveToStorage]
   );
 
   const setProductOrderInCategory = useCallback(
@@ -144,7 +146,7 @@ export function useCategorySort({
         return newData;
       });
     },
-    [saveToStorage],
+    [saveToStorage]
   );
 
   const getSortedProductsByCategory = useCallback(
@@ -172,7 +174,7 @@ export function useCategorySort({
           return { category: cat, products: sorted };
         });
     },
-    [sortData],
+    [sortData]
   );
 
   const resetOrder = useCallback(() => {

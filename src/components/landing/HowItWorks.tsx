@@ -1,9 +1,5 @@
-import {
-  Container, Title, Text, Box, Stack, Group, ThemeIcon,
-} from '@mantine/core';
-import {
-  IconNumber1, IconNumber2, IconNumber3, IconNumber4,
-} from '@tabler/icons-react';
+import { Container, Title, Text, Box, Stack, Group, ThemeIcon } from '@mantine/core';
+import { IconNumber1, IconNumber2, IconNumber3, IconNumber4 } from '@tabler/icons-react';
 import { motion } from 'framer-motion';
 import useTranslation from 'next-translate/useTranslation';
 

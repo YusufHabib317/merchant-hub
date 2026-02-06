@@ -16,13 +16,7 @@ import {
   Table,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import {
-  IconPlus,
-  IconTrash,
-  IconEdit,
-  IconAlertCircle,
-  IconCheck,
-} from '@tabler/icons-react';
+import { IconPlus, IconTrash, IconEdit, IconAlertCircle, IconCheck } from '@tabler/icons-react';
 import { useState } from 'react';
 import useTranslation from 'next-translate/useTranslation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -155,9 +149,7 @@ export default function AIContextPage() {
           <Group justify="space-between">
             <div>
               <Title order={1}>{t('ai_context.title')}</Title>
-              <Text c="dimmed">
-                {t('ai_context.description')}
-              </Text>
+              <Text c="dimmed">{t('ai_context.description')}</Text>
             </div>
             <Button leftSection={<IconPlus size={16} />} onClick={open}>
               {t('ai_context.add_context')}
@@ -165,7 +157,13 @@ export default function AIContextPage() {
           </Group>
 
           {error && (
-            <Alert icon={<IconAlertCircle size={16} />} color="red" title={t('ai_context.error_title')} onClose={() => setError(null)} withCloseButton>
+            <Alert
+              icon={<IconAlertCircle size={16} />}
+              color="red"
+              title={t('ai_context.error_title')}
+              onClose={() => setError(null)}
+              withCloseButton
+            >
               {error}
             </Alert>
           )}
@@ -237,7 +235,11 @@ export default function AIContextPage() {
           <form onSubmit={handleSubmit}>
             <Stack>
               {error && (
-                <Alert icon={<IconAlertCircle size={16} />} color="red" title={t('ai_context.error_title')}>
+                <Alert
+                  icon={<IconAlertCircle size={16} />}
+                  color="red"
+                  title={t('ai_context.error_title')}
+                >
                   {error}
                 </Alert>
               )}

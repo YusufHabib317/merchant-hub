@@ -9,11 +9,7 @@ const UpdateContextSchema = z.object({
   tags: z.array(z.string()).optional(),
 });
 
-async function handlePut(
-  req: AuthenticatedRequest,
-  res: NextApiResponse,
-  id: string,
-) {
+async function handlePut(req: AuthenticatedRequest, res: NextApiResponse, id: string) {
   try {
     const input = UpdateContextSchema.parse(req.body);
 
@@ -41,17 +37,15 @@ async function handlePut(
     return res.status(200).json({ success: true, data: updatedContext });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ success: false, error: 'Validation error', details: error.issues });
+      return res
+        .status(400)
+        .json({ success: false, error: 'Validation error', details: error.issues });
     }
     return res.status(500).json({ success: false, error: 'Internal server error' });
   }
 }
 
-async function handleDelete(
-  req: AuthenticatedRequest,
-  res: NextApiResponse,
-  id: string,
-) {
+async function handleDelete(req: AuthenticatedRequest, res: NextApiResponse, id: string) {
   try {
     // @ts-ignore
     await prisma.merchantContext.delete({

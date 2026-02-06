@@ -1,6 +1,4 @@
-import {
-  Container, Title, Text, SimpleGrid, Card, ThemeIcon, Stack, Box,
-} from '@mantine/core';
+import { Container, Title, Text, SimpleGrid, Card, ThemeIcon, Stack, Box } from '@mantine/core';
 import {
   IconTemplate,
   IconQrcode,

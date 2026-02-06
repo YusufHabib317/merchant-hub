@@ -1,9 +1,6 @@
 import { Box } from '@mantine/core';
 import {
-  Hero,
-  Features,
-  HowItWorks,
-  CallToAction,
+  Hero, Features, HowItWorks, CallToAction,
 } from '@/components/landing';
 import { LandingHeader } from '@/components/layout/LandingHeader';
 import { useState, useEffect } from 'react';

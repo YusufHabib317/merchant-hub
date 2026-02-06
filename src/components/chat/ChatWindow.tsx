@@ -1,13 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import {
-  Box,
-  Stack,
-  Text,
-  Loader,
-  Badge,
-  Anchor,
-  Group,
-} from '@mantine/core';
+import { Box, Stack, Text, Loader, Badge, Anchor, Group } from '@mantine/core';
 import { IconBuildingStore } from '@tabler/icons-react';
 import { io, Socket } from 'socket.io-client';
 import useTranslation from 'next-translate/useTranslation';
@@ -40,15 +32,28 @@ const getCustomerData = (merchantId: string) => {
   return data ? JSON.parse(data) : null;
 };
 
-const saveCustomerData = (merchantId: string, customerId: string, name: string, email: string, customerToken?: string) => {
+const saveCustomerData = (
+  merchantId: string,
+  customerId: string,
+  name: string,
+  email: string,
+  customerToken?: string
+) => {
   if (typeof window === 'undefined') return;
   const key = `chat_customer_${merchantId}`;
-  localStorage.setItem(key, JSON.stringify({
-    customerId, name, email, customerToken,
-  }));
+  localStorage.setItem(
+    key,
+    JSON.stringify({
+      customerId,
+      name,
+      email,
+      customerToken,
+    })
+  );
 };
 
-const generateCustomerId = () => `customer_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+const generateCustomerId = () =>
+  `customer_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
 export function ChatWindow({ merchantId, merchantName, onClose }: ChatWindowProps) {
   const { t } = useTranslation('common');
@@ -133,9 +138,11 @@ export function ChatWindow({ merchantId, merchantName, onClose }: ChatWindowProp
           customerInfo.customerId,
           customerInfo.name,
           customerInfo.email,
-          session.customerToken,
+          session.customerToken
         );
-        setCustomerInfo((prev) => (prev ? { ...prev, customerToken: session.customerToken } : null));
+        setCustomerInfo((prev) =>
+          prev ? { ...prev, customerToken: session.customerToken } : null
+        );
       }
     });
 
@@ -206,10 +213,7 @@ export function ChatWindow({ merchantId, merchantName, onClose }: ChatWindowProp
 
   return (
     <>
-      <CustomerInfoModal
-        opened={showCustomerInfoModal}
-        onSubmit={handleCustomerInfoSubmit}
-      />
+      <CustomerInfoModal opened={showCustomerInfoModal} onSubmit={handleCustomerInfoSubmit} />
 
       <Stack gap={0} h="100%" style={{ backgroundColor: 'white' }}>
         <ChatHeader
@@ -229,12 +233,12 @@ export function ChatWindow({ merchantId, merchantName, onClose }: ChatWindowProp
           }}
         >
           {!isConnected && (
-          <Box style={{ textAlign: 'center', padding: '20px' }}>
-            <Loader size="sm" />
-            <Text size="sm" c="dimmed" mt="xs">
-              Connecting...
-            </Text>
-          </Box>
+            <Box style={{ textAlign: 'center', padding: '20px' }}>
+              <Loader size="sm" />
+              <Text size="sm" c="dimmed" mt="xs">
+                Connecting...
+              </Text>
+            </Box>
           )}
 
           {messages.map((message) => (
@@ -242,13 +246,11 @@ export function ChatWindow({ merchantId, merchantName, onClose }: ChatWindowProp
           ))}
 
           {isTyping && (
-          <Box mt="xs">
-            <Badge size="sm" variant="light">
-              {merchantTookOver ? 'Merchant' : 'AI'}
-              {' '}
-              is typing...
-            </Badge>
-          </Box>
+            <Box mt="xs">
+              <Badge size="sm" variant="light">
+                {merchantTookOver ? 'Merchant' : 'AI'} is typing...
+              </Badge>
+            </Box>
           )}
 
           <div ref={messagesEndRef} />
@@ -273,8 +275,7 @@ export function ChatWindow({ merchantId, merchantName, onClose }: ChatWindowProp
           <Group gap={6} justify="center">
             <IconBuildingStore size={14} style={{ color: '#667eea' }} />
             <Text size="xs" c="dimmed">
-              {t('powered_by')}
-              {' '}
+              {t('powered_by')}{' '}
               <Anchor
                 href="/"
                 size="xs"

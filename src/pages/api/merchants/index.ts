@@ -6,8 +6,7 @@ import { sanitizeMerchantInput, rateLimit, RATE_LIMITS } from '@/lib/security';
 
 const ListMerchantsRequestSchema = z.object({
   page: z.coerce.number().int().positive().default(1),
-  limit: z.coerce.number().int().positive().max(100)
-    .default(20),
+  limit: z.coerce.number().int().positive().max(100).default(20),
 });
 
 const CreateMerchantSchema = z.object({
@@ -35,7 +34,9 @@ async function handleCreateMerchant(req: AuthenticatedRequest, res: NextApiRespo
       });
     }
 
-    const slug = `${sanitizedInput.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${Date.now().toString(36)}`;
+    const slug = `${sanitizedInput.name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')}-${Date.now().toString(36)}`;
 
     const merchant = await prisma.merchant.create({
       data: {

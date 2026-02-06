@@ -85,14 +85,15 @@ model Merchant {
   userId String @unique
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  name          String
-  slug          String            @unique
-  description   String?
-  logoUrl       String?
-  address       String?
-  aiContext     String?           @db.Text // Deprecated in favor of aiContexts
-  aiContexts    MerchantContext[]
-  isChatEnabled Boolean           @default(true)
+  name                String
+  slug                String            @unique
+  description         String?
+  logoUrl             String?
+  address             String?
+  aiContext           String?           @db.Text // Deprecated in favor of aiContexts
+  aiContexts          MerchantContext[]
+  isChatEnabled       Boolean           @default(true)
+  defaultExchangeRate Float             @default(15000)
 
   subscriptionTier SubscriptionTier @default(FREE)
 
@@ -123,13 +124,14 @@ model Product {
   merchantId String
   merchant   Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
 
-  name         String
-  description  String?
-  priceUSD     Float
-  priceSYP     Float
-  exchangeRate Float    @default(10000)
-  imageUrls    String[]
-  category     String?
+  name             String
+  description      String?
+  priceUSD         Float
+  priceSYP         Float
+  exchangeRate     Float    @default(10000)
+  originalPriceSYP Float?   // Stores original SYP price for reversion
+  imageUrls        String[]
+  category         String?
 
   stock       Int              @default(0)
   isPublished Boolean          @default(true)

@@ -7,12 +7,7 @@ export const authClient = createAuthClient({
 });
 
 // Export commonly used hooks and methods
-export const {
-  useSession,
-  signIn,
-  signUp,
-  signOut,
-} = authClient;
+export const { useSession, signIn, signUp, signOut } = authClient;
 
 // Type exports
 export type Session = typeof authClient.$Infer.Session;

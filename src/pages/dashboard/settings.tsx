@@ -18,7 +18,11 @@ import {
   Modal,
 } from '@mantine/core';
 import {
-  IconCheck, IconAlertCircle, IconCopy, IconCheck as IconCheckmark, IconMessageChatbot,
+  IconCheck,
+  IconAlertCircle,
+  IconCopy,
+  IconCheck as IconCheckmark,
+  IconMessageChatbot,
 } from '@tabler/icons-react';
 import { useState, useEffect } from 'react';
 import { useDisclosure } from '@mantine/hooks';
@@ -60,18 +64,26 @@ function ChatConfirmationModal({
     <Modal
       opened={opened}
       onClose={onClose}
-      title={pendingChatState ? t('chat_settings.enable_chat_confirm_title') : t('chat_settings.disable_chat_confirm_title')}
+      title={
+        pendingChatState
+          ? t('chat_settings.enable_chat_confirm_title')
+          : t('chat_settings.disable_chat_confirm_title')
+      }
       centered
     >
       <Text size="sm" mb="lg">
-        {pendingChatState ? t('chat_settings.enable_chat_confirm_message') : t('chat_settings.disable_chat_confirm_message')}
+        {pendingChatState
+          ? t('chat_settings.enable_chat_confirm_message')
+          : t('chat_settings.disable_chat_confirm_message')}
       </Text>
       <Group justify="flex-end">
         <Button variant="default" onClick={onClose}>
           {t('cancel')}
         </Button>
         <Button color={pendingChatState ? 'blue' : 'red'} onClick={onConfirm}>
-          {pendingChatState ? t('chat_settings.enable_chat_confirm_action') : t('chat_settings.disable_chat_confirm_action')}
+          {pendingChatState
+            ? t('chat_settings.enable_chat_confirm_action')
+            : t('chat_settings.disable_chat_confirm_action')}
         </Button>
       </Group>
     </Modal>
@@ -120,7 +132,10 @@ export default function SettingsPage() {
 
   const updateMerchant = useMutation({
     mutationFn: async (data: typeof formData) => {
-      const response = await apiClient.put(API_ENDPOINTS.merchants.update(merchant?.id || ''), data);
+      const response = await apiClient.put(
+        API_ENDPOINTS.merchants.update(merchant?.id || ''),
+        data
+      );
       return response.data;
     },
     onSuccess: () => {
@@ -200,7 +215,9 @@ export default function SettingsPage() {
         />
 
         <Stack gap="lg">
-          <Title order={1}>{isNewMerchant ? t('settings_page.create_store_title') : t('settings_page.title')}</Title>
+          <Title order={1}>
+            {isNewMerchant ? t('settings_page.create_store_title') : t('settings_page.title')}
+          </Title>
 
           <Text c="dimmed">
             {isNewMerchant
@@ -239,7 +256,9 @@ export default function SettingsPage() {
                     label={t('settings_page.description_label')}
                     placeholder={t('settings_page.description_placeholder')}
                     value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.currentTarget.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, description: e.currentTarget.value })
+                    }
                     rows={4}
                   />
 
@@ -297,8 +316,12 @@ export default function SettingsPage() {
                           label={t('settings_page.email_label')}
                           value={session?.user?.email || ''}
                           readOnly
-                          rightSection={(
-                            <Tooltip label={copied ? t('settings_page.copied') : t('settings_page.copy')} withArrow position="right">
+                          rightSection={
+                            <Tooltip
+                              label={copied ? t('settings_page.copied') : t('settings_page.copy')}
+                              withArrow
+                              position="right"
+                            >
                               <ActionIcon
                                 color={copied ? 'teal' : 'gray'}
                                 variant="subtle"
@@ -307,7 +330,7 @@ export default function SettingsPage() {
                                 {copied ? <IconCheckmark size={16} /> : <IconCopy size={16} />}
                               </ActionIcon>
                             </Tooltip>
-                          )}
+                          }
                         />
                       )}
                     </CopyButton>
@@ -318,8 +341,12 @@ export default function SettingsPage() {
                           value={merchant?.slug || ''}
                           readOnly
                           description={t('settings_page.store_url_slug_desc')}
-                          rightSection={(
-                            <Tooltip label={copied ? t('settings_page.copied') : t('settings_page.copy')} withArrow position="right">
+                          rightSection={
+                            <Tooltip
+                              label={copied ? t('settings_page.copied') : t('settings_page.copy')}
+                              withArrow
+                              position="right"
+                            >
                               <ActionIcon
                                 color={copied ? 'teal' : 'gray'}
                                 variant="subtle"
@@ -328,7 +355,7 @@ export default function SettingsPage() {
                                 {copied ? <IconCheckmark size={16} /> : <IconCopy size={16} />}
                               </ActionIcon>
                             </Tooltip>
-                          )}
+                          }
                         />
                       )}
                     </CopyButton>
@@ -342,7 +369,9 @@ export default function SettingsPage() {
                   loading={updateMerchant.isPending || createMerchant.isPending}
                   leftSection={<IconCheck size={16} />}
                 >
-                  {isNewMerchant ? t('settings_page.create_store_btn') : t('settings_page.save_settings_btn')}
+                  {isNewMerchant
+                    ? t('settings_page.create_store_btn')
+                    : t('settings_page.save_settings_btn')}
                 </Button>
               </Group>
             </Stack>

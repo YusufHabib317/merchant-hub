@@ -1,10 +1,5 @@
 import {
-  User,
-  Merchant,
-  Product,
-  ChatSession,
-  Role,
-  SubscriptionTier,
+  User, Merchant, Product, ChatSession, Role, SubscriptionTier,
 } from '@prisma/client';
 
 export type {

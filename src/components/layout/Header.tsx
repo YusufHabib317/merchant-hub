@@ -1,10 +1,4 @@
-import {
-  Group,
-  Text,
-  Menu,
-  Avatar,
-  Loader,
-} from '@mantine/core';
+import { Group, Text, Menu, Avatar, Loader } from '@mantine/core';
 import { IconLogout, IconSettings } from '@tabler/icons-react';
 import { authClient } from '@/lib/auth-client';
 import { useAppRouter } from '@/lib/hooks/useAppRouter';
@@ -44,12 +38,7 @@ export function Header() {
           <Menu shadow="md" width={200}>
             <Menu.Target>
               <Group gap="xs" style={{ cursor: 'pointer' }}>
-                <Avatar
-                  src={session.user.image}
-                  alt={session.user.email}
-                  radius="xl"
-                  size="sm"
-                />
+                <Avatar src={session.user.image} alt={session.user.email} radius="xl" size="sm" />
                 <div>
                   <Text size="sm" fw={500}>
                     {session.user.name || session.user.email}
@@ -59,18 +48,11 @@ export function Header() {
             </Menu.Target>
 
             <Menu.Dropdown>
-              <Menu.Item
-                leftSection={<IconSettings size={14} />}
-                onClick={toSettings}
-              >
+              <Menu.Item leftSection={<IconSettings size={14} />} onClick={toSettings}>
                 {t('settings')}
               </Menu.Item>
               <Menu.Divider />
-              <Menu.Item
-                leftSection={<IconLogout size={14} />}
-                color="red"
-                onClick={handleLogout}
-              >
+              <Menu.Item leftSection={<IconLogout size={14} />} color="red" onClick={handleLogout}>
                 {t('logout')}
               </Menu.Item>
             </Menu.Dropdown>

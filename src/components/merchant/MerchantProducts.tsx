@@ -1,11 +1,4 @@
-import {
-  Container,
-  Box,
-  Text,
-  Center,
-  Loader,
-  Pagination,
-} from '@mantine/core';
+import { Container, Box, Text, Center, Loader, Pagination } from '@mantine/core';
 import useTranslation from 'next-translate/useTranslation';
 import { ProductList } from '@/components/products/ProductList';
 import { ProductTable } from '@/components/products/ProductTable';
@@ -74,11 +67,7 @@ export function MerchantProducts({
 
         {pagination && pagination.totalPages > 1 && (
           <Center mt="xl">
-            <Pagination
-              total={pagination.totalPages}
-              value={page}
-              onChange={setPage}
-            />
+            <Pagination total={pagination.totalPages} value={page} onChange={setPage} />
           </Center>
         )}
       </>

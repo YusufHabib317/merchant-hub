@@ -57,7 +57,22 @@ export function useProducts(merchantId?: string, params: ProductQueryParams = {}
   const categoriesParam = categories && categories.length > 0 ? categories.join(',') : undefined;
   const tagsParam = tags && tags.length > 0 ? tags.join(',') : undefined;
 
-  const queryKey = [...PRODUCTS_QUERY_KEY, merchantId, page, limit, search, sortBy, sortOrder, condition, categoriesParam, stock, published, tagsParam, minPrice, maxPrice];
+  const queryKey = [
+    ...PRODUCTS_QUERY_KEY,
+    merchantId,
+    page,
+    limit,
+    search,
+    sortBy,
+    sortOrder,
+    condition,
+    categoriesParam,
+    stock,
+    published,
+    tagsParam,
+    minPrice,
+    maxPrice,
+  ];
 
   return useQuery<ProductsResponse>({
     queryKey,
@@ -88,13 +103,7 @@ export function useProducts(merchantId?: string, params: ProductQueryParams = {}
  * Fetch merchant products (Public)
  */
 export function useMerchantPublicProducts(merchantId: string, params: ProductQueryParams = {}) {
-  const {
-    page = 1,
-    limit = 20,
-    search,
-    sortBy,
-    sortOrder,
-  } = params;
+  const { page = 1, limit = 20, search, sortBy, sortOrder } = params;
   return useQuery<ProductsResponse>({
     queryKey: ['public-products', merchantId, page, limit, search, sortBy, sortOrder],
     queryFn: async () => {

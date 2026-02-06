@@ -1,9 +1,4 @@
-import {
-  Title,
-  Stack,
-  Button,
-  Group,
-} from '@mantine/core';
+import { Title, Stack, Button, Group } from '@mantine/core';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { ProductForm } from '@/components/products/ProductForm';
@@ -34,16 +29,10 @@ export default function NewProductPage() {
             <Title order={1}>{t('add_new_product')}</Title>
           </Group>
 
-          <ProductForm
-            onSubmit={handleSubmit}
-            isLoading={createProduct.isPending}
-          />
+          <ProductForm onSubmit={handleSubmit} isLoading={createProduct.isPending} />
 
           <Group justify="flex-end">
-            <Button
-              variant="default"
-              onClick={toProducts}
-            >
+            <Button variant="default" onClick={toProducts}>
               {t('cancel')}
             </Button>
           </Group>

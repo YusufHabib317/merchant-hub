@@ -37,7 +37,13 @@ const authOptions = {
   emailVerification: {
     sendOnSignUp: false, // We use OTP instead
     autoSignIn: false, // Don't auto sign in, require OTP verification first
-    sendResetPasswordEmail: async ({ user, url }: { user: { email: string; name?: string }; url: string }) => {
+    sendResetPasswordEmail: async ({
+      user,
+      url,
+    }: {
+      user: { email: string; name?: string };
+      url: string;
+    }) => {
       try {
         await sendPasswordResetEmail(user.email, url);
         // eslint-disable-next-line no-console
@@ -89,17 +95,20 @@ export const auth = betterAuth({
         }
       },
     }),
-    customSession(async ({ user, session }) => ({
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        role: user.role,
-        emailVerified: user.emailVerified,
-      },
-      session: {
-        expiresAt: session.expiresAt,
-      },
-    }), authOptions),
+    customSession(
+      async ({ user, session }) => ({
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+          emailVerified: user.emailVerified,
+        },
+        session: {
+          expiresAt: session.expiresAt,
+        },
+      }),
+      authOptions
+    ),
   ],
 });

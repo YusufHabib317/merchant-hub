@@ -38,7 +38,7 @@ export async function getServerSession(req: NextApiRequest): Promise<Session | n
  * Usage: export default withAuth(handler);
  */
 export function withAuth(
-  handler: (req: AuthenticatedRequest, res: NextApiResponse) => Promise<void> | void,
+  handler: (req: AuthenticatedRequest, res: NextApiResponse) => Promise<void> | void
 ) {
   return async (req: AuthenticatedRequest, res: NextApiResponse) => {
     try {
@@ -69,7 +69,7 @@ export function withAuth(
  */
 export function withRole(
   roles: string[],
-  handler: (req: AuthenticatedRequest, res: NextApiResponse) => Promise<void> | void,
+  handler: (req: AuthenticatedRequest, res: NextApiResponse) => Promise<void> | void
 ) {
   return withAuth(async (req: AuthenticatedRequest, res: NextApiResponse) => {
     if (!req.user?.role || !roles.includes(req.user.role)) {

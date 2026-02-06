@@ -1,11 +1,4 @@
-import {
-  Container,
-  Burger,
-  Group,
-  Box,
-  Drawer,
-  ScrollArea,
-} from '@mantine/core';
+import { Container, Burger, Group, Box, Drawer, ScrollArea } from '@mantine/core';
 import { useState } from 'react';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';

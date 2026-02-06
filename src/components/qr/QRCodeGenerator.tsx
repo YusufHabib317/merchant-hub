@@ -47,11 +47,7 @@ export function QRCodeGenerator({
   );
 }
 
-export function generateQRDataUrl(
-  value: string,
-  size = 300,
-  margin = 2,
-): Promise<string> {
+export function generateQRDataUrl(value: string, size = 300, margin = 2): Promise<string> {
   return new Promise((resolve, reject) => {
     const canvas = document.createElement('canvas');
     QRCode.toCanvas(canvas, value, {

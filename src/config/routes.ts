@@ -156,7 +156,7 @@ export const ROUTES = {
 
 /**
  * Helper function to build route paths with parameters
-*/
+ */
 export function buildRoute(route: Route, params?: RouteParams): string {
   let { path } = route;
 

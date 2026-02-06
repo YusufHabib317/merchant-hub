@@ -156,8 +156,7 @@ export default function RegisterPage() {
 
         <Group justify="center" mt="lg">
           <Text size="sm">
-            {t('auth.already_have_account')}
-            {' '}
+            {t('auth.already_have_account')}{' '}
             <Anchor component="button" type="button" onClick={toLogin} size="sm">
               {t('auth.sign_in')}
             </Anchor>

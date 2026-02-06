@@ -1,7 +1,5 @@
 import { useState } from 'react';
-import {
-  Modal, TextInput, Button, Stack, Text,
-} from '@mantine/core';
+import { Modal, TextInput, Button, Stack, Text } from '@mantine/core';
 
 interface CustomerInfoModalProps {
   opened: boolean;

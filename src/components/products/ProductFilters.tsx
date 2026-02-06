@@ -62,7 +62,9 @@ export function ProductFilters({
           <ThemeIcon size="xs" variant="light" color="blue">
             <IconFilter size={12} />
           </ThemeIcon>
-          <Text size="sm" fw={500}>{t('filter')}</Text>
+          <Text size="sm" fw={500}>
+            {t('filter')}
+          </Text>
           {activeCount > 0 && (
             <Badge size="xs" variant="filled" color="blue">
               {activeCount}
@@ -76,7 +78,9 @@ export function ProductFilters({
         <Stack gap="sm">
           {/* Condition Filter */}
           <Box>
-            <Text size="xs" fw={500} mb={4}>Condition</Text>
+            <Text size="xs" fw={500} mb={4}>
+              Condition
+            </Text>
             <SegmentedControl
               value={values.condition || 'ALL'}
               onChange={(value) => handleChange('condition', value)}
@@ -96,7 +100,9 @@ export function ProductFilters({
             <Box>
               <Group gap={4} mb={4}>
                 <IconTag size={12} />
-                <Text size="xs" fw={500}>Category</Text>
+                <Text size="xs" fw={500}>
+                  Category
+                </Text>
               </Group>
               <MultiSelect
                 size="xs"
@@ -114,7 +120,9 @@ export function ProductFilters({
           <Box>
             <Group gap={4} mb={4}>
               <IconPackage size={12} />
-              <Text size="xs" fw={500}>Stock</Text>
+              <Text size="xs" fw={500}>
+                Stock
+              </Text>
             </Group>
             <SegmentedControl
               value={values.stock || 'ALL'}
@@ -131,7 +139,9 @@ export function ProductFilters({
 
           {/* Published Filter */}
           <Box>
-            <Text size="xs" fw={500} mb={4}>Status</Text>
+            <Text size="xs" fw={500} mb={4}>
+              Status
+            </Text>
             <SegmentedControl
               value={values.published || 'ALL'}
               onChange={(value) => handleChange('published', value)}
@@ -150,7 +160,9 @@ export function ProductFilters({
             <Box>
               <Group gap={4} mb={4}>
                 <IconTag size={12} />
-                <Text size="xs" fw={500}>Tags</Text>
+                <Text size="xs" fw={500}>
+                  Tags
+                </Text>
               </Group>
               <MultiSelect
                 size="xs"
@@ -168,7 +180,9 @@ export function ProductFilters({
           <Box>
             <Group gap={4} mb={4}>
               <IconCash size={12} />
-              <Text size="xs" fw={500}>Price Range (USD)</Text>
+              <Text size="xs" fw={500}>
+                Price Range (USD)
+              </Text>
             </Group>
             <Group gap="xs">
               <NumberInput
@@ -179,7 +193,9 @@ export function ProductFilters({
                 min={0}
                 style={{ flex: 1 }}
               />
-              <Text size="xs" c="dimmed">-</Text>
+              <Text size="xs" c="dimmed">
+                -
+              </Text>
               <NumberInput
                 size="xs"
                 placeholder="Max"
@@ -193,12 +209,7 @@ export function ProductFilters({
 
           {/* Clear Filters Button */}
           {activeCount > 0 && (
-            <Button
-              variant="subtle"
-              size="xs"
-              onClick={onClear}
-              fullWidth
-            >
+            <Button variant="subtle" size="xs" onClick={onClear} fullWidth>
               Clear All Filters
             </Button>
           )}

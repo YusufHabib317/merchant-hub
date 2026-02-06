@@ -21,7 +21,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void>
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { session } = (req as any);
+  const { session } = req as any;
   if (!session?.user?.id) {
     res.status(401).json({ success: false, error: 'Unauthorized' });
     return;

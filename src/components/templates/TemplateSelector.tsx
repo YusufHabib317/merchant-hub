@@ -1,7 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import {
-  Text, Card, Group, Stack, ThemeIcon, Box,
-} from '@mantine/core';
+import { Text, Card, Group, Stack, ThemeIcon, Box } from '@mantine/core';
 import { IconCheck } from '@tabler/icons-react';
 
 export interface TemplateOption {
@@ -61,10 +59,10 @@ export function TemplateSelector({ value, onChange }: TemplateSelectorProps) {
                     template.preview === 'dark'
                       ? '#1a1a2e'
                       : template.preview === 'gradient'
-                        ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-                        : template.preview === 'table'
-                          ? '#333'
-                          : '#f8f9fa',
+                      ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+                      : template.preview === 'table'
+                      ? '#333'
+                      : '#f8f9fa',
                 }}
               />
               <Box style={{ flex: 1 }}>

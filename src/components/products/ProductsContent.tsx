@@ -57,11 +57,7 @@ export function ProductsContent({
 
         {pagination && pagination.totalPages > 1 && (
           <Center mt="xl">
-            <Pagination
-              total={pagination.totalPages}
-              value={page}
-              onChange={setPage}
-            />
+            <Pagination total={pagination.totalPages} value={page} onChange={setPage} />
           </Center>
         )}
       </>

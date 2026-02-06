@@ -49,13 +49,15 @@ export function ProductForm({
   const [error, setError] = useState<string | null>(null);
 
   // Check if all required fields are filled
-  const isFormValid = useMemo(() => (
-    formData.name.trim().length > 0
-    && formData.description.trim().length > 0
-    && formData.priceUSD > 0
-    && formData.imageUrls.length > 0
-    && formData.category.trim().length > 0
-  ), [formData]);
+  const isFormValid = useMemo(
+    () =>
+      formData.name.trim().length > 0 &&
+      formData.description.trim().length > 0 &&
+      formData.priceUSD > 0 &&
+      formData.imageUrls.length > 0 &&
+      formData.category.trim().length > 0,
+    [formData]
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -99,10 +101,14 @@ export function ProductForm({
         />
 
         <Stack gap="xs">
-          <Text size="sm" fw={500}>{t('condition')}</Text>
+          <Text size="sm" fw={500}>
+            {t('condition')}
+          </Text>
           <SegmentedControl
             value={formData.condition}
-            onChange={(value) => setFormData({ ...formData, condition: value as z.infer<typeof ProductConditionEnum> })}
+            onChange={(value) =>
+              setFormData({ ...formData, condition: value as z.infer<typeof ProductConditionEnum> })
+            }
             data={[
               { label: t('condition_new'), value: 'NEW' },
               { label: t('condition_used'), value: 'USED' },
@@ -128,7 +134,9 @@ export function ProductForm({
           exchangeRate={formData.exchangeRate}
           onPriceUSDChange={(value) => setFormData((prev) => ({ ...prev, priceUSD: value }))}
           onPriceSYPChange={(value) => setFormData((prev) => ({ ...prev, priceSYP: value }))}
-          onExchangeRateChange={(value) => setFormData((prev) => ({ ...prev, exchangeRate: value }))}
+          onExchangeRateChange={(value) =>
+            setFormData((prev) => ({ ...prev, exchangeRate: value }))
+          }
         />
 
         <MultiImageUpload
@@ -146,7 +154,9 @@ export function ProductForm({
           type="number"
           min={0}
           value={formData.stock}
-          onChange={(e) => setFormData({ ...formData, stock: parseInt(e.currentTarget.value, 10) || 0 })}
+          onChange={(e) =>
+            setFormData({ ...formData, stock: parseInt(e.currentTarget.value, 10) || 0 })
+          }
           disabled={isLoading}
         />
 

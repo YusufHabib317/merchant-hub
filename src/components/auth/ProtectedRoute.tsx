@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
-import {
-  Center, Loader, Stack, Text, Box,
-} from '@mantine/core';
+import { Center, Loader, Stack, Text, Box } from '@mantine/core';
 import { authClient } from '@/lib/auth-client';
 import { useAppRouter } from '@/lib/hooks/useAppRouter';
 
@@ -10,10 +8,7 @@ interface ProtectedRouteProps {
   requiredRole?: string[];
 }
 
-export function ProtectedRoute({
-  children,
-  requiredRole = undefined,
-}: ProtectedRouteProps) {
+export function ProtectedRoute({ children, requiredRole = undefined }: ProtectedRouteProps) {
   const { toLogin, toDashboard, to } = useAppRouter();
   const { data: session, isPending } = authClient.useSession();
   const [isInitialCheckDone, setIsInitialCheckDone] = useState(false);

@@ -15,25 +15,40 @@ import useTranslation from 'next-translate/useTranslation';
 
 const navItems = [
   {
-    labelKey: 'nav.dashboard', icon: IconHome, path: getRoutePath.dashboard(), exact: true,
+    labelKey: 'nav.dashboard',
+    icon: IconHome,
+    path: getRoutePath.dashboard(),
+    exact: true,
   },
   {
-    labelKey: 'nav.products', icon: IconShoppingCart, path: getRoutePath.products(),
+    labelKey: 'nav.products',
+    icon: IconShoppingCart,
+    path: getRoutePath.products(),
   },
   {
-    labelKey: 'nav.qr_code', icon: IconQrcode, path: getRoutePath.qrCode(),
+    labelKey: 'nav.qr_code',
+    icon: IconQrcode,
+    path: getRoutePath.qrCode(),
   },
   {
-    labelKey: 'nav.chat', icon: IconMessageCircle, path: getRoutePath.chat(),
+    labelKey: 'nav.chat',
+    icon: IconMessageCircle,
+    path: getRoutePath.chat(),
   },
   {
-    labelKey: 'nav.ai_context', icon: IconBrain, path: getRoutePath.aiContext(),
+    labelKey: 'nav.ai_context',
+    icon: IconBrain,
+    path: getRoutePath.aiContext(),
   },
   {
-    labelKey: 'nav.profile', icon: IconUserCircle, path: getRoutePath.profile(),
+    labelKey: 'nav.profile',
+    icon: IconUserCircle,
+    path: getRoutePath.profile(),
   },
   {
-    labelKey: 'nav.settings', icon: IconSettings, path: getRoutePath.settings(),
+    labelKey: 'nav.settings',
+    icon: IconSettings,
+    path: getRoutePath.settings(),
   },
 ];
 

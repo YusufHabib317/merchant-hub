@@ -20,21 +20,20 @@ import { useAppRouter } from '@/lib/hooks/useAppRouter';
 import { getRoutePath } from '@/config/routes';
 import useTranslation from 'next-translate/useTranslation';
 
-const createResetPasswordSchema = (t: (key: string) => string) => z
-  .object({
-    otp: z.string().length(6, t('common:auth.otp_must_be_6_digits')),
-    password: z
-      .string()
-      .min(8, t('common:auth.password_min_length')),
-    // .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-    // .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-    // .regex(/[0-9]/, 'Password must contain at least one number'),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: t('common:auth.passwords_dont_match'),
-    path: ['confirmPassword'],
-  });
+const createResetPasswordSchema = (t: (key: string) => string) =>
+  z
+    .object({
+      otp: z.string().length(6, t('common:auth.otp_must_be_6_digits')),
+      password: z.string().min(8, t('common:auth.password_min_length')),
+      // .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+      // .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+      // .regex(/[0-9]/, 'Password must contain at least one number'),
+      confirmPassword: z.string(),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: t('common:auth.passwords_dont_match'),
+      path: ['confirmPassword'],
+    });
 
 export default function ResetPasswordPage() {
   const { t } = useTranslation('common');

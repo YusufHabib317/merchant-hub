@@ -24,7 +24,10 @@ interface UseProductSortReturn {
  * Hook for managing product sort order in localStorage
  * The sort order is persisted per merchant
  */
-export function useProductSort({ merchantId, products }: UseProductSortOptions): UseProductSortReturn {
+export function useProductSort({
+  merchantId,
+  products,
+}: UseProductSortOptions): UseProductSortReturn {
   const [sortOrder, setSortOrderState] = useState<string[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
 
@@ -70,27 +73,9 @@ export function useProductSort({ merchantId, products }: UseProductSortOptions):
   }, [products, sortOrder, isInitialized]);
 
   // Save to localStorage whenever sort order changes
-  const setSortOrder = useCallback((newOrder: string[]) => {
-    setSortOrderState(newOrder);
-    if (merchantId) {
-      try {
-        localStorage.setItem(getStorageKey(merchantId), JSON.stringify(newOrder));
-      } catch {
-        // Ignore storage errors
-      }
-    }
-  }, [merchantId]);
-
-  // Move product from one position to another
-  const moveProduct = useCallback((fromIndex: number, toIndex: number) => {
-    if (fromIndex === toIndex) return;
-
-    setSortOrderState((prev) => {
-      const newOrder = [...prev];
-      const [movedItem] = newOrder.splice(fromIndex, 1);
-      newOrder.splice(toIndex, 0, movedItem);
-
-      // Save to localStorage
+  const setSortOrder = useCallback(
+    (newOrder: string[]) => {
+      setSortOrderState(newOrder);
       if (merchantId) {
         try {
           localStorage.setItem(getStorageKey(merchantId), JSON.stringify(newOrder));
@@ -98,23 +83,50 @@ export function useProductSort({ merchantId, products }: UseProductSortOptions):
           // Ignore storage errors
         }
       }
+    },
+    [merchantId]
+  );
 
-      return newOrder;
-    });
-  }, [merchantId]);
+  // Move product from one position to another
+  const moveProduct = useCallback(
+    (fromIndex: number, toIndex: number) => {
+      if (fromIndex === toIndex) return;
+
+      setSortOrderState((prev) => {
+        const newOrder = [...prev];
+        const [movedItem] = newOrder.splice(fromIndex, 1);
+        newOrder.splice(toIndex, 0, movedItem);
+
+        // Save to localStorage
+        if (merchantId) {
+          try {
+            localStorage.setItem(getStorageKey(merchantId), JSON.stringify(newOrder));
+          } catch {
+            // Ignore storage errors
+          }
+        }
+
+        return newOrder;
+      });
+    },
+    [merchantId]
+  );
 
   // Get products sorted according to custom order
-  const getSortedProducts = useCallback(<T extends { id: string }>(items: T[]): T[] => {
-    if (!sortOrder.length) return items;
+  const getSortedProducts = useCallback(
+    <T extends { id: string }>(items: T[]): T[] => {
+      if (!sortOrder.length) return items;
 
-    const orderMap = new Map(sortOrder.map((id, index) => [id, index]));
+      const orderMap = new Map(sortOrder.map((id, index) => [id, index]));
 
-    return [...items].sort((a, b) => {
-      const aIndex = orderMap.get(a.id) ?? Number.MAX_SAFE_INTEGER;
-      const bIndex = orderMap.get(b.id) ?? Number.MAX_SAFE_INTEGER;
-      return aIndex - bIndex;
-    });
-  }, [sortOrder]);
+      return [...items].sort((a, b) => {
+        const aIndex = orderMap.get(a.id) ?? Number.MAX_SAFE_INTEGER;
+        const bIndex = orderMap.get(b.id) ?? Number.MAX_SAFE_INTEGER;
+        return aIndex - bIndex;
+      });
+    },
+    [sortOrder]
+  );
 
   // Reset to default order (by creation date or current API order)
   const resetSortOrder = useCallback(() => {

@@ -4,6 +4,7 @@
 
 export * from './useAppRouter';
 export * from './useCategorySort';
+export * from './useExchangeRate';
 export * from './useMerchants';
 export * from './useProducts';
 export * from './useProductSort';

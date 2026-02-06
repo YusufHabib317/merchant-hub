@@ -30,7 +30,10 @@ export function useAppRouter() {
     toSettings: useCallback(() => router.push(getRoutePath.settings()), [router]),
 
     // Merchant routes
-    toMerchantStore: useCallback((slug: string) => router.push(getRoutePath.merchantStore(slug)), [router]),
+    toMerchantStore: useCallback(
+      (slug: string) => router.push(getRoutePath.merchantStore(slug)),
+      [router]
+    ),
 
     // Generic navigation
     to: useCallback((path: string) => router.push(path), [router]),
@@ -53,10 +56,13 @@ export function useAppRouter() {
 export function useIsActiveRoute() {
   const router = useRouter();
 
-  return useCallback((path: string, exact = false): boolean => {
-    if (exact) {
-      return router.pathname === path;
-    }
-    return router.pathname.startsWith(path);
-  }, [router.pathname]);
+  return useCallback(
+    (path: string, exact = false): boolean => {
+      if (exact) {
+        return router.pathname === path;
+      }
+      return router.pathname.startsWith(path);
+    },
+    [router.pathname]
+  );
 }

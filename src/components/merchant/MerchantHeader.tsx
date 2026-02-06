@@ -1,13 +1,4 @@
-import {
-  Container,
-  Title,
-  Text,
-  Box,
-  Group,
-  Badge,
-  Avatar,
-  ActionIcon,
-} from '@mantine/core';
+import { Container, Title, Text, Box, Group, Badge, Avatar, ActionIcon } from '@mantine/core';
 import { IconShare, IconQrcode } from '@tabler/icons-react';
 import useTranslation from 'next-translate/useTranslation';
 import { PublicMerchant } from './types';
@@ -63,9 +54,7 @@ export function MerchantHeader({ merchant, onShare, onShowQR }: MerchantHeaderPr
                 }}
               >
                 {/* eslint-disable-next-line no-underscore-dangle */}
-                {merchant._count.products}
-                {' '}
-                {t('merchant_page.products_count')}
+                {merchant._count.products} {t('merchant_page.products_count')}
               </Badge>
             </Group>
           </Box>

@@ -36,13 +36,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       merchantId: id,
     });
 
-    const {
-      page,
-      limit,
-      search,
-      sortBy,
-      sortOrder,
-    } = queryParams;
+    const { page, limit, search, sortBy, sortOrder } = queryParams;
 
     // Build where clause
     const where: Prisma.ProductWhereInput = {

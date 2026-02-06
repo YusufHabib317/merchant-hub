@@ -1,9 +1,4 @@
-import {
-  Group,
-  NumberInput,
-  Text,
-  Stack,
-} from '@mantine/core';
+import { Group, NumberInput, Text, Stack } from '@mantine/core';
 import { DEFAULT_EXCHANGE_RATE } from '@/lib/constants';
 import useTranslation from 'next-translate/useTranslation';
 
@@ -43,7 +38,8 @@ export function ProductPriceInput({
   };
 
   const handleExchangeRateChange = (value: number | string) => {
-    const numValue = value === '' || value === null || value === undefined ? DEFAULT_EXCHANGE_RATE : Number(value);
+    const numValue =
+      value === '' || value === null || value === undefined ? DEFAULT_EXCHANGE_RATE : Number(value);
     if (Number.isNaN(numValue) || numValue <= 0) return;
 
     onExchangeRateChange(numValue);
@@ -85,11 +81,7 @@ export function ProductPriceInput({
         />
       </Group>
       <Text size="sm" c="dimmed">
-        {t('current_rate_text')}
-        {' '}
-        {exchangeRate.toLocaleString()}
-        {' '}
-        {t('syp')}
+        {t('current_rate_text')} {exchangeRate.toLocaleString()} {t('syp')}
       </Text>
     </Stack>
   );

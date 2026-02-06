@@ -179,8 +179,16 @@ export default function VerifyOtpPage() {
         </Box>
 
         <Box pt={30}>
-          {error && <Alert color="red" mb="md">{error}</Alert>}
-          {success && <Alert color="green" mb="md">{success}</Alert>}
+          {error && (
+            <Alert color="red" mb="md">
+              {error}
+            </Alert>
+          )}
+          {success && (
+            <Alert color="green" mb="md">
+              {success}
+            </Alert>
+          )}
 
           <form onSubmit={handleSubmit}>
             <Stack gap="md" align="center">
@@ -206,8 +214,7 @@ export default function VerifyOtpPage() {
           </form>
           <Group justify="center" mt="lg">
             <Text size="sm">
-              {t('auth.didnt_receive_code')}
-              {' '}
+              {t('auth.didnt_receive_code')}{' '}
               {countdown > 0 ? (
                 <Text component="span" c="dimmed">
                   {t('auth.resend_in', { seconds: countdown })}

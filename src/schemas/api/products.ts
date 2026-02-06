@@ -14,8 +14,14 @@ export const ListProductsRequestSchema = z.object({
   stock: z.string().optional(),
   published: z.string().optional(),
   tags: z.string().optional(),
-  minPrice: z.preprocess((val) => (val === '' || val === null ? undefined : val), z.coerce.number().optional()),
-  maxPrice: z.preprocess((val) => (val === '' || val === null ? undefined : val), z.coerce.number().optional()),
+  minPrice: z.preprocess(
+    (val) => (val === '' || val === null ? undefined : val),
+    z.coerce.number().optional(),
+  ),
+  maxPrice: z.preprocess(
+    (val) => (val === '' || val === null ? undefined : val),
+    z.coerce.number().optional(),
+  ),
 });
 
 export const ListProductsResponseSchema = z.object({

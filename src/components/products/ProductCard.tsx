@@ -1,19 +1,6 @@
-import {
-  Card,
-  Image,
-  Text,
-  Group,
-  Badge,
-  Stack,
-  ActionIcon,
-  Menu,
-  Box,
-  Flex,
-} from '@mantine/core';
+import { Card, Image, Text, Group, Badge, Stack, ActionIcon, Menu, Box, Flex } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
-import {
-  IconEdit, IconTrash, IconDots,
-} from '@tabler/icons-react';
+import { IconEdit, IconTrash, IconDots } from '@tabler/icons-react';
 import useTranslation from 'next-translate/useTranslation';
 import { z } from 'zod';
 import { formatCurrency } from '@/utils/currency';
@@ -84,7 +71,9 @@ export function ProductCard({
                 justifyContent: 'center',
               }}
             >
-              <Text c="dimmed" size="xs">{t('no_image')}</Text>
+              <Text c="dimmed" size="xs">
+                {t('no_image')}
+              </Text>
             </Box>
           ) : null}
 
@@ -173,10 +162,7 @@ export function ProductCard({
                   </ActionIcon>
                 </Menu.Target>
                 <Menu.Dropdown>
-                  <Menu.Item
-                    leftSection={<IconEdit size={14} />}
-                    onClick={handleEdit}
-                  >
+                  <Menu.Item leftSection={<IconEdit size={14} />} onClick={handleEdit}>
                     {t('edit')}
                   </Menu.Item>
                   <Menu.Item
@@ -206,8 +192,7 @@ export function ProductCard({
               ))}
               {tags.length > 3 && (
                 <Text size="xs" c="dimmed">
-                  +
-                  {tags.length - 3}
+                  +{tags.length - 3}
                 </Text>
               )}
             </Group>
@@ -226,7 +211,9 @@ export function ProductCard({
               <Text size="xs" c="dimmed">
                 SYP
               </Text>
-              <Text fw={600} size="sm">{formatCurrency(priceSYP, 'SYP')}</Text>
+              <Text fw={600} size="sm">
+                {formatCurrency(priceSYP, 'SYP')}
+              </Text>
             </div>
           </Group>
         </Stack>

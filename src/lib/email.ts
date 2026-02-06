@@ -250,7 +250,11 @@ export async function sendWelcomeEmail(email: string, name?: string) {
 /**
  * Send OTP verification email
  */
-export async function sendOTPEmail(email: string, otp: string, type: 'sign-in' | 'email-verification' | 'forget-password') {
+export async function sendOTPEmail(
+  email: string,
+  otp: string,
+  type: 'sign-in' | 'email-verification' | 'forget-password'
+) {
   let subject: string;
   let title: string;
   let message: string;

@@ -58,7 +58,9 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
       return res.status(201).json({ success: true, data: context });
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ success: false, error: 'Validation error', details: error.issues });
+        return res
+          .status(400)
+          .json({ success: false, error: 'Validation error', details: error.issues });
       }
       return res.status(500).json({ success: false, error: 'Internal server error' });
     }

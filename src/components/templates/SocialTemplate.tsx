@@ -1,6 +1,4 @@
-import {
-  Paper, Text, Stack, Group, Box,
-} from '@mantine/core';
+import { Paper, Text, Stack, Group, Box } from '@mantine/core';
 
 export interface ExportProduct {
   id: string;
@@ -18,11 +16,7 @@ interface SocialTemplateProps {
   watermark?: boolean | null;
 }
 
-export function SocialTemplate({
-  products,
-  merchantName,
-  watermark = false,
-}: SocialTemplateProps) {
+export function SocialTemplate({ products, merchantName, watermark = false }: SocialTemplateProps) {
   const featuredProducts = products.slice(0, 4);
 
   return (
@@ -52,12 +46,7 @@ export function SocialTemplate({
           }}
         >
           {featuredProducts.map((product) => (
-            <Paper
-              key={product.id}
-              p="xs"
-              radius="md"
-              style={{ backgroundColor: 'white' }}
-            >
+            <Paper key={product.id} p="xs" radius="md" style={{ backgroundColor: 'white' }}>
               <Stack gap={4}>
                 {product.imageUrls && product.imageUrls.length > 0 ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -86,8 +75,7 @@ export function SocialTemplate({
                   {product.name}
                 </Text>
                 <Text size="sm" fw={700} style={{ color: '#667eea' }}>
-                  $
-                  {product.priceUSD.toFixed(2)}
+                  ${product.priceUSD.toFixed(2)}
                 </Text>
               </Stack>
             </Paper>

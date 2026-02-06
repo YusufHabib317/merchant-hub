@@ -1,6 +1,4 @@
-import {
-  Card, Group, Stack, Text, PasswordInput, Button, Divider,
-} from '@mantine/core';
+import { Card, Group, Stack, Text, PasswordInput, Button, Divider } from '@mantine/core';
 import { IconLock } from '@tabler/icons-react';
 import useTranslation from 'next-translate/useTranslation';
 
@@ -33,7 +31,9 @@ export function PasswordChangeCard({
     <Card withBorder padding="lg" radius="md">
       <Group mb="md">
         <IconLock size={24} />
-        <Text fw={600} size="lg">{t('profile_page.password_security')}</Text>
+        <Text fw={600} size="lg">
+          {t('profile_page.password_security')}
+        </Text>
       </Group>
 
       <Text c="dimmed" size="sm" mb="md">
@@ -71,8 +71,7 @@ export function PasswordChangeCard({
             required
             disabled={isDisabled}
             error={
-              confirmPassword
-              && newPassword !== confirmPassword
+              confirmPassword && newPassword !== confirmPassword
                 ? t('profile_page.passwords_do_not_match')
                 : undefined
             }

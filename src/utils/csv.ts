@@ -89,7 +89,11 @@ function parseCSVRow(row: string): string[] {
 /**
  * Parse a product row from CSV values
  */
-function parseProductRow(headers: string[], values: string[], lineNumber: number): CSVProduct | null {
+function parseProductRow(
+  headers: string[],
+  values: string[],
+  lineNumber: number,
+): CSVProduct | null {
   const getValue = (header: string): string => {
     const index = headers.indexOf(header);
     return index >= 0 && index < values.length ? values[index] : '';
@@ -132,19 +136,21 @@ function parseProductRow(headers: string[], values: string[], lineNumber: number
 /**
  * Convert products array to CSV string
  */
-export function productsToCSV(products: Array<{
-  name: string;
-  description?: string | null;
-  priceUSD: number;
-  priceSYP?: number | null;
-  exchangeRate?: number | null;
-  category?: string | null;
-  stock?: number;
-  isPublished?: boolean;
-  tags?: string[];
-  condition?: string;
-  imageUrls?: string[];
-}>): string {
+export function productsToCSV(
+  products: Array<{
+    name: string;
+    description?: string | null;
+    priceUSD: number;
+    priceSYP?: number | null;
+    exchangeRate?: number | null;
+    category?: string | null;
+    stock?: number;
+    isPublished?: boolean;
+    tags?: string[];
+    condition?: string;
+    imageUrls?: string[];
+  }>,
+): string {
   const headerRow = CSV_HEADERS.join(',');
 
   const dataRows = products.map((product) => {

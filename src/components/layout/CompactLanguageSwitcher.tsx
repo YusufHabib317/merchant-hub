@@ -20,11 +20,7 @@ export function CompactLanguageSwitcher() {
     <Menu shadow="md" width={150} position="bottom-end">
       <Menu.Target>
         <Tooltip label={t('language')}>
-          <ActionIcon
-            variant="subtle"
-            size="lg"
-            aria-label="Change language"
-          >
+          <ActionIcon variant="subtle" size="lg" aria-label="Change language">
             <IconLanguage size={20} />
           </ActionIcon>
         </Tooltip>

@@ -39,10 +39,7 @@ function getClientIdentifier(req: NextApiRequest): string {
 /**
  * Check rate limit for a specific key
  */
-export function checkRateLimit(
-  key: string,
-  options: RateLimitOptions,
-): RateLimitResult {
+export function checkRateLimit(key: string, options: RateLimitOptions): RateLimitResult {
   const now = Date.now();
   const windowMs = options.windowMs * 1000;
 
@@ -102,7 +99,7 @@ export const RATE_LIMITS = {
 export function rateLimit(
   req: NextApiRequest,
   res: NextApiResponse,
-  options: RateLimitOptions = RATE_LIMITS.api,
+  options: RateLimitOptions = RATE_LIMITS.api
 ): boolean {
   const clientId = getClientIdentifier(req);
   const endpoint = req.url || '/unknown';
@@ -132,7 +129,7 @@ export function rateLimit(
  */
 export function withRateLimit(
   handler: (req: NextApiRequest, res: NextApiResponse) => Promise<void> | void,
-  options: RateLimitOptions = RATE_LIMITS.api,
+  options: RateLimitOptions = RATE_LIMITS.api
 ) {
   return async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
     if (!rateLimit(req, res, options)) {

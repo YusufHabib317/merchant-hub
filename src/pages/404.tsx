@@ -1,11 +1,4 @@
-import {
-  Container,
-  Title,
-  Text,
-  Button,
-  Group,
-  Center,
-} from '@mantine/core';
+import { Container, Title, Text, Button, Group, Center } from '@mantine/core';
 import { IconError404 } from '@tabler/icons-react';
 import { useRouter } from 'next/router';
 import useTranslation from 'next-translate/useTranslation';

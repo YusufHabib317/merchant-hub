@@ -1,3 +1,5 @@
+export { ExchangeRateModal } from './ExchangeRateModal';
+export type { ExchangeRateModalProps, ProductSelection } from './ExchangeRateModal';
 export { ImageUpload } from './ImageUpload';
 export { MultiImageUpload } from './MultiImageUpload';
 export { ProductCard } from './ProductCard';

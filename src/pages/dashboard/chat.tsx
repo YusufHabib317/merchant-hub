@@ -1,9 +1,7 @@
 /* eslint-disable consistent-return */
 import { useEffect, useState } from 'react';
 import useTranslation from 'next-translate/useTranslation';
-import {
-  Title, Grid, Paper, Text, Box, Stack,
-} from '@mantine/core';
+import { Title, Grid, Paper, Text, Box, Stack } from '@mantine/core';
 import { io, Socket } from 'socket.io-client';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { authClient } from '@/lib/auth-client';
@@ -86,12 +84,9 @@ function ChatDashboardPage() {
       if (!merchantId) return;
 
       try {
-        const response = await fetch(
-          `${CHAT_SERVER_URL}/api/merchants/${merchantId}/sessions`,
-          {
-            credentials: 'include', // Important: Send cookies for auth
-          },
-        );
+        const response = await fetch(`${CHAT_SERVER_URL}/api/merchants/${merchantId}/sessions`, {
+          credentials: 'include', // Important: Send cookies for auth
+        });
         if (!response.ok) {
           throw new Error('Failed to fetch');
         }

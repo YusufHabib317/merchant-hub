@@ -65,20 +65,24 @@ async function preloadImages(element: HTMLElement): Promise<void> {
   await Promise.all(conversionPromises);
 
   // Wait for all images to load
-  const imagePromises = Array.from(images).map((img) => new Promise<void>((resolve) => {
-    if (img.complete) {
-      resolve();
-    } else {
-      // eslint-disable-next-line no-param-reassign
-      img.onload = () => resolve();
-      // eslint-disable-next-line no-param-reassign
-      img.onerror = () => resolve(); // Resolve even on error to not block export
-    }
-  }));
+  const imagePromises = Array.from(images).map(
+    (img) => new Promise<void>((resolve) => {
+      if (img.complete) {
+        resolve();
+      } else {
+        // eslint-disable-next-line no-param-reassign
+        img.onload = () => resolve();
+        // eslint-disable-next-line no-param-reassign
+        img.onerror = () => resolve(); // Resolve even on error to not block export
+      }
+    }),
+  );
 
   await Promise.all(imagePromises);
   // Add a delay to ensure rendering is complete
-  await new Promise((resolve) => { setTimeout(resolve, 500); });
+  await new Promise((resolve) => {
+    setTimeout(resolve, 500);
+  });
 }
 
 export async function exportToImage(
@@ -157,9 +161,7 @@ export async function shareImage(dataUrl: string, title: string): Promise<void> 
   }
 }
 
-export function getImageDimensions(
-  element: HTMLElement,
-): { width: number; height: number } {
+export function getImageDimensions(element: HTMLElement): { width: number; height: number } {
   return {
     width: element.offsetWidth,
     height: element.offsetHeight,

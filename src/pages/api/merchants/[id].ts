@@ -6,11 +6,7 @@ import { httpCode } from '@/lib/constants';
 import createApiError from '@/lib/api/createApiError';
 import { sanitizeMerchantInput, rateLimit, RATE_LIMITS } from '@/lib/security';
 
-async function handleGetMerchant(
-  id: string,
-  req: AuthenticatedRequest,
-  res: NextApiResponse,
-) {
+async function handleGetMerchant(id: string, req: AuthenticatedRequest, res: NextApiResponse) {
   try {
     const merchant = await prisma.merchant.findUnique({
       where: { id },
@@ -41,11 +37,7 @@ async function handleGetMerchant(
   }
 }
 
-async function handleUpdateMerchant(
-  id: string,
-  req: AuthenticatedRequest,
-  res: NextApiResponse,
-) {
+async function handleUpdateMerchant(id: string, req: AuthenticatedRequest, res: NextApiResponse) {
   try {
     // Validate request body
     const input = UpdateMerchantSchema.parse(req.body);

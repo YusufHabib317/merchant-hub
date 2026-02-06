@@ -40,9 +40,7 @@ import {
   IconPackage,
   IconCash,
 } from '@tabler/icons-react';
-import {
-  useState, useRef, useEffect, useMemo,
-} from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { useLocalStorage } from '@mantine/hooks';
 import { Reorder, useDragControls } from 'framer-motion';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
@@ -101,12 +99,15 @@ function SortableCategoryItem({ product, isSelected, onToggle }: SortableCategor
             label={product.name}
             checked={isSelected}
             onChange={() => {}}
-            styles={{ body: { alignItems: 'center' }, input: { cursor: 'pointer' }, label: { cursor: 'pointer' } }}
+            styles={{
+              body: { alignItems: 'center' },
+              input: { cursor: 'pointer' },
+              label: { cursor: 'pointer' },
+            }}
             style={{ flex: 1, pointerEvents: 'none' }}
           />
           <Text size="xs" c="dimmed">
-            $
-            {product.priceUSD}
+            ${product.priceUSD}
           </Text>
         </Group>
       </Paper>
@@ -156,16 +157,19 @@ function CategoryGroup({
               color="gray"
               size="sm"
               style={{ cursor: 'grab', touchAction: 'none' }}
-              onPointerDown={(e) => { e.stopPropagation(); controls.start(e); }}
+              onPointerDown={(e) => {
+                e.stopPropagation();
+                controls.start(e);
+              }}
               onClick={(e) => e.stopPropagation()}
             >
               <IconGripVertical size={14} />
             </ThemeIcon>
-            <Text size="sm" fw={600}>{category}</Text>
+            <Text size="sm" fw={600}>
+              {category}
+            </Text>
             <Badge size="xs" variant="light">
-              {selectedCount}
-              /
-              {products.length}
+              {selectedCount}/{products.length}
             </Badge>
           </Group>
           {isExpanded ? <IconChevronUp size={16} /> : <IconChevronDown size={16} />}
@@ -202,9 +206,11 @@ interface SortableExportItemProps {
 }
 
 // Filter helper functions
-const matchesCondition = (p: ExportProduct, conditionFilter: string) => conditionFilter === 'ALL' || p.condition === conditionFilter;
+const matchesCondition = (p: ExportProduct, conditionFilter: string) =>
+  conditionFilter === 'ALL' || p.condition === conditionFilter;
 
-const matchesCategory = (p: ExportProduct, categoryFilter: string[]) => categoryFilter.length === 0 || categoryFilter.includes(p.category || '');
+const matchesCategory = (p: ExportProduct, categoryFilter: string[]) =>
+  categoryFilter.length === 0 || categoryFilter.includes(p.category || '');
 
 const matchesStock = (p: ExportProduct, stockFilter: string) => {
   if (stockFilter === 'IN_STOCK') return p.stock !== undefined && p.stock > 0;
@@ -246,12 +252,8 @@ function SortableExportItem({ product, isSelected, onToggle }: SortableExportIte
         withBorder
         style={{
           cursor: 'pointer',
-          borderColor: isSelected
-            ? 'var(--mantine-color-blue-filled)'
-            : undefined,
-          backgroundColor: isSelected
-            ? 'var(--mantine-color-blue-light)'
-            : undefined,
+          borderColor: isSelected ? 'var(--mantine-color-blue-filled)' : undefined,
+          backgroundColor: isSelected ? 'var(--mantine-color-blue-light)' : undefined,
         }}
         onClick={onToggle}
       >
@@ -270,7 +272,11 @@ function SortableExportItem({ product, isSelected, onToggle }: SortableExportIte
             description={`$${product.priceUSD}`}
             checked={isSelected}
             onChange={() => {}} // Handled by Paper onClick
-            styles={{ body: { alignItems: 'center' }, input: { cursor: 'pointer' }, label: { cursor: 'pointer' } }}
+            styles={{
+              body: { alignItems: 'center' },
+              input: { cursor: 'pointer' },
+              label: { cursor: 'pointer' },
+            }}
             style={{ flex: 1, pointerEvents: 'none' }}
           />
         </Group>
@@ -418,12 +424,28 @@ export default function ExportProductsPage() {
     return Array.from(tags).sort();
   }, [products]);
 
-  const filteredProducts = useMemo(() => products.filter((p) => matchesCondition(p, conditionFilter)
-    && matchesCategory(p, categoryFilter)
-    && matchesStock(p, stockFilter)
-    && matchesPublished(p, publishedFilter)
-    && matchesTags(p, tagFilter)
-    && matchesPrice(p, minPrice, maxPrice)), [products, conditionFilter, categoryFilter, stockFilter, publishedFilter, tagFilter, minPrice, maxPrice]);
+  const filteredProducts = useMemo(
+    () =>
+      products.filter(
+        (p) =>
+          matchesCondition(p, conditionFilter) &&
+          matchesCategory(p, categoryFilter) &&
+          matchesStock(p, stockFilter) &&
+          matchesPublished(p, publishedFilter) &&
+          matchesTags(p, tagFilter) &&
+          matchesPrice(p, minPrice, maxPrice)
+      ),
+    [
+      products,
+      conditionFilter,
+      categoryFilter,
+      stockFilter,
+      publishedFilter,
+      tagFilter,
+      minPrice,
+      maxPrice,
+    ]
+  );
 
   const activeFilterCount = useMemo(() => {
     const filters = [
@@ -436,7 +458,15 @@ export default function ExportProductsPage() {
       maxPrice !== '',
     ];
     return filters.filter(Boolean).length;
-  }, [conditionFilter, categoryFilter, stockFilter, publishedFilter, tagFilter, minPrice, maxPrice]);
+  }, [
+    conditionFilter,
+    categoryFilter,
+    stockFilter,
+    publishedFilter,
+    tagFilter,
+    minPrice,
+    maxPrice,
+  ]);
 
   const clearAllFilters = () => {
     setConditionFilter('ALL');
@@ -463,9 +493,9 @@ export default function ExportProductsPage() {
   };
 
   const toggleProduct = (productId: string) => {
-    setSelectedProducts((prev) => (prev.includes(productId)
-      ? prev.filter((id) => id !== productId)
-      : [...prev, productId]));
+    setSelectedProducts((prev) =>
+      prev.includes(productId) ? prev.filter((id) => id !== productId) : [...prev, productId]
+    );
   };
 
   const selectAll = () => {
@@ -562,18 +592,20 @@ export default function ExportProductsPage() {
             onReorder={setCategoryOrder}
             style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
           >
-            {getSortedProductsByCategory(filteredProducts).map(({ category, products: catProducts }) => (
-              <CategoryGroup
-                key={category}
-                category={category}
-                products={catProducts}
-                selectedProducts={selectedProducts}
-                onToggle={toggleProduct}
-                onReorder={(productIds) => setProductOrderInCategory(category, productIds)}
-                isExpanded={expandedCategories.has(category)}
-                onToggleExpand={() => toggleCategoryExpanded(category)}
-              />
-            ))}
+            {getSortedProductsByCategory(filteredProducts).map(
+              ({ category, products: catProducts }) => (
+                <CategoryGroup
+                  key={category}
+                  category={category}
+                  products={catProducts}
+                  selectedProducts={selectedProducts}
+                  onToggle={toggleProduct}
+                  onReorder={(productIds) => setProductOrderInCategory(category, productIds)}
+                  isExpanded={expandedCategories.has(category)}
+                  onToggleExpand={() => toggleCategoryExpanded(category)}
+                />
+              )
+            )}
           </Reorder.Group>
         </ScrollArea.Autosize>
       );
@@ -623,10 +655,12 @@ export default function ExportProductsPage() {
           <Box>
             <Group justify="space-between" align="flex-start" wrap="wrap">
               <Box>
-                <Title order={1} mb="xs">Export Products</Title>
+                <Title order={1} mb="xs">
+                  Export Products
+                </Title>
                 <Text c="dimmed" maw={600}>
-                  Create beautiful product catalogs for social media, print materials, or digital sharing.
-                  Select products, choose a template, and customize the appearance.
+                  Create beautiful product catalogs for social media, print materials, or digital
+                  sharing. Select products, choose a template, and customize the appearance.
                 </Text>
               </Box>
               <Group>
@@ -677,10 +711,12 @@ export default function ExportProductsPage() {
                     <IconListCheck size={14} />
                   </ThemeIcon>
                   <Text fw={600}>Select Products</Text>
-                  <Badge size="sm" variant="light" color={selectedProducts.length > 0 ? 'green' : 'gray'}>
-                    {selectedProducts.length}
-                    {' '}
-                    selected
+                  <Badge
+                    size="sm"
+                    variant="light"
+                    color={selectedProducts.length > 0 ? 'green' : 'gray'}
+                  >
+                    {selectedProducts.length} selected
                   </Badge>
                 </Group>
 
@@ -698,7 +734,9 @@ export default function ExportProductsPage() {
                         <ThemeIcon size="xs" variant="light" color="blue">
                           <IconFilter size={12} />
                         </ThemeIcon>
-                        <Text size="sm" fw={500}>{t('filter')}</Text>
+                        <Text size="sm" fw={500}>
+                          {t('filter')}
+                        </Text>
                         {activeFilterCount > 0 && (
                           <Badge size="xs" variant="filled" color="blue">
                             {activeFilterCount}
@@ -712,7 +750,9 @@ export default function ExportProductsPage() {
                       <Stack gap="sm">
                         {/* Condition Filter */}
                         <Box>
-                          <Text size="xs" fw={500} mb={4}>Condition</Text>
+                          <Text size="xs" fw={500} mb={4}>
+                            Condition
+                          </Text>
                           <SegmentedControl
                             value={conditionFilter}
                             onChange={setConditionFilter}
@@ -732,7 +772,9 @@ export default function ExportProductsPage() {
                           <Box>
                             <Group gap={4} mb={4}>
                               <IconTag size={12} />
-                              <Text size="xs" fw={500}>Category</Text>
+                              <Text size="xs" fw={500}>
+                                Category
+                              </Text>
                             </Group>
                             <MultiSelect
                               size="xs"
@@ -750,7 +792,9 @@ export default function ExportProductsPage() {
                         <Box>
                           <Group gap={4} mb={4}>
                             <IconPackage size={12} />
-                            <Text size="xs" fw={500}>Stock</Text>
+                            <Text size="xs" fw={500}>
+                              Stock
+                            </Text>
                           </Group>
                           <SegmentedControl
                             value={stockFilter}
@@ -767,7 +811,9 @@ export default function ExportProductsPage() {
 
                         {/* Published Filter */}
                         <Box>
-                          <Text size="xs" fw={500} mb={4}>Status</Text>
+                          <Text size="xs" fw={500} mb={4}>
+                            Status
+                          </Text>
                           <SegmentedControl
                             value={publishedFilter}
                             onChange={setPublishedFilter}
@@ -786,7 +832,9 @@ export default function ExportProductsPage() {
                           <Box>
                             <Group gap={4} mb={4}>
                               <IconTag size={12} />
-                              <Text size="xs" fw={500}>Tags</Text>
+                              <Text size="xs" fw={500}>
+                                Tags
+                              </Text>
                             </Group>
                             <MultiSelect
                               size="xs"
@@ -804,7 +852,9 @@ export default function ExportProductsPage() {
                         <Box>
                           <Group gap={4} mb={4}>
                             <IconCash size={12} />
-                            <Text size="xs" fw={500}>Price Range (USD)</Text>
+                            <Text size="xs" fw={500}>
+                              Price Range (USD)
+                            </Text>
                           </Group>
                           <Group gap="xs">
                             <NumberInput
@@ -815,7 +865,9 @@ export default function ExportProductsPage() {
                               min={0}
                               style={{ flex: 1 }}
                             />
-                            <Text size="xs" c="dimmed">-</Text>
+                            <Text size="xs" c="dimmed">
+                              -
+                            </Text>
                             <NumberInput
                               size="xs"
                               placeholder="Max"
@@ -829,12 +881,7 @@ export default function ExportProductsPage() {
 
                         {/* Clear Filters Button */}
                         {activeFilterCount > 0 && (
-                          <Button
-                            variant="subtle"
-                            size="xs"
-                            onClick={clearAllFilters}
-                            fullWidth
-                          >
+                          <Button variant="subtle" size="xs" onClick={clearAllFilters} fullWidth>
                             Clear All Filters
                           </Button>
                         )}
@@ -883,7 +930,9 @@ export default function ExportProductsPage() {
                     <ThemeIcon size="xs" variant="light" color="blue">
                       <IconCurrencyDollar size={12} />
                     </ThemeIcon>
-                    <Text size="sm" fw={500}>Currency Display</Text>
+                    <Text size="sm" fw={500}>
+                      Currency Display
+                    </Text>
                   </Group>
                   <SegmentedControl
                     value={currencyDisplay}
@@ -924,7 +973,9 @@ export default function ExportProductsPage() {
                       <ThemeIcon size="xs" variant="light" color="blue">
                         <IconCurrencyDollar size={12} />
                       </ThemeIcon>
-                      <Text size="sm" fw={500}>Currency Display</Text>
+                      <Text size="sm" fw={500}>
+                        Currency Display
+                      </Text>
                     </Group>
                     <SegmentedControl
                       value={currencyDisplay}
@@ -938,33 +989,46 @@ export default function ExportProductsPage() {
                     />
                   </Box>
 
-                  <Text size="sm" fw={500} mb="md" c="dimmed">Color Customization</Text>
+                  <Text size="sm" fw={500} mb="md" c="dimmed">
+                    Color Customization
+                  </Text>
 
                   <SimpleGrid
                     cols={{
-                      base: 1, sm: 2, md: 3, lg: 4,
+                      base: 1,
+                      sm: 2,
+                      md: 3,
+                      lg: 4,
                     }}
                     spacing="lg"
                   >
                     {/* Page Background */}
                     <Box>
-                      <Text size="sm" fw={500} mb="xs">Page Background</Text>
+                      <Text size="sm" fw={500} mb="xs">
+                        Page Background
+                      </Text>
                       <Stack gap="xs">
                         <ColorInput
                           size="sm"
                           label="Color"
                           value={priceListStyle.pageBgColor}
-                          onChange={(value) => setPriceListStyle((prev) => ({ ...prev, pageBgColor: value }))}
+                          onChange={(value) =>
+                            setPriceListStyle((prev) => ({ ...prev, pageBgColor: value }))
+                          }
                           format="hex"
                         />
                         <Box>
-                          <Text size="xs" mb={4}>Opacity</Text>
+                          <Text size="xs" mb={4}>
+                            Opacity
+                          </Text>
                           <Slider
                             size="sm"
                             min={0}
                             max={100}
                             value={Math.round(priceListStyle.pageBgOpacity * 100)}
-                            onChange={(v) => setPriceListStyle((prev) => ({ ...prev, pageBgOpacity: v / 100 }))}
+                            onChange={(v) =>
+                              setPriceListStyle((prev) => ({ ...prev, pageBgOpacity: v / 100 }))
+                            }
                           />
                         </Box>
                       </Stack>
@@ -972,7 +1036,9 @@ export default function ExportProductsPage() {
 
                     {/* Background Image */}
                     <Box>
-                      <Text size="sm" fw={500} mb="xs">Background Image</Text>
+                      <Text size="sm" fw={500} mb="xs">
+                        Background Image
+                      </Text>
                       <Stack gap="xs">
                         <FileInput
                           size="sm"
@@ -983,14 +1049,18 @@ export default function ExportProductsPage() {
                           clearable
                         />
                         <Box>
-                          <Text size="xs" mb={4}>Image Opacity</Text>
+                          <Text size="xs" mb={4}>
+                            Image Opacity
+                          </Text>
                           <Slider
                             size="sm"
                             min={0}
                             max={100}
                             disabled={!priceListStyle.bgImageDataUrl}
                             value={Math.round(priceListStyle.bgImageOpacity * 100)}
-                            onChange={(v) => setPriceListStyle((prev) => ({ ...prev, bgImageOpacity: v / 100 }))}
+                            onChange={(v) =>
+                              setPriceListStyle((prev) => ({ ...prev, bgImageOpacity: v / 100 }))
+                            }
                           />
                         </Box>
                       </Stack>
@@ -998,23 +1068,31 @@ export default function ExportProductsPage() {
 
                     {/* Category Block */}
                     <Box>
-                      <Text size="sm" fw={500} mb="xs">Category Block</Text>
+                      <Text size="sm" fw={500} mb="xs">
+                        Category Block
+                      </Text>
                       <Stack gap="xs">
                         <ColorInput
                           size="sm"
                           label="Background"
                           value={priceListStyle.cardBgColor}
-                          onChange={(value) => setPriceListStyle((prev) => ({ ...prev, cardBgColor: value }))}
+                          onChange={(value) =>
+                            setPriceListStyle((prev) => ({ ...prev, cardBgColor: value }))
+                          }
                           format="hex"
                         />
                         <Box>
-                          <Text size="xs" mb={4}>Opacity</Text>
+                          <Text size="xs" mb={4}>
+                            Opacity
+                          </Text>
                           <Slider
                             size="sm"
                             min={0}
                             max={100}
                             value={Math.round(priceListStyle.cardBgOpacity * 100)}
-                            onChange={(v) => setPriceListStyle((prev) => ({ ...prev, cardBgOpacity: v / 100 }))}
+                            onChange={(v) =>
+                              setPriceListStyle((prev) => ({ ...prev, cardBgOpacity: v / 100 }))
+                            }
                           />
                         </Box>
                       </Stack>
@@ -1022,20 +1100,26 @@ export default function ExportProductsPage() {
 
                     {/* Category Header Background */}
                     <Box>
-                      <Text size="sm" fw={500} mb="xs">Category Header</Text>
+                      <Text size="sm" fw={500} mb="xs">
+                        Category Header
+                      </Text>
                       <Stack gap="xs">
                         <ColorInput
                           size="sm"
                           label="Background"
                           value={priceListStyle.categoryHeaderBg}
-                          onChange={(value) => setPriceListStyle((prev) => ({ ...prev, categoryHeaderBg: value }))}
+                          onChange={(value) =>
+                            setPriceListStyle((prev) => ({ ...prev, categoryHeaderBg: value }))
+                          }
                           format="hex"
                         />
                         <ColorInput
                           size="sm"
                           label="Text"
                           value={priceListStyle.categoryHeaderText}
-                          onChange={(value) => setPriceListStyle((prev) => ({ ...prev, categoryHeaderText: value }))}
+                          onChange={(value) =>
+                            setPriceListStyle((prev) => ({ ...prev, categoryHeaderText: value }))
+                          }
                           format="hex"
                         />
                       </Stack>
@@ -1043,20 +1127,26 @@ export default function ExportProductsPage() {
 
                     {/* Table Header */}
                     <Box>
-                      <Text size="sm" fw={500} mb="xs">Table Header</Text>
+                      <Text size="sm" fw={500} mb="xs">
+                        Table Header
+                      </Text>
                       <Stack gap="xs">
                         <ColorInput
                           size="sm"
                           label="Background"
                           value={priceListStyle.tableHeaderBg}
-                          onChange={(value) => setPriceListStyle((prev) => ({ ...prev, tableHeaderBg: value }))}
+                          onChange={(value) =>
+                            setPriceListStyle((prev) => ({ ...prev, tableHeaderBg: value }))
+                          }
                           format="hex"
                         />
                         <ColorInput
                           size="sm"
                           label="Text"
                           value={priceListStyle.tableHeaderText}
-                          onChange={(value) => setPriceListStyle((prev) => ({ ...prev, tableHeaderText: value }))}
+                          onChange={(value) =>
+                            setPriceListStyle((prev) => ({ ...prev, tableHeaderText: value }))
+                          }
                           format="hex"
                         />
                       </Stack>
@@ -1064,13 +1154,17 @@ export default function ExportProductsPage() {
 
                     {/* Row Odd */}
                     <Box>
-                      <Text size="sm" fw={500} mb="xs">Odd Rows</Text>
+                      <Text size="sm" fw={500} mb="xs">
+                        Odd Rows
+                      </Text>
                       <Stack gap="xs">
                         <ColorInput
                           size="sm"
                           label="Background"
                           value={priceListStyle.rowOddBg}
-                          onChange={(value) => setPriceListStyle((prev) => ({ ...prev, rowOddBg: value }))}
+                          onChange={(value) =>
+                            setPriceListStyle((prev) => ({ ...prev, rowOddBg: value }))
+                          }
                           format="hex"
                         />
                       </Stack>
@@ -1078,13 +1172,17 @@ export default function ExportProductsPage() {
 
                     {/* Row Even */}
                     <Box>
-                      <Text size="sm" fw={500} mb="xs">Even Rows</Text>
+                      <Text size="sm" fw={500} mb="xs">
+                        Even Rows
+                      </Text>
                       <Stack gap="xs">
                         <ColorInput
                           size="sm"
                           label="Background"
                           value={priceListStyle.rowEvenBg}
-                          onChange={(value) => setPriceListStyle((prev) => ({ ...prev, rowEvenBg: value }))}
+                          onChange={(value) =>
+                            setPriceListStyle((prev) => ({ ...prev, rowEvenBg: value }))
+                          }
                           format="hex"
                         />
                       </Stack>
@@ -1092,13 +1190,17 @@ export default function ExportProductsPage() {
 
                     {/* Row Text */}
                     <Box>
-                      <Text size="sm" fw={500} mb="xs">Row Text</Text>
+                      <Text size="sm" fw={500} mb="xs">
+                        Row Text
+                      </Text>
                       <Stack gap="xs">
                         <ColorInput
                           size="sm"
                           label="Color"
                           value={priceListStyle.rowText}
-                          onChange={(value) => setPriceListStyle((prev) => ({ ...prev, rowText: value }))}
+                          onChange={(value) =>
+                            setPriceListStyle((prev) => ({ ...prev, rowText: value }))
+                          }
                           format="hex"
                         />
                       </Stack>
@@ -1109,17 +1211,14 @@ export default function ExportProductsPage() {
             )}
 
             {/* Preview - Full Width */}
-            <Paper
-              withBorder
-              radius="md"
-              p="md"
-              bg="var(--mantine-color-gray-light)"
-            >
+            <Paper withBorder radius="md" p="md" bg="var(--mantine-color-gray-light)">
               <Group gap="xs" mb="md">
                 <ThemeIcon size="sm" variant="light" color="teal">
                   <IconEye size={14} />
                 </ThemeIcon>
-                <Text size="sm" fw={600}>Preview</Text>
+                <Text size="sm" fw={600}>
+                  Preview
+                </Text>
               </Group>
 
               {selectedProducts.length > 0 ? (

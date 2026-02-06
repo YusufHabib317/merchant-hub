@@ -1,7 +1,5 @@
 /* eslint-disable react/require-default-props */
-import {
-  Paper, Text, Stack, Grid, Box, Badge,
-} from '@mantine/core';
+import { Paper, Text, Stack, Grid, Box, Badge } from '@mantine/core';
 import { formatCurrency } from '@/utils/currency';
 
 export interface ExportProduct {
@@ -34,11 +32,7 @@ export function CatalogTemplate({ products, merchantName, watermark }: CatalogTe
         <Grid gutter="md">
           {products.map((product) => (
             <Grid.Col key={product.id} span={{ base: 12, sm: 6, md: 4 }}>
-              <Paper
-                p="sm"
-                withBorder
-                style={{ height: '100%' }}
-              >
+              <Paper p="sm" withBorder style={{ height: '100%' }}>
                 <Stack gap="xs">
                   {product.imageUrls && product.imageUrls.length > 0 ? (
                     // eslint-disable-next-line @next/next/no-img-element

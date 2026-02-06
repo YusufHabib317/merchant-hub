@@ -1,20 +1,6 @@
 import { useState } from 'react';
-import {
-  Paper,
-  Group,
-  Text,
-  ActionIcon,
-  Box,
-  Alert,
-  Button,
-  Stack,
-} from '@mantine/core';
-import {
-  IconGripVertical,
-  IconAlertCircle,
-  IconRefresh,
-  IconCheck,
-} from '@tabler/icons-react';
+import { Paper, Group, Text, ActionIcon, Box, Alert, Button, Stack } from '@mantine/core';
+import { IconGripVertical, IconAlertCircle, IconRefresh, IconCheck } from '@tabler/icons-react';
 import { motion, Reorder, AnimatePresence } from 'framer-motion';
 import { z } from 'zod';
 import { ProductConditionEnum } from '@/schemas/product';
@@ -169,15 +155,11 @@ export function SortableProductList({
 
   return (
     <Stack gap="md">
-      <Alert
-        icon={<IconAlertCircle size={16} />}
-        color="blue"
-        variant="light"
-      >
+      <Alert icon={<IconAlertCircle size={16} />} color="blue" variant="light">
         <Group justify="space-between" align="center">
           <Text size="sm">
-            Drag and drop products to arrange them in your preferred order.
-            This order will be used for both the product list and image exports.
+            Drag and drop products to arrange them in your preferred order. This order will be used
+            for both the product list and image exports.
           </Text>
           <Button
             variant="light"

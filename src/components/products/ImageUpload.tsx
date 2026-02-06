@@ -1,16 +1,5 @@
-import {
-  Box,
-  Image,
-  Text,
-  ActionIcon,
-  Progress,
-  Paper,
-  Stack,
-  ThemeIcon,
-} from '@mantine/core';
-import {
-  IconUpload, IconX, IconCheck, IconPhoto,
-} from '@tabler/icons-react';
+import { Box, Image, Text, ActionIcon, Progress, Paper, Stack, ThemeIcon } from '@mantine/core';
+import { IconUpload, IconX, IconCheck, IconPhoto } from '@tabler/icons-react';
 import { useState } from 'react';
 import { UploadButton } from '@uploadthing/react';
 import type { UploadRouter } from '@/lib/uploadthing';
@@ -47,30 +36,19 @@ export function ImageUpload({
     <Stack gap="xs">
       <Text size="sm" fw={500}>
         {label}
-        {required && <Text component="span" c="red"> *</Text>}
+        {required && (
+          <Text component="span" c="red">
+            {' '}
+            *
+          </Text>
+        )}
       </Text>
       {value ? (
-        <Paper
-          withBorder
-          radius="md"
-          p="xs"
-          pos="relative"
-          style={{ overflow: 'hidden' }}
-        >
+        <Paper withBorder radius="md" p="xs" pos="relative" style={{ overflow: 'hidden' }}>
           <Box pos="relative">
-            <Image
-              src={value}
-              alt="Product preview"
-              h={200}
-              fit="contain"
-              radius="sm"
-            />
+            <Image src={value} alt="Product preview" h={200} fit="contain" radius="sm" />
             {uploadSuccess && (
-              <Box
-                pos="absolute"
-                top={8}
-                left={8}
-              >
+              <Box pos="absolute" top={8} left={8}>
                 <ThemeIcon color="green" size="md" radius="xl">
                   <IconCheck size={14} />
                 </ThemeIcon>
@@ -106,7 +84,9 @@ export function ImageUpload({
               <ThemeIcon size={48} radius="xl" variant="light" color="blue">
                 <IconUpload size={24} />
               </ThemeIcon>
-              <Text size="sm" c="dimmed">Uploading...</Text>
+              <Text size="sm" c="dimmed">
+                Uploading...
+              </Text>
               <Progress value={progress} w="100%" size="sm" animated />
             </Stack>
           ) : (
@@ -155,7 +135,9 @@ export function ImageUpload({
                   },
                 }}
               />
-              <Text size="xs" c="dimmed">PNG, JPG up to 4MB</Text>
+              <Text size="xs" c="dimmed">
+                PNG, JPG up to 4MB
+              </Text>
             </Stack>
           )}
         </Paper>
