@@ -50,6 +50,17 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': 'error',
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': ['error'],
+    'object-curly-newline': 'off', // Allow flexible object destructuring formatting
+    'comma-dangle': 'off', // Allow flexible trailing comma usage
+    'react/jsx-one-expression-per-line': 'off', // Allow multiple expressions per line
+    'implicit-arrow-linebreak': 'off', // Allow flexible arrow function formatting
+    'operator-linebreak': 'off', // Allow flexible operator line breaks
+    'function-paren-newline': 'off', // Allow flexible function parameter formatting
+    'react/jsx-curly-newline': 'off', // Allow flexible JSX curly brace formatting
+    'no-confusing-arrow': 'off', // Allow arrow functions with conditional expressions
+    'newline-per-chained-call': 'off', // Allow flexible method chaining
+    'indent': 'off', // Disable indent rule (Prettier handles this)
+    'react/jsx-wrap-multilines': 'off', // Allow flexible JSX multiline wrapping
     'consistent-return': 'off', // Disabled for Next.js API routes with Promise<void>
     'react/no-array-index-key': 'off', // Allow index as key when items don't have unique IDs
     'react/jsx-filename-extension': ['warn', { extensions: ['.js', '.jsx', '.ts', '.tsx'] }],
