@@ -1,6 +1,4 @@
-import {
-  Title, Button, Group, Stack, Text, Loader, Center, Menu,
-} from '@mantine/core';
+import { Title, Button, Group, Stack, Text, Loader, Center, Menu } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import {
   IconPlus,
@@ -10,9 +8,7 @@ import {
   IconChevronDown,
   IconCurrencyDollar,
 } from '@tabler/icons-react';
-import {
-  useState, useEffect, useCallback, useRef,
-} from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import useTranslation from 'next-translate/useTranslation';
 import { useLocalStorage } from '@mantine/hooks';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
@@ -33,9 +29,7 @@ import { useProductFilters } from '@/lib/hooks/useProductFilters';
 
 export default function ProductsPage() {
   const { t } = useTranslation('common');
-  const {
-    toNewProduct, toSettings, toExportProducts, toEditProduct, router,
-  } = useAppRouter();
+  const { toNewProduct, toSettings, toExportProducts, toEditProduct, router } = useAppRouter();
   // Next router object identity can change when the query changes.
   // Keep a ref so callbacks (like setPage) can stay stable.
   const routerRef = useRef(router);
@@ -71,7 +65,7 @@ export default function ProductsPage() {
         },
       },
       undefined,
-      { shallow: true, scroll: false },
+      { shallow: true, scroll: false }
     );
   }, []);
 
@@ -89,7 +83,7 @@ export default function ProductsPage() {
         return val;
       });
     },
-    [setPage],
+    [setPage]
   );
   const [sortBy, setSortBy] = useLocalStorage<NonNullable<ProductQueryParams['sortBy']>>({
     key: 'products-sort-by',

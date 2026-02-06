@@ -269,7 +269,12 @@
     "qr_modal_subtitle": "Scan this QR code to visit the store",
     "store_not_found": "Store Not Found",
     "store_not_found_desc": "The store you're looking for doesn't exist or has been removed.",
-    "no_products_found": "No products found"
+    "no_products_found": "No products found",
+    "back_to_categories": "Back to categories",
+    "categories_title": "Categories",
+    "uncategorized": "Uncategorized",
+    "no_categories": "No products available",
+    "products_in_category": "products"
   },
   "chat_widget": {
     "type_message": "Type a message...",

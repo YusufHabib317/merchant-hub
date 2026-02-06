@@ -36,7 +36,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       merchantId: id,
     });
 
-    const { page, limit, search, sortBy, sortOrder } = queryParams;
+    const { page, limit, search, sortBy, sortOrder, category } = queryParams;
 
     // Build where clause
     const where: Prisma.ProductWhereInput = {
@@ -44,11 +44,32 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       isPublished: true, // Only show published products on public page
     };
 
+    // Apply category filter
+    if (category === 'Uncategorized') {
+      where.OR = [{ category: null }, { category: '' }];
+    } else if (category) {
+      where.category = category;
+    }
+
     if (search) {
-      where.OR = [
-        { name: { contains: search, mode: 'insensitive' } },
-        { description: { contains: search, mode: 'insensitive' } },
-      ];
+      // When category filter already set an OR clause, combine with AND
+      if (where.OR) {
+        where.AND = [
+          { OR: where.OR },
+          {
+            OR: [
+              { name: { contains: search, mode: 'insensitive' } },
+              { description: { contains: search, mode: 'insensitive' } },
+            ],
+          },
+        ];
+        delete where.OR;
+      } else {
+        where.OR = [
+          { name: { contains: search, mode: 'insensitive' } },
+          { description: { contains: search, mode: 'insensitive' } },
+        ];
+      }
     }
 
     // Build order by

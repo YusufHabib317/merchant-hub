@@ -6,15 +6,7 @@
  * Requirements: 2.1, 2.2, 2.3, 2.6
  */
 
-import {
-  Paper,
-  Stack,
-  Group,
-  Text,
-  Badge,
-  Checkbox,
-  ScrollArea,
-} from '@mantine/core';
+import { Paper, Stack, Group, Text, Badge, Checkbox, ScrollArea } from '@mantine/core';
 import useTranslation from 'next-translate/useTranslation';
 import type { ProductSelection } from './types';
 import { ProductSelectionItem } from './ProductSelectionItem';

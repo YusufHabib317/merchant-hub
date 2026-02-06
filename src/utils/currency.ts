@@ -13,7 +13,7 @@ export function calculateSypPrice(usdPrice: number): number {
 export function formatCurrency(
   amount: number,
   currency: 'USD' | 'SYP',
-  locale: string = 'en-US',
+  locale: string = 'en-US'
 ): string {
   return new Intl.NumberFormat(locale, {
     style: 'currency',

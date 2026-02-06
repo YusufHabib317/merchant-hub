@@ -5,6 +5,7 @@ import { API_ENDPOINTS } from '@/lib/api/endpoints';
 import { handleApiError } from '@/lib/api/handleApiError';
 import { CreateProductInput, UpdateProductInput, Product } from '@/schemas/product';
 import { ApiErrorResponse } from '@/types/error';
+import { CategoryInfo } from '@/pages/api/merchants/[id]/categories';
 
 const PRODUCTS_QUERY_KEY = ['products'];
 
@@ -32,6 +33,8 @@ export interface ProductQueryParams {
   tags?: string[];
   minPrice?: number | string;
   maxPrice?: number | string;
+  /** Single category filter for public storefront browsing */
+  category?: string;
 }
 
 /**
@@ -103,9 +106,9 @@ export function useProducts(merchantId?: string, params: ProductQueryParams = {}
  * Fetch merchant products (Public)
  */
 export function useMerchantPublicProducts(merchantId: string, params: ProductQueryParams = {}) {
-  const { page = 1, limit = 20, search, sortBy, sortOrder } = params;
+  const { page = 1, limit = 20, search, sortBy, sortOrder, category } = params;
   return useQuery<ProductsResponse>({
-    queryKey: ['public-products', merchantId, page, limit, search, sortBy, sortOrder],
+    queryKey: ['public-products', merchantId, page, limit, search, sortBy, sortOrder, category],
     queryFn: async () => {
       const { data } = await apiClient.get(API_ENDPOINTS.merchants.products(merchantId), {
         params: {
@@ -114,8 +117,23 @@ export function useMerchantPublicProducts(merchantId: string, params: ProductQue
           search,
           sortBy,
           sortOrder,
+          category,
         },
       });
+      return data.data;
+    },
+    enabled: !!merchantId,
+  });
+}
+
+/**
+ * Fetch merchant categories (Public)
+ */
+export function useMerchantCategories(merchantId: string) {
+  return useQuery<CategoryInfo[]>({
+    queryKey: ['merchant-categories', merchantId],
+    queryFn: async () => {
+      const { data } = await apiClient.get(API_ENDPOINTS.merchants.categories(merchantId));
       return data.data;
     },
     enabled: !!merchantId,

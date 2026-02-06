@@ -59,7 +59,7 @@ module.exports = {
     'react/jsx-curly-newline': 'off', // Allow flexible JSX curly brace formatting
     'no-confusing-arrow': 'off', // Allow arrow functions with conditional expressions
     'newline-per-chained-call': 'off', // Allow flexible method chaining
-    'indent': 'off', // Disable indent rule (Prettier handles this)
+    indent: 'off', // Disable indent rule (Prettier handles this)
     'react/jsx-wrap-multilines': 'off', // Allow flexible JSX multiline wrapping
     'consistent-return': 'off', // Disabled for Next.js API routes with Promise<void>
     'react/no-array-index-key': 'off', // Allow index as key when items don't have unique IDs

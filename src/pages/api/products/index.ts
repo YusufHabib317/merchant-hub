@@ -40,7 +40,9 @@ async function handleGetProducts(req: AuthenticatedRequest, res: NextApiResponse
       }
     }
 
-    const where: Prisma.ProductWhereInput = effectiveMerchantId ? { merchantId: effectiveMerchantId } : {};
+    const where: Prisma.ProductWhereInput = effectiveMerchantId
+      ? { merchantId: effectiveMerchantId }
+      : {};
 
     // Search filter
     if (search) {

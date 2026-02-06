@@ -1,7 +1,8 @@
 /* eslint-disable no-plusplus */
 import { toPng } from 'html-to-image';
 
-const BROKEN_IMAGE_PLACEHOLDER = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+xU9EAAAAASUVORK5CYII=';
+const BROKEN_IMAGE_PLACEHOLDER =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+xU9EAAAAASUVORK5CYII=';
 
 export interface ExportOptions {
   quality?: number;
@@ -66,16 +67,17 @@ async function preloadImages(element: HTMLElement): Promise<void> {
 
   // Wait for all images to load
   const imagePromises = Array.from(images).map(
-    (img) => new Promise<void>((resolve) => {
-      if (img.complete) {
-        resolve();
-      } else {
-        // eslint-disable-next-line no-param-reassign
-        img.onload = () => resolve();
-        // eslint-disable-next-line no-param-reassign
-        img.onerror = () => resolve(); // Resolve even on error to not block export
-      }
-    }),
+    (img) =>
+      new Promise<void>((resolve) => {
+        if (img.complete) {
+          resolve();
+        } else {
+          // eslint-disable-next-line no-param-reassign
+          img.onload = () => resolve();
+          // eslint-disable-next-line no-param-reassign
+          img.onerror = () => resolve(); // Resolve even on error to not block export
+        }
+      })
   );
 
   await Promise.all(imagePromises);
@@ -87,7 +89,7 @@ async function preloadImages(element: HTMLElement): Promise<void> {
 
 export async function exportToImage(
   element: HTMLElement,
-  options?: ExportOptions,
+  options?: ExportOptions
 ): Promise<string> {
   const {
     quality = 1,

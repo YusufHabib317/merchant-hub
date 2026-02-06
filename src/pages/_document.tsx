@@ -1,6 +1,4 @@
-import {
-  Html, Head, Main, NextScript,
-} from 'next/document';
+import { Html, Head, Main, NextScript } from 'next/document';
 import { ColorSchemeScript, mantineHtmlProps } from '@mantine/core';
 
 export default function Document() {

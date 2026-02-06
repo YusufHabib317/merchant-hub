@@ -92,7 +92,7 @@ function parseCSVRow(row: string): string[] {
 function parseProductRow(
   headers: string[],
   values: string[],
-  lineNumber: number,
+  lineNumber: number
 ): CSVProduct | null {
   const getValue = (header: string): string => {
     const index = headers.indexOf(header);
@@ -149,7 +149,7 @@ export function productsToCSV(
     tags?: string[];
     condition?: string;
     imageUrls?: string[];
-  }>,
+  }>
 ): string {
   const headerRow = CSV_HEADERS.join(',');
 

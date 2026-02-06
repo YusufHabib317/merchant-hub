@@ -7,22 +7,9 @@
  * Requirements: 1.1, 2.1, 6.4
  */
 
-import {
-  Modal,
-  Stack,
-  Group,
-  Loader,
-} from '@mantine/core';
-import {
-  IconAlertCircle,
-  IconCheck,
-} from '@tabler/icons-react';
-import {
-  useState,
-  useEffect,
-  useMemo,
-  useCallback,
-} from 'react';
+import { Modal, Stack, Group, Loader } from '@mantine/core';
+import { IconAlertCircle, IconCheck } from '@tabler/icons-react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import useTranslation from 'next-translate/useTranslation';
 import { notifications } from '@mantine/notifications';
 import { useExchangeRate } from '@/lib/hooks/useExchangeRate';
@@ -39,9 +26,8 @@ export type { ExchangeRateModalProps, ProductSelection };
 export function ExchangeRateModal({ opened, onClose }: ExchangeRateModalProps) {
   const { t } = useTranslation('common');
 
-  const {
-    merchantExchangeRate, isLoadingRate, applyExchangeRate, revertPrices,
-  } = useExchangeRate();
+  const { merchantExchangeRate, isLoadingRate, applyExchangeRate, revertPrices } =
+    useExchangeRate();
 
   const { data: productsData, isLoading: isLoadingProducts } = useProducts(undefined, {
     limit: 1000,
@@ -81,22 +67,22 @@ export function ExchangeRateModal({ opened, onClose }: ExchangeRateModalProps) {
 
   const selectedCount = useMemo(
     () => productSelections.filter((p) => p.selected).length,
-    [productSelections],
+    [productSelections]
   );
 
   const allSelected = useMemo(
     () => productSelections.length > 0 && productSelections.every((p) => p.selected),
-    [productSelections],
+    [productSelections]
   );
 
   const someSelected = useMemo(
     () => selectedCount > 0 && !allSelected,
-    [selectedCount, allSelected],
+    [selectedCount, allSelected]
   );
 
   const revertableProducts = useMemo(
     () => productSelections.filter((p) => p.selected && p.originalPriceSYP !== null),
-    [productSelections],
+    [productSelections]
   );
 
   const validateInput = useCallback(
@@ -104,14 +90,14 @@ export function ExchangeRateModal({ opened, onClose }: ExchangeRateModalProps) {
       const numValue = parseExchangeRate(value);
       if (!validateExchangeRate(numValue)) {
         setExchangeRateError(
-          t('exchange_rate_invalid') || 'Exchange rate must be a positive number',
+          t('exchange_rate_invalid') || 'Exchange rate must be a positive number'
         );
         return false;
       }
       setExchangeRateError(null);
       return true;
     },
-    [t],
+    [t]
   );
 
   const handleExchangeRateChange = useCallback(
@@ -123,7 +109,7 @@ export function ExchangeRateModal({ opened, onClose }: ExchangeRateModalProps) {
         setExchangeRateError(null);
       }
     },
-    [validateInput],
+    [validateInput]
   );
 
   const handleProductSelect = useCallback((productId: string, selected: boolean) => {
@@ -159,8 +145,8 @@ export function ExchangeRateModal({ opened, onClose }: ExchangeRateModalProps) {
       notifications.show({
         title: t('success') || 'Success',
         message:
-          t('exchange_rate_applied', { count: result.updatedCount })
-          || `Exchange rate applied to ${result.updatedCount} products`,
+          t('exchange_rate_applied', { count: result.updatedCount }) ||
+          `Exchange rate applied to ${result.updatedCount} products`,
         color: 'green',
         icon: <IconCheck size={16} />,
       });
@@ -193,8 +179,8 @@ export function ExchangeRateModal({ opened, onClose }: ExchangeRateModalProps) {
       notifications.show({
         title: t('success') || 'Success',
         message:
-          t('prices_reverted', { count: result.revertedCount })
-          || `Reverted prices for ${result.revertedCount} products`,
+          t('prices_reverted', { count: result.revertedCount }) ||
+          `Reverted prices for ${result.revertedCount} products`,
         color: 'green',
         icon: <IconCheck size={16} />,
       });

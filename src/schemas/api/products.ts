@@ -4,23 +4,23 @@ import { ProductSchema, CreateProductSchema, UpdateProductSchema } from '../prod
 export const ListProductsRequestSchema = z.object({
   merchantId: z.string().cuid().optional(),
   page: z.coerce.number().int().positive().default(1),
-  limit: z.coerce.number().int().positive().max(1000)
-    .default(20),
+  limit: z.coerce.number().int().positive().max(1000).default(20),
   search: z.string().optional(),
   sortBy: z.enum(['createdAt', 'name', 'priceUSD']).optional(),
   sortOrder: z.enum(['asc', 'desc']).optional(),
   condition: z.string().optional(),
+  category: z.string().optional(),
   categories: z.string().optional(),
   stock: z.string().optional(),
   published: z.string().optional(),
   tags: z.string().optional(),
   minPrice: z.preprocess(
     (val) => (val === '' || val === null ? undefined : val),
-    z.coerce.number().optional(),
+    z.coerce.number().optional()
   ),
   maxPrice: z.preprocess(
     (val) => (val === '' || val === null ? undefined : val),
-    z.coerce.number().optional(),
+    z.coerce.number().optional()
   ),
 });
 

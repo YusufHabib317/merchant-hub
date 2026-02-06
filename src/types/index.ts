@@ -1,10 +1,6 @@
-import {
-  User, Merchant, Product, ChatSession, Role, SubscriptionTier,
-} from '@prisma/client';
+import { User, Merchant, Product, ChatSession, Role, SubscriptionTier } from '@prisma/client';
 
-export type {
-  User, Merchant, Product, ChatSession, Role, SubscriptionTier,
-};
+export type { User, Merchant, Product, ChatSession, Role, SubscriptionTier };
 
 export interface ApiResponse<T = unknown> {
   success: boolean;

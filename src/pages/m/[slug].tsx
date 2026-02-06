@@ -1,6 +1,4 @@
-import {
-  Container, Text, Box, Loader, Center, Alert, Modal, Stack,
-} from '@mantine/core';
+import { Container, Text, Box, Loader, Center, Alert, Modal, Stack, Title } from '@mantine/core';
 import { IconAlertCircle } from '@tabler/icons-react';
 import { useRouter } from 'next/router';
 import { useQuery } from '@tanstack/react-query';
@@ -10,10 +8,11 @@ import { API_ENDPOINTS } from '@/lib/api/endpoints';
 import { useState, useEffect } from 'react';
 import { ChatWidget } from '@/components/chat/ChatWidget';
 import { QRCodeGenerator } from '@/components/qr/QRCodeGenerator';
-import { useMerchantPublicProducts, ProductQueryParams } from '@/lib/hooks/useProducts';
+import { useMerchantPublicProducts, useMerchantCategories, ProductQueryParams } from '@/lib/hooks/useProducts';
 import { ViewMode } from '@/components/products/ProductViewControls';
 import { MerchantHeader } from '@/components/merchant/MerchantHeader';
 import { MerchantProducts } from '@/components/merchant/MerchantProducts';
+import { CategoryGrid } from '@/components/products/CategoryGrid';
 import { PublicMerchant } from '@/components/merchant/types';
 import { MerchantPublicHeader } from '@/components/merchant/MerchantPublicHeader';
 
@@ -44,6 +43,7 @@ export default function MerchantPublicPage() {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState<NonNullable<ProductQueryParams['sortBy']>>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const {
     data: merchant,
@@ -53,7 +53,7 @@ export default function MerchantPublicPage() {
     queryKey: ['merchant', slug],
     queryFn: async () => {
       const { data: response } = await apiClient.get(
-        API_ENDPOINTS.merchants.getBySlug(slug as string),
+        API_ENDPOINTS.merchants.getBySlug(slug as string)
       );
       return response.data;
     },
@@ -68,11 +68,24 @@ export default function MerchantPublicPage() {
       search,
       sortBy,
       sortOrder,
-    },
+      category: selectedCategory || undefined,
+    }
   );
 
   const products = productsData?.products || [];
   const pagination = productsData?.pagination;
+
+  const { data: categories, isLoading: categoriesLoading } = useMerchantCategories(
+    merchant?.id || ''
+  );
+
+  const handleBackToCategories = () => {
+    setSelectedCategory(null);
+    setSearch('');
+    setSortBy('createdAt');
+    setSortOrder('desc');
+    setPage(1);
+  };
 
   const handleShare = async () => {
     const url = window.location.href;
@@ -131,21 +144,34 @@ export default function MerchantPublicPage() {
       />
 
       {/* Products Section */}
-      <MerchantProducts
-        isLoading={productsLoading}
-        products={products}
-        viewMode={viewMode}
-        setViewMode={setViewMode}
-        search={search}
-        setSearch={setSearch}
-        setPage={setPage}
-        sortBy={sortBy}
-        setSortBy={setSortBy as (sort: string) => void}
-        sortOrder={sortOrder}
-        setSortOrder={setSortOrder}
-        pagination={pagination}
-        page={page}
-      />
+      {selectedCategory ? (
+        <MerchantProducts
+          isLoading={productsLoading}
+          products={products}
+          viewMode={viewMode}
+          setViewMode={setViewMode}
+          search={search}
+          setSearch={setSearch}
+          setPage={setPage}
+          sortBy={sortBy}
+          setSortBy={setSortBy as (sort: string) => void}
+          sortOrder={sortOrder}
+          setSortOrder={setSortOrder}
+          pagination={pagination}
+          page={page}
+          selectedCategory={selectedCategory}
+          onBack={handleBackToCategories}
+        />
+      ) : (
+        <Container size="lg" py={60}>
+          <Title order={2} mb="lg">{t('merchant_page.categories_title')}</Title>
+          <CategoryGrid
+            categories={categories || []}
+            onSelectCategory={setSelectedCategory}
+            isLoading={categoriesLoading}
+          />
+        </Container>
+      )}
 
       {/* Floating Chat Widget */}
       {merchant.isChatEnabled && (

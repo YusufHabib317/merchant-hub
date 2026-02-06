@@ -268,7 +268,12 @@
     "qr_modal_subtitle": "امسح رمز QR هذا لزيارة المتجر",
     "store_not_found": "المتجر غير موجود",
     "store_not_found_desc": "المتجر الذي تبحث عنه غير موجود أو تم إزالته.",
-    "no_products_found": "لم يتم العثور على منتجات"
+    "no_products_found": "لم يتم العثور على منتجات",
+    "back_to_categories": "العودة إلى الفئات",
+    "categories_title": "الفئات",
+    "uncategorized": "غير مصنف",
+    "no_categories": "لا توجد منتجات متاحة",
+    "products_in_category": "منتجات"
   },
   "chat_widget": {
     "type_message": "اكتب رسالة...",

@@ -7,14 +7,7 @@
  * Requirements: 2.3, 2.4, 2.5, 5.5
  */
 
-import {
-  Paper,
-  Group,
-  Checkbox,
-  Box,
-  Text,
-  Badge,
-} from '@mantine/core';
+import { Paper, Group, Checkbox, Box, Text, Badge } from '@mantine/core';
 import useTranslation from 'next-translate/useTranslation';
 import type { ProductSelection } from './types';
 import { formatCurrency, getPreviewPrice } from './utils';
@@ -77,8 +70,7 @@ export function ProductSelectionItem({
         {product.selected && previewPrice !== null && (
           <Box ta="right">
             <Text size="xs" c="dimmed">
-              {t('new_price') || 'New'}
-              :
+              {t('new_price') || 'New'}:
             </Text>
             <Text size="sm" fw={500} c="green">
               {formatCurrency(previewPrice, 'SYP')}

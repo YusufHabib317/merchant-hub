@@ -1,4 +1,5 @@
-import { Container, Box, Text, Center, Loader, Pagination } from '@mantine/core';
+import { Container, Box, Text, Center, Loader, Pagination, Group, Title, ActionIcon } from '@mantine/core';
+import { IconArrowLeft } from '@tabler/icons-react';
 import useTranslation from 'next-translate/useTranslation';
 import { ProductList } from '@/components/products/ProductList';
 import { ProductTable } from '@/components/products/ProductTable';
@@ -19,6 +20,8 @@ interface MerchantProductsProps {
   setSortOrder: (order: 'asc' | 'desc') => void;
   pagination?: { totalPages: number };
   page: number;
+  selectedCategory?: string;
+  onBack?: () => void;
 }
 
 export function MerchantProducts({
@@ -35,6 +38,10 @@ export function MerchantProducts({
   setSortOrder,
   pagination = undefined,
   page,
+  // eslint-disable-next-line react/require-default-props
+  selectedCategory,
+  // eslint-disable-next-line react/require-default-props
+  onBack,
 }: MerchantProductsProps) {
   const { t } = useTranslation('common');
 
@@ -76,6 +83,24 @@ export function MerchantProducts({
 
   return (
     <Container size="lg" py={60}>
+      {selectedCategory && (
+        <Group gap="sm" mb="md">
+          <ActionIcon
+            variant="subtle"
+            size="lg"
+            onClick={onBack}
+            aria-label={t('merchant_page.back_to_categories')}
+          >
+            <IconArrowLeft size={20} />
+          </ActionIcon>
+          <Title order={3}>
+            {selectedCategory === 'Uncategorized'
+              ? t('merchant_page.uncategorized')
+              : selectedCategory}
+          </Title>
+        </Group>
+      )}
+
       <ProductViewControls
         viewMode={viewMode}
         onViewModeChange={setViewMode}

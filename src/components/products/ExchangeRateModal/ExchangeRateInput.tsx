@@ -6,13 +6,7 @@
  * Requirements: 1.1, 1.2, 1.3, 1.5
  */
 
-import {
-  Paper,
-  Stack,
-  Text,
-  NumberInput,
-  Alert,
-} from '@mantine/core';
+import { Paper, Stack, Text, NumberInput, Alert } from '@mantine/core';
 import { IconCurrencyDollar } from '@tabler/icons-react';
 import useTranslation from 'next-translate/useTranslation';
 import { parseExchangeRate } from './utils';
@@ -33,9 +27,10 @@ export function ExchangeRateInput({
   const { t } = useTranslation('common');
 
   // Format exchange rate for preview display
-  const formattedRate = typeof exchangeRate === 'number'
-    ? exchangeRate.toLocaleString()
-    : parseExchangeRate(String(exchangeRate) || '0').toLocaleString();
+  const formattedRate =
+    typeof exchangeRate === 'number'
+      ? exchangeRate.toLocaleString()
+      : parseExchangeRate(String(exchangeRate) || '0').toLocaleString();
 
   return (
     <Paper withBorder p="md">

@@ -47,6 +47,7 @@ export const API_ENDPOINTS = {
     update: (id: string) => `/merchants/${id}`,
     qrCode: (id: string) => `/merchants/${id}/qr-code`,
     products: (id: string) => `/merchants/${id}/products`,
+    categories: (id: string) => `/merchants/${id}/categories`,
   },
 
   // Export
