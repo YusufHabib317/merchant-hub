@@ -28,8 +28,19 @@ async function handleGetProducts(req: AuthenticatedRequest, res: NextApiResponse
       maxPrice,
     } = queryParams;
 
-    // Build where clause
-    const where: Prisma.ProductWhereInput = merchantId ? { merchantId } : {};
+    // Build where clause - if no merchantId provided, filter by authenticated user's merchant
+    let effectiveMerchantId = merchantId;
+    if (!effectiveMerchantId) {
+      const merchant = await prisma.merchant.findUnique({
+        where: { userId: req.user.id },
+        select: { id: true },
+      });
+      if (merchant) {
+        effectiveMerchantId = merchant.id;
+      }
+    }
+
+    const where: Prisma.ProductWhereInput = effectiveMerchantId ? { merchantId: effectiveMerchantId } : {};
 
     // Search filter
     if (search) {
